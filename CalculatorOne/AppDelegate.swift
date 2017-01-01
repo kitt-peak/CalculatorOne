@@ -8,19 +8,35 @@
 
 import Cocoa
 
+
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate 
+{
 
-
-
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
+    var documents: [Document] { return NSDocumentController.shared().documents as! [Document] }
+    
+    func applicationDidFinishLaunching(_ aNotification: Notification) 
+    {
         // Insert code here to initialize your application
+        // print(#function)
+        
+        for document in documents
+        {
+            document.applicationDidLaunch()
+        }
     }
-
-    func applicationWillTerminate(_ aNotification: Notification) {
+    
+    func applicationWillTerminate(_ aNotification: Notification) 
+    {
         // Insert code here to tear down your application
+        // print(#function)
+        
+        for document in documents
+        {
+            document.applicationWillTerminate()
+        }
     }
-
+    
 
 }
 
