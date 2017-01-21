@@ -8,12 +8,23 @@
 
 import Cocoa
 
-class RegisterViewController: NSObject, DependendObjectLifeCycle
+protocol RegisterViewControllerDelegate 
+{
+    func userShouldChangeValue(_: Int, inRegister: RegisterViewController) -> Bool
+}
+
+class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitViewDelegate
 {
     
-    @IBOutlet var digitsView: SixteenDigitsView!
+    @IBOutlet var digitsView: MultiDigitsView!
+    { didSet { digitsView.delegate = self } }
     
-    var representedValue: Int = 0
+    var delegate: RegisterViewControllerDelegate!
+    
+    var acceptsValueChangesByUI: Bool = false
+    { didSet { digitsView.allowsValueChangesByUI = acceptsValueChangesByUI } }
+    
+    var representedValue: Int? = nil
     { didSet { digitsView.value = representedValue } }
     
     var radix: Int = 10
@@ -36,6 +47,16 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle
         
     }
     
-    
+    func userEventShouldSetValue(_ value: Int) -> Bool 
+    {
+        guard acceptsValueChangesByUI == true else { return false }
+        
+        if delegate.userShouldChangeValue(value, inRegister: self) == true
+        {
+            return true
+        }
+        
+        return false
+    }
     
 }

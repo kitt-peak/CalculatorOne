@@ -2,12 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "DigitStripCourier17Digits476x20.png",
+      "filename" : "radixButtonHexNormal.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "DigitStripCourier17Digits476x20x2Clear.png",
+      "filename" : "radixButtonHexNormalx2.png",
       "scale" : "2x"
     },
     {

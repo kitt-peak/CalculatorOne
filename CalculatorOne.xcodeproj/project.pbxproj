@@ -13,6 +13,7 @@
 		F43C571E1E17AAB7008A2D7E /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43C571D1E17AAB7008A2D7E /* GlobalConstants.swift */; };
 		F43C57201E17B979008A2D7E /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43C571F1E17B979008A2D7E /* RegisterViewController.swift */; };
 		F43C57221E17C9F9008A2D7E /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43C57211E17C9F9008A2D7E /* Engine.swift */; };
+		F472DEDF1E252849007F2A91 /* TestEngineAlgorithms.swift in Sources */ = {isa = PBXBuildFile; fileRef = F472DEDE1E252849007F2A91 /* TestEngineAlgorithms.swift */; };
 		F473BC1F1E13F4D7002B78EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F473BC1E1E13F4D7002B78EE /* AppDelegate.swift */; };
 		F473BC211E13F4D7002B78EE /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = F473BC201E13F4D7002B78EE /* Document.swift */; };
 		F473BC241E13F4D7002B78EE /* Document.xib in Resources */ = {isa = PBXBuildFile; fileRef = F473BC221E13F4D7002B78EE /* Document.xib */; };
@@ -21,7 +22,10 @@
 		F473BC341E13F4D7002B78EE /* CalculatorOneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F473BC331E13F4D7002B78EE /* CalculatorOneTests.swift */; };
 		F473BC3F1E13F4D7002B78EE /* CalculatorOneUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F473BC3E1E13F4D7002B78EE /* CalculatorOneUITests.swift */; };
 		F473BC4E1E13F56B002B78EE /* DigitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F473BC4D1E13F56B002B78EE /* DigitView.swift */; };
-		F47F924F1E16CD47005C38C7 /* SixteenDigitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47F924E1E16CD47005C38C7 /* SixteenDigitsView.swift */; };
+		F47F924F1E16CD47005C38C7 /* MultiDigitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47F924E1E16CD47005C38C7 /* MultiDigitsView.swift */; };
+		F49DA06B1E212C0200B166F1 /* DisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DA06A1E212C0200B166F1 /* DisplayView.swift */; };
+		F4A6EE281E2579C300FEEB8D /* ConstraintScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A6EE271E2579C300FEEB8D /* ConstraintScrollView.swift */; };
+		F4CA3CA71E2BD5E000A24032 /* TestEngineStackOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CA3CA61E2BD5E000A24032 /* TestEngineStackOperations.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +52,7 @@
 		F43C571D1E17AAB7008A2D7E /* GlobalConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
 		F43C571F1E17B979008A2D7E /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		F43C57211E17C9F9008A2D7E /* Engine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
+		F472DEDE1E252849007F2A91 /* TestEngineAlgorithms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEngineAlgorithms.swift; sourceTree = "<group>"; };
 		F473BC1B1E13F4D7002B78EE /* CalculatorOne.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalculatorOne.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F473BC1E1E13F4D7002B78EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F473BC201E13F4D7002B78EE /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
@@ -62,7 +67,10 @@
 		F473BC3E1E13F4D7002B78EE /* CalculatorOneUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorOneUITests.swift; sourceTree = "<group>"; };
 		F473BC401E13F4D7002B78EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F473BC4D1E13F56B002B78EE /* DigitView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DigitView.swift; sourceTree = "<group>"; };
-		F47F924E1E16CD47005C38C7 /* SixteenDigitsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SixteenDigitsView.swift; sourceTree = "<group>"; };
+		F47F924E1E16CD47005C38C7 /* MultiDigitsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiDigitsView.swift; sourceTree = "<group>"; };
+		F49DA06A1E212C0200B166F1 /* DisplayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayView.swift; sourceTree = "<group>"; };
+		F4A6EE271E2579C300FEEB8D /* ConstraintScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintScrollView.swift; sourceTree = "<group>"; };
+		F4CA3CA61E2BD5E000A24032 /* TestEngineStackOperations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEngineStackOperations.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +172,8 @@
 		F473BC321E13F4D7002B78EE /* CalculatorOneTests */ = {
 			isa = PBXGroup;
 			children = (
+				F4CA3CA61E2BD5E000A24032 /* TestEngineStackOperations.swift */,
+				F472DEDE1E252849007F2A91 /* TestEngineAlgorithms.swift */,
 				F473BC331E13F4D7002B78EE /* CalculatorOneTests.swift */,
 				F473BC351E13F4D7002B78EE /* Info.plist */,
 			);
@@ -183,7 +193,9 @@
 			isa = PBXGroup;
 			children = (
 				F473BC4D1E13F56B002B78EE /* DigitView.swift */,
-				F47F924E1E16CD47005C38C7 /* SixteenDigitsView.swift */,
+				F4A6EE271E2579C300FEEB8D /* ConstraintScrollView.swift */,
+				F47F924E1E16CD47005C38C7 /* MultiDigitsView.swift */,
+				F49DA06A1E212C0200B166F1 /* DisplayView.swift */,
 				F43C571B1E17AA34008A2D7E /* BaseView.swift */,
 			);
 			name = View;
@@ -329,12 +341,14 @@
 				F43C57201E17B979008A2D7E /* RegisterViewController.swift in Sources */,
 				F473BC4E1E13F56B002B78EE /* DigitView.swift in Sources */,
 				F41CF60E1E16E3F000224E86 /* DisplayController.swift in Sources */,
-				F47F924F1E16CD47005C38C7 /* SixteenDigitsView.swift in Sources */,
+				F47F924F1E16CD47005C38C7 /* MultiDigitsView.swift in Sources */,
 				F473BC211E13F4D7002B78EE /* Document.swift in Sources */,
 				F43C571C1E17AA34008A2D7E /* BaseView.swift in Sources */,
 				F473BC1F1E13F4D7002B78EE /* AppDelegate.swift in Sources */,
+				F49DA06B1E212C0200B166F1 /* DisplayView.swift in Sources */,
 				F43C571E1E17AAB7008A2D7E /* GlobalConstants.swift in Sources */,
 				F41CF6101E16E40500224E86 /* KeypadController.swift in Sources */,
+				F4A6EE281E2579C300FEEB8D /* ConstraintScrollView.swift in Sources */,
 				F43C57221E17C9F9008A2D7E /* Engine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -344,6 +358,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F473BC341E13F4D7002B78EE /* CalculatorOneTests.swift in Sources */,
+				F472DEDF1E252849007F2A91 /* TestEngineAlgorithms.swift in Sources */,
+				F4CA3CA71E2BD5E000A24032 /* TestEngineStackOperations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
