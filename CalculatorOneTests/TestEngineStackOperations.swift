@@ -33,14 +33,14 @@ class TestEngineStackOperations: XCTestCase
     
     func testThatTheStackAcceptsPushAndPopOneValue()
     {
-        
-        engineDUT.userUpdatedStackTopValue("0", radix: 10)
+        let testValue = "0"
+        engineDUT.userInputEnter(numericalValue: testValue, radix: 10)
         
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 0) == true)
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 1) == false)
 
         XCTAssert(engineDUT.numberOfRegistersWithContent() == 1)
-        XCTAssert(engineDUT.registerValue(registerNumber: 0) == 0)
+        XCTAssert(engineDUT.registerValue(registerNumber: 0, radix: 10) == testValue)
         
         engineDUT.userInputOperation(symbol: "DROP")
         
@@ -53,15 +53,26 @@ class TestEngineStackOperations: XCTestCase
     func testThatTheStackAcceptsPushAndPopTwoValues()
     {
         
-        engineDUT.userUpdatedStackTopValue("42", radix: 10)
+        let testValue0 = "-42"
+        let testValue1 = "52"
+
+        engineDUT.userInputEnter(numericalValue: testValue0, radix: 10)
+        engineDUT.userInputEnter(numericalValue: testValue1, radix: 10)
         
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 0) == true)
-        XCTAssert(engineDUT.hasValueForRegister(registerNumber: 1) == false)
+        XCTAssert(engineDUT.hasValueForRegister(registerNumber: 1) == true)
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 2) == false)
         
-        XCTAssert(engineDUT.numberOfRegistersWithContent() == 1)
-        XCTAssert(engineDUT.registerValue(registerNumber: 0) == 42)
+        XCTAssert(engineDUT.numberOfRegistersWithContent() == 2)
+        XCTAssert(engineDUT.registerValue(registerNumber: 0, radix: 10) == testValue1)
+        XCTAssert(engineDUT.registerValue(registerNumber: 1, radix: 10) == testValue0)
         
+        engineDUT.userInputOperation(symbol: "DROP")
+        
+        XCTAssert(engineDUT.hasValueForRegister(registerNumber: 0) == true)
+        XCTAssert(engineDUT.numberOfRegistersWithContent() == 1)
+        XCTAssert(engineDUT.registerValue(registerNumber: 0, radix: 10) == testValue0)
+
         engineDUT.userInputOperation(symbol: "DROP")
         
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 0) == false)
@@ -71,12 +82,12 @@ class TestEngineStackOperations: XCTestCase
     
     func testThatStackOperationSwapWorksCorrectly()
     {
-        engineDUT.userInputEnter(numericalValue: 42)
-        engineDUT.userInputEnter(numericalValue: 55)
+        engineDUT.userInputEnter(numericalValue: "42", radix: 10)
+        engineDUT.userInputEnter(numericalValue: "55", radix: 10)
         engineDUT.userInputOperation(symbol: "SWAP")
         
-        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0), 55)
-        XCTAssertEqual(engineDUT.registerValue(registerNumber: 1), 42)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: 10), "55")
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 1, radix: 10), "42")
     }
     
     

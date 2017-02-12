@@ -85,7 +85,7 @@
                                                 </constraints>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="countViews">
-                                                        <integer key="value" value="20"/>
+                                                        <integer key="value" value="24"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="allowsVibrancy" value="YES"/>
                                                 </userDefinedRuntimeAttributes>
@@ -101,7 +101,7 @@
                                                 </constraints>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="countViews">
-                                                        <integer key="value" value="20"/>
+                                                        <integer key="value" value="24"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="allowsVibrancy" value="YES"/>
                                                 </userDefinedRuntimeAttributes>
@@ -117,7 +117,7 @@
                                                 </constraints>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="countViews">
-                                                        <integer key="value" value="20"/>
+                                                        <integer key="value" value="24"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="allowsVibrancy" value="YES"/>
                                                 </userDefinedRuntimeAttributes>
@@ -133,7 +133,7 @@
                                                 </constraints>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="countViews">
-                                                        <integer key="value" value="20"/>
+                                                        <integer key="value" value="24"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="allowsVibrancy" value="YES"/>
                                                 </userDefinedRuntimeAttributes>
@@ -542,7 +542,7 @@
                                                     </button>
                                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="k9k-zH-rxf">
                                                         <rect key="frame" x="-6" y="-7" width="128" height="32"/>
-                                                        <buttonCell key="cell" type="push" title="X * X" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4a1-hd-1UP">
+                                                        <buttonCell key="cell" type="push" title="X²" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4a1-hd-1UP">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -931,6 +931,7 @@
                 <outlet property="operationMultiplicationButton" destination="acm-M3-CG3" id="Sb2-Uf-zlo"/>
                 <outlet property="operationPiButton" destination="97R-g2-W4l" id="ETP-JN-61e"/>
                 <outlet property="operationPlusButton" destination="X8N-4e-4OD" id="HX7-hm-gCJ"/>
+                <outlet property="operationReciprocalButton" destination="7Je-Pd-04E" id="HQh-cU-PZO"/>
                 <outlet property="operationSignChangeButton" destination="LjU-qU-Uho" id="qdd-38-vgu"/>
                 <outlet property="operationSquareButton" destination="k9k-zH-rxf" id="1TY-Ff-rQH"/>
                 <outlet property="operationSquareRootButton" destination="Dyd-Ts-UlQ" id="CUh-ql-Pcw"/>

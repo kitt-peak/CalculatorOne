@@ -78,6 +78,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var operationDivisionButton: NSButton!
     @IBOutlet weak var operationModuloNButton: NSButton!
     @IBOutlet weak var operationSquareButton: NSButton!
+    @IBOutlet weak var operationReciprocalButton: NSButton!
 
     @IBOutlet weak var operationLogicNotButton: NSButton!
     @IBOutlet weak var operationLogicAndButton: NSButton!
@@ -271,6 +272,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
         operationSignChangeButton.isEnabled = enableUnaryIntegerOperations || enableUnaryFloatOperations
         operationSquareButton.isEnabled     = enableUnaryIntegerOperations || enableUnaryFloatOperations
+        operationSquareRootButton.isEnabled = enableUnaryFloatOperations
         dupButton.isEnabled                 = enableUnaryTypeLessOperation
         dropButton.isEnabled                = enableUnaryTypeLessOperation
         dropAllButton.isEnabled             = enableUnaryTypeLessOperation
@@ -282,6 +284,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationMinusButton.isEnabled      = enableBinaryIntegerOperations     || enableBinaryFloatOperations
         operationDivisionButton.isEnabled   = enableBinaryIntegerOperations     || enableBinaryFloatOperations
         operationMultiplicationButton.isEnabled = enableBinaryIntegerOperations || enableBinaryFloatOperations
+        
+        operationReciprocalButton.isEnabled = enableUnaryFloatOperations
 
         operationModuloNButton.isEnabled    = enableBinaryIntegerOperations
         

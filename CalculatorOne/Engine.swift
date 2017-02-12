@@ -208,7 +208,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         "√" : .floatUnary( { (a: Double)         -> OperandValue in return  .float(sqrt(a))}),
       "SQR" : .floatUnary( { (a: Double)         -> OperandValue in return  .float(a*a)   }),
     "1 ÷ X" : .floatUnary( { (a: Double)         -> OperandValue in return  .float(1.0 / a)}),
-
+       "X²" : .floatUnary( { (a: Double)         -> OperandValue in return  .float(a*a)   }),
 
     "+ ⇔ -" : .floatUnary( { (a: Double)         -> OperandValue in return .float(-a)    }),
 
@@ -230,7 +230,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
            "&" : .integerBinary({ (a: Int, b: Int) -> OperandValue in return .integer(b & a) }),
            "|" : .integerBinary({ (a: Int, b: Int) -> OperandValue in return .integer(b | a) }),
            "^" : .integerBinary({ (a: Int, b: Int) -> OperandValue in return .integer(b ^ a) }),
-       "X * X" : .integerUnary( { (a: Int)       -> OperandValue in return  .integer(a*a)   }),
+          "X²" : .integerUnary( { (a: Int)       -> OperandValue in return  .integer(a*a)   }),
 
     ]
     
