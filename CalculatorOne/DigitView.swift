@@ -27,10 +27,11 @@ protocol DigitViewDelegate
 /// Displays a single digit (0 to F and failure) in a vertical scroll view, allows the user to change the digit by scrolling
 class DigitView: BaseView 
 {
-    /// allows customization, such as a different number of digits and their visual representations
+    /// specifies the customization of a digit view, such as the style of the digit numbers and their visual representations. In future implementations, this can be used to define how many numbers a digit view contains etc.
     enum Kind
     {
-        case courierStyle
+        case courierStyleMetallic
+        case courierStyleWithColor(NSColor)
         case undefined
     }
 
@@ -39,9 +40,9 @@ class DigitView: BaseView
     private var embeddedScrollView: NSScrollView!             // for scrolling the digits
     private var embeddedImageView:  ConstraintScrollView!     // contains an image with all digits on a vertical strip
 
-    private var embeddedImageBackgroundColor: NSColor = NSColor(calibratedRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.5)
+    private var embeddedImageBackgroundColor: NSColor = GlobalConstants.shared.digitViewBackgroundColor
     
-    private var kind: Kind!                             // digit type and its visual characteristics
+    private var kind: Kind = .courierStyleMetallic                      // digit type and its visual characteristics
     private var digitSize: CGSize = GlobalConstants.shared.digitSize         // the size of one digit
     private var countDigits: Int  = GlobalConstants.shared.countDigitsInImageStrip // number of digits that can be presented
     private var scrollYOffset: CGFloat = 0.0            // correction offset, makes a digit centered in the view vertically
@@ -51,6 +52,9 @@ class DigitView: BaseView
     private var indexOfDigitZeroInImageStrip: Int = 2
     
     var delegate: DigitViewDelegate?
+    
+    private var disableNotificationEchoOnDigitChange: Bool = false
+    { didSet {  embeddedScrollView.contentView.postsBoundsChangedNotifications = !disableNotificationEchoOnDigitChange } }
     
     //MARK: - Life cycle
                 
@@ -62,6 +66,11 @@ class DigitView: BaseView
     convenience init(kind: Kind, origin: CGPoint)
     {
         self.init(frame: NSRect(origin: origin, size: CGSize.zero))
+
+        let newFrame: CGRect = CGRect(origin: frame.origin, size: DigitView.constantSize)
+        
+        self.kind = kind
+        completeInitWithRect(frameRect: newFrame, kind: kind)
     }
     
     /// Initializes a DigitView with a fixed size from code. Made private so that a convenience initializer must be used to construct a DigitView object
@@ -71,18 +80,18 @@ class DigitView: BaseView
     {
         let newFrame: CGRect = CGRect(origin: frameRect.origin, size: DigitView.constantSize)
         super.init(frame: newFrame)
-        
-        completeInitWithRect(frameRect: newFrame)
+
+        //completeInitWithRect(frameRect: newFrame, kind: kind)
     }
     
     /// TODO: does this required implementation?
     required init?(coder: NSCoder)
     {
-        let frameRect = CGRect.zero
-        let newFrame: CGRect = CGRect(origin: frameRect.origin, size: DigitView.constantSize)
+        //let frameRect = CGRect.zero
+        //let newFrame: CGRect = CGRect(origin: frameRect.origin, size: DigitView.constantSize)
         super.init(coder: coder)
         
-        completeInitWithRect(frameRect: newFrame)
+        //completeInitWithRect(frameRect: newFrame, kind: kind)
     }
     
     
@@ -91,7 +100,7 @@ class DigitView: BaseView
     /// - Parameters:
     ///   - frameRect: <#frameRect description#>
     ///   - kind: <#kind description#>
-    private func completeInitWithRect(frameRect: NSRect, kind: Kind = Kind.courierStyle)
+    private func completeInitWithRect(frameRect: NSRect, kind: Kind)
     {
         wantsLayer = true
         layer?.backgroundColor = CGColor.clear
@@ -176,6 +185,9 @@ class DigitView: BaseView
     
     private func updateValueForScrollOriginY(y: CGFloat)
     {
+        // return if this is called while a digit is set programmatically
+        guard isBusyScrollingToADigit == false else { return }
+        
         // correct for the initial offset in showing the digit centered in the view
         var yPosition = y - scrollYOffset
         
@@ -242,11 +254,20 @@ class DigitView: BaseView
     ///
     /// - Parameters:
     ///   - digit: Digit: specifies the digit to display
-    ///   - animated: if true, setting a new digit is visibly scrolled, if flase the view jumps to the digit immediately
+    ///   - animated: if true, setting a new digit is visibly scrolled, if false the view jumps to the digit immediately
     func setDigit(_ digit: Digit, animated: Bool)
     {
+        guard _digit != digit else { return }
+        
+        // surpress scroll notifications while programmatically updating digits
+        disableNotificationEchoOnDigitChange = true
+
         scrollToDigit(digit, animated: true)
         _digit = digit
+
+        // re-enable scroll notifications after programmatically updating digits
+        //disableNotificationEchoOnDigitChange = false
+
     }
     
     /// Sets the main property of the class to the specified digit. The view will scroll to the new digit.
@@ -256,6 +277,11 @@ class DigitView: BaseView
     ///   - animated: if true, setting a new digit is visibly scrolled, if flase the view jumps to the digit immediately
     func setDigit(value: Int, animated: Bool)
     {
+        guard _digit != digit else { return }
+        
+        // surpress scroll notifications while programmatically updating digits
+        disableNotificationEchoOnDigitChange = true
+        
         if let digit: Digit = Digit(rawValue: value)
         {
             self.setDigit(digit, animated: animated)
@@ -265,6 +291,9 @@ class DigitView: BaseView
             self.setDigit(.minus, animated: animated)
         }
         
+        // re-enable scroll notifications after programmatically updating digits
+        // disableNotificationEchoOnDigitChange = false
+
         return
     }
 
@@ -293,7 +322,9 @@ class DigitView: BaseView
             NSAnimationContext.current().timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
             NSAnimationContext.current().completionHandler = 
             { 
-                () -> () in self.isBusyScrollingToADigit = false 
+                () -> () in 
+                    self.isBusyScrollingToADigit = false 
+                    // self.disableNotificationEchoOnDigitChange = true
             }
             
             let clip:NSClipView = embeddedScrollView.contentView
@@ -327,13 +358,17 @@ class DigitView: BaseView
 
     override func touchesBegan(with event: NSEvent) 
     {
-        //Swift.print("touches began with \(event.allTouches())")
+        Swift.print("touches began with \(event.allTouches())")
+        
+        disableNotificationEchoOnDigitChange = false
     }
     
     override func touchesEnded(with event: NSEvent) 
     {        
-        //Swift.print("touches ended with \(event.allTouches())")
+        Swift.print("touches ended with \(event.allTouches())")
+        
         scrollToDigit(_digit, animated: true)
         
+        disableNotificationEchoOnDigitChange = true
     }
 }

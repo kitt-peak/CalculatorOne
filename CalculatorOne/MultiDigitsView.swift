@@ -20,7 +20,10 @@ class MultiDigitsView: BaseView, DigitViewDelegate
     
     private var digitViews: [DigitView]!
 
+    // Appearance
     @IBInspectable var countViews: Int = 20
+    //private let kind: = DigitView.Kind.courierStyleMetallic
+    private let kind = GlobalConstants.shared.digitKind
     
     private let xDigitSpacing: CGFloat = 1.0
     var constantSize: CGSize   = CGSize(width: 0, height: 0)
@@ -30,22 +33,22 @@ class MultiDigitsView: BaseView, DigitViewDelegate
     var allowsValueChangesByUI: Bool = false
     
     // represents the digit shown in the view
-    var value: Int? = nil
+    var value: [Digit] = [Digit]()
     { didSet 
         { 
-            updateViews(value: value)
+            updateViews(digits: value)
         }
     }
+    
     
     var radix: Int = 10
     { didSet 
         { 
             configureViewForRadix(radix)
-            updateViews(value: value)
+            updateViews(digits: value)
         }
     }
             
-    var digitValue: Int? { return nil }
     
     convenience init(countDigits: Int, kind: DigitView.Kind, origin: CGPoint)
     {
@@ -60,7 +63,7 @@ class MultiDigitsView: BaseView, DigitViewDelegate
         let newFrame: CGRect = CGRect(origin: frameRect.origin, size: constantSize)
         super.init(frame: newFrame)
         
-        completeInitWithRect(frameRect: newFrame)
+        completeInitWithRect(frameRect: newFrame, kind: kind)
     }
     
     required init?(coder: NSCoder)
@@ -82,10 +85,10 @@ class MultiDigitsView: BaseView, DigitViewDelegate
 
         let newFrame: CGRect = CGRect(origin: self.frame.origin, size: DigitView.constantSize)
 
-        completeInitWithRect(frameRect: newFrame)
+        completeInitWithRect(frameRect: newFrame, kind: kind)
     }
     
-    private func completeInitWithRect(frameRect: NSRect, kind: DigitView.Kind = DigitView.Kind.courierStyle)
+    private func completeInitWithRect(frameRect: NSRect, kind: DigitView.Kind)
     {
         constantSize.width = CGFloat(countViews) * (xDigitSpacing + DigitView.constantSize.width)
         constantSize.height = DigitView.constantSize.height
@@ -111,10 +114,10 @@ class MultiDigitsView: BaseView, DigitViewDelegate
     }
     
     
-    func resetToZero()
-    {
-        value = 0
-    }
+//    func resetToZero()
+//    {
+//        value = ""
+//    }
     
     func configureViewForRadix(_ radix: Int)
     {
@@ -125,10 +128,11 @@ class MultiDigitsView: BaseView, DigitViewDelegate
         
     }
     
-    func updateViews(value: Int?) 
+    func updateViews(digits: [Digit]) 
     {
-        if value == nil
+        if digits.count == 0
         {
+            // blank all digits
             for digitView in digitViews
             {
                 digitView.setDigit(.blank, animated: true)
@@ -137,38 +141,22 @@ class MultiDigitsView: BaseView, DigitViewDelegate
             return 
         }
         
-        var digitValue: Int = abs(value!)
+        // insert the value into the individual digits from right to left
         var index: Int = 0
-        
-        if digitValue == 0
+
+        for _ in digitViews
         {
-            self.setDigit(.d0, index: 0, animated: true)
+            if index < digits.count
+            {
+                setDigit(digits[index], index: index, animated: true)                
+            }
+            else
+            {
+                setDigit(.blank, index: index, animated: true)
+            }
+            
             index += 1
         }
-        
-        while digitValue > 0 
-        {
-            self.setDigit(value: digitValue % radix, index: index, animated: true)
-            digitValue = digitValue / radix  
-            index += 1
-        }
-        
-        if value! < 0
-        {
-            self.setDigit(.minus, index: index, animated: true)
-            index += 1
-        }
-        
-        for i in index ..< countViews
-        {
-            self.setDigit(.blank, index: i, animated: true)
-        }
-        
-//        for i: Int in 0 ..< countViews
-//        {
-//            self.setDigit(value: digitValue % radix, index: i, animated: true)
-//            digitValue = digitValue / radix
-//        }
     }
     
 //    private func scrollToDigit(_ digit: Digit, animated: Bool)
@@ -196,17 +184,17 @@ class MultiDigitsView: BaseView, DigitViewDelegate
         if let indexOfUpdatedDigit = digitViews.index(of: fromView)
         {
             //TODO: this patch is no good.
-            if value == nil
-            {
-                value = 0
-            }
-            
-            let newValue: Int = Engine.valueWithDigitReplaced(value: value!, digitIndex: indexOfUpdatedDigit, newDigitValue: digit.rawValue, radix: radix)
-                        
-            if delegate?.userEventShouldSetValue(newValue) == true
-            {
-                value = newValue
-            }
+//            if value == nil
+//            {
+//                value = 0
+//            }
+//            
+//            let newValue: Int = Engine.valueWithDigitReplaced(value: value!, digitIndex: indexOfUpdatedDigit, newDigitValue: digit.rawValue, radix: radix)
+//                        
+//            if delegate?.userEventShouldSetValue(newValue) == true
+//            {
+//                value = newValue
+//            }
         }
         else
         {

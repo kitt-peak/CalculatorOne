@@ -13,6 +13,13 @@ protocol RegisterViewControllerDelegate
     func userShouldChangeValue(_: Int, inRegister: RegisterViewController) -> Bool
 }
 
+enum RegisterValueRepresentation
+{
+    case integer(Int)
+    case stringLeftAligned(String)
+    case stringRightAligned(String)
+}
+
 class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitViewDelegate
 {
     
@@ -24,11 +31,20 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
     var acceptsValueChangesByUI: Bool = false
     { didSet { digitsView.allowsValueChangesByUI = acceptsValueChangesByUI } }
     
-    var representedValue: Int? = nil
-    { didSet { digitsView.value = representedValue } }
+    var representedValue: RegisterValueRepresentation = .stringRightAligned("")
+    { didSet 
+        { 
+            digitsView.value = digitsForRegisterValue(representedValue)            
+        } 
+    }
     
     var radix: Int = 10
-    { didSet { digitsView.radix = radix }}
+    { didSet 
+        { 
+            digitsView.radix = radix 
+            //digitsView.value = digitsForRegisterValue(representedValue)            
+        }
+    }
     
     
     override func awakeFromNib()
@@ -46,6 +62,110 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
     {
         
     }
+    
+    
+    private func digitsForRegisterValue(_ representation: RegisterValueRepresentation) -> [Digit]
+    {
+        // convert a the register value to an array of digits
+        var digits: [Digit] = [Digit](repeating: .blank, count: digitsView.countViews)
+        
+        switch representation 
+        {
+        case .integer(let value):
+            
+            // convert integer to digit array
+            var digitValue: Int = abs(value)
+            var index: Int = 0
+            
+            if digitValue == 0
+            {
+                digits[0] = .d0
+                
+                index += 1
+            }
+            
+            while digitValue > 0 
+            {
+                digits[index] = Digit(rawValue: digitValue % radix)!                 
+                digitValue = digitValue / radix  
+                index += 1
+            }
+            
+            if value < 0
+            {
+                digits[index] = .minus
+                index += 1
+            }
+            
+            for i in index ..< digitsView.countViews
+            {
+                digits[i] = .blank                    
+            }
+            
+            digitsView.value = [.minus, .d0, .d1, .minus]
+
+        case .stringRightAligned(let str):
+            // iterate thru each character of the string from right to left
+            // display the string right-aligned
+            for (index, character) in str.characters.reversed().enumerated()
+            {
+                switch character 
+                {
+                case ".":
+                    digits[index] = .dot
+                case "-":
+                    digits[index] = .minus
+                default:
+                    // convert character to digit
+                    let s = String(character)
+                    let v = Int(s, radix: radix)
+                    
+                    if let d: Digit = Digit(rawValue: v!)
+                    {
+                        digits[index] = d
+                    }
+                    else
+                    {
+                        digits[index] = .blank
+                    }
+                }
+            }
+            
+            
+            
+        case .stringLeftAligned(let str):
+            // iterate thru each character of the string from left to right
+            // display the string left-aligned
+            for (index, character) in str.characters.enumerated()
+            {
+                switch character 
+                {
+                case ".":
+                    digits[digitsView.countViews - index - 1] = .dot
+                case "-":
+                    digits[digitsView.countViews - index - 1] = .minus
+                default:
+
+                    // convert character to digit
+                    let s = String(character)
+                    let v = Int(s, radix: radix)
+                
+                    if let d: Digit = Digit(rawValue: v!)
+                    {
+                        digits[digitsView.countViews - index - 1] = d
+                    }
+                    else
+                    {
+                        digits[digitsView.countViews - index - 1] = .blank
+                    }
+                }
+            }
+        }
+        
+        return digits
+    }
+    
+    
     
     func userEventShouldSetValue(_ value: Int) -> Bool 
     {

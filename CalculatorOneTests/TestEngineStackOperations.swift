@@ -42,7 +42,7 @@ class TestEngineStackOperations: XCTestCase
         XCTAssert(engineDUT.numberOfRegistersWithContent() == 1)
         XCTAssert(engineDUT.registerValue(registerNumber: 0) == 0)
         
-        engineDUT.userInputOperand(operandSymbol: "DROP")
+        engineDUT.userInputOperation(symbol: "DROP")
         
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 0) == false)
         XCTAssert(engineDUT.numberOfRegistersWithContent() == 0)
@@ -56,19 +56,28 @@ class TestEngineStackOperations: XCTestCase
         engineDUT.userUpdatedStackTopValue("42", radix: 10)
         
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 0) == true)
-        XCTAssert(engineDUT.hasValueForRegister(registerNumber: 1) == true)
+        XCTAssert(engineDUT.hasValueForRegister(registerNumber: 1) == false)
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 2) == false)
         
         XCTAssert(engineDUT.numberOfRegistersWithContent() == 1)
-        XCTAssert(engineDUT.registerValue(registerNumber: 0) == 0)
+        XCTAssert(engineDUT.registerValue(registerNumber: 0) == 42)
         
-        engineDUT.userInputOperand(operandSymbol: "DROP")
+        engineDUT.userInputOperation(symbol: "DROP")
         
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 0) == false)
         XCTAssert(engineDUT.numberOfRegistersWithContent() == 0)
         
     }
     
+    func testThatStackOperationSwapWorksCorrectly()
+    {
+        engineDUT.userInputEnter(numericalValue: 42)
+        engineDUT.userInputEnter(numericalValue: 55)
+        engineDUT.userInputOperation(symbol: "SWAP")
+        
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0), 55)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 1), 42)
+    }
     
     
 }

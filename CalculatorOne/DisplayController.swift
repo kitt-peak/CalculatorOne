@@ -12,11 +12,15 @@ import Cocoa
 {
     func numberOfRegistersWithContent() -> Int
     func hasValueForRegister(registerNumber: Int) -> Bool
-    func registerValue(registerNumber: Int) -> Int
-    func registerValueChanged(newValue: Int, forRegisterNumber: Int)
+    func registerValue(registerNumber: Int, radix: Int) -> String
+    //func registerValueChanged(newValue: Int, forRegisterNumber: Int)
 }
 
-
+enum DataSource
+{
+    case engine
+    case keypad(String)
+}
 
 
 class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControllerDelegate 
@@ -34,29 +38,16 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     { didSet { registerViewController0.delegate = self } }
     
 
-    @IBOutlet weak var calculatorModeSelector: NSSegmentedControl!
-    @IBOutlet weak var radixSelector: NSSegmentedControl!
-    
     @IBOutlet weak var dataSource: DisplayDataSource!/*AnyObject!*/
 
-    private var registerViewControllers: [(index: Int, controller: RegisterViewController)]!
-    
-    
-    var radix: Radix 
-    { return Radix(rawValue: radixSelector.selectedSegment)! } 
-
+    private var registerViewControllers: [RegisterViewController]!
+        
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
-        registerViewControllers = [(0, registerViewController0), (1, registerViewController1), 
-                                   (2, registerViewController2), (3, registerViewController3)]
-        
-        radixSelector.setSelected(true, forSegment: 2)
-        
-        calculatorModeSelector.setSelected(true, forSegment: 0)
-        
-        
+        registerViewControllers = [registerViewController0, registerViewController1, 
+                                   registerViewController2, registerViewController3]
     }
     
     deinit 
@@ -66,7 +57,7 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     
     func documentDidOpen()
     {
-        for (_, controller) in registerViewControllers
+        for controller in registerViewControllers
         {
             controller.acceptsValueChangesByUI = false
             controller.documentDidOpen()
@@ -75,15 +66,30 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
         // allow the top register view to update its value by the user through the UI
         registerViewController0.acceptsValueChangesByUI = true
         
-        userChangedRadix(sender: radixSelector)
-
         
         NotificationCenter.default.addObserver(forName: GlobalNotification.newEngineResult.notificationName, object: nil, queue: nil) 
         { [unowned self] (notification) in
             
             guard notification.object as? Document == self.document else { return }
             
-            self.updateRegisterDisplay()
+            let radix = self.keypadController.radix
+            // updates from the engine could involve all register displays
+            self.updateRegisterDisplay(source: DataSource.engine, radix: radix)
+        }
+        
+        NotificationCenter.default.addObserver(forName: GlobalNotification.newKeypadEntry.notificationName, object: nil, queue: nil) 
+        { [ unowned self] (notification) in
+            
+            guard notification.object as? Document == self.document else { return }
+            
+            if let stringValue: String = notification.userInfo?["StringValue"] as? String
+            {
+                let radix = self.keypadController.radix
+
+                // updates from the keypad are displayed in register 0.
+                self.updateRegisterDisplay(source: DataSource.keypad(stringValue), radix: radix)
+            }
+            
         }
     }
     
@@ -91,68 +97,71 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     
     func documentWillClose() 
     {
-        for (_, controller) in registerViewControllers
+        for controller in registerViewControllers
         {
             controller.documentWillClose()
         }
     }
     
     
-    func updateRegisterDisplay()
+    /// Causes the register views to update themselves
+    ///
+    /// - Parameter source: Datasource. When .engine, the register views ask take data from the engine data source for updating themselves. When .keypad(value: String), the top register copies "value" left-aligned into the top register. All other registers are updated from the engine data source (since the top register contains "value", register 1 will contain top engine stack, register 2: engine stack top + 1 etc.
+    func updateRegisterDisplay(source: DataSource, radix: Radix)
     {
-
-        for (index, controller) in registerViewControllers
+        switch source 
         {
-            if dataSource.hasValueForRegister(registerNumber: index)
-            {
-                let content = dataSource.registerValue(registerNumber: index)
-                controller.representedValue = content
-            }
-            else
-            {
-                controller.representedValue = nil
-            }
-        }
-    }
-    
-    
-    //displayController.radix = self.radix
-    // digitsComposing = ""
-    
-    // disable all button representing digits equal to or larger than the radix
-//    func changeRadix(newRadix: Radix)
-//    {
-//        for (representedDigit, button) in keypadController  digitButtons
-//        {
-//            button.isEnabled = (representedDigit < self.radix ? true : false)
-//        }
-//        
-//    }
-    
-    
-    
-    
-    @IBAction func userChangedRadix(sender: NSSegmentedControl)
-    {
-        guard sender == radixSelector else { return }
-        
-        if let newRadix = Radix(rawValue: radixSelector.selectedSegment)
-        {
-            keypadController.changeRadix(newRadix: newRadix)
+        case .engine:
             
-            for c in registerViewControllers
-            { c.controller.radix = newRadix.value}
+            // update all registers taking data from the engine stack. Iterate over all register views and ask if the data source has content for it
+            for (index, controller) in registerViewControllers.enumerated()
+            {
+                controller.representedValue = dataSource.hasValueForRegister(registerNumber: index) 
+                    ?   .stringRightAligned(dataSource.registerValue(registerNumber: index, radix: radix.value))   //.integer(dataSource.registerValue(registerNumber: index)) 
+                    :   .stringRightAligned("")
+            }
+            
+        case .keypad(let value): 
+
+            // The value from the keypad will be displayed in the top register, left aligned
+            // update registers excluding the top register by taking data from the engine stack. Iterate over these register views and ask if the data source has content for it
+            for (index, controller) in registerViewControllers.dropFirst().enumerated()
+            {
+                controller.representedValue = dataSource.hasValueForRegister(registerNumber: index) 
+                    ?   .stringRightAligned(dataSource.registerValue(registerNumber: index, radix: radix.value))   //.integer(dataSource.registerValue(registerNumber: index)) 
+                    :   .stringRightAligned("")                    
+//                    ?   .integer(dataSource.registerValue(registerNumber: index)) 
+//                    :   .string("")
+            }
+
+            // then, update the top register with the supplied value.
+            registerViewController0.representedValue = .stringLeftAligned(value)        
         }
+
     }
+    
+    
+    func changeRadix(_ radix: Radix)
+    {
+                
+        for controller in registerViewControllers
+        { controller.radix = radix.value }
+                
+        updateRegisterDisplay(source: .engine, radix: radix)
+        
+    }
+    
+
+    
     
     func userShouldChangeValue(_ value: Int, inRegister: RegisterViewController) -> Bool 
     {
 
-        for (i, register) in registerViewControllers
+        for (index, register) in registerViewControllers.enumerated()
         {
             if register == inRegister
             {
-                dataSource.registerValueChanged(newValue: value, forRegisterNumber: i)
+                //dataSource.registerValueChanged(newValue: value, forRegisterNumber: index)
             }
             
         }

@@ -23,7 +23,7 @@ class DisplayView: BaseView
     
         self.layer?.borderColor = NSColor.gray.cgColor
         self.layer?.borderWidth = 1.0
-        self.layer?.cornerRadius = 5.0
+        self.layer?.cornerRadius = 4.0
         self.layer?.backgroundColor = NSColor.clear.cgColor
     }
     
