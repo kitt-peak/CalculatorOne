@@ -1,0 +1,562 @@
+//
+//  TestEngineIntegerOperations.swift
+//  CalculatorOne
+//
+//  Created by Andreas on 19/02/2017.
+//  Copyright © 2017 Kitt Peak. All rights reserved.
+//
+
+import XCTest
+@testable import CalculatorOne
+
+class TestEngineIntegerOperations: XCTestCase {
+
+    var engineDUT: Engine!
+    
+    override func setUp() 
+    {
+        super.setUp()
+        // Put setup code here. This method is called before the invocation of each test method in the class.
+        
+        engineDUT = Engine()
+        XCTAssertNotNil(engineDUT)
+        
+        engineDUT.userInputOperandType(OperandType.integer.rawValue)        
+    }
+    
+    override func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
+    }
+    
+
+    func testThatIntegerOperationAddWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            ("1", "2", "3"),
+            ("10", "20", "30"),        
+            ("100", "200", "300"),
+            ("-100", "100", "0"),
+            ("-123456789", "987654321", "864197532"),
+            (String(Int.max), "0", String(Int.max)),
+            (String(Int.max), String(Int.min), "-1")
+        ]
+        
+        for test in testSet
+        {
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
+            engineDUT.userInputOperation(symbol: Symbols.plus.rawValue)
+            
+            XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: 10), test.2)
+            
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        }
+    }
+    
+
+    
+    func testThatIntegerOperationSubtractWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            ("0", "0", "0"),
+            ("1", "2", "-1"),
+            ("10", "20", "-10"),        
+            ("100", "200", "-100"),
+            ("-100", "100", "-200"),
+            (String(Int.max), "0", String(Int.max)),
+            (String(Int.max), String(Int.max), "0"),
+            ("9223372036854775807", "9223372036854775800", "7")
+        ]
+        
+        for test in testSet
+        {
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
+            engineDUT.userInputOperation(symbol: Symbols.minus.rawValue)
+            
+            XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: 10), test.2)
+            
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        }
+    }
+
+    
+    
+    
+    func testThatIntegerOperationMultiplicationWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            ("0", "0", "0"),
+            ("0", "2", "0"),
+            ("1", "-1", "-1"),
+            ("-1", "-2", "2"),
+            ("1", "-2", "-2"),
+            ("-1", "2", "-2"),
+            ("10", "20", "200"),        
+            ("100", "200", "20000"),
+            ("-16", "16", "-256"),
+            (String(Int.max), "0", "0"),
+            ("0", String(Int.min), "0"),
+            ("2", "2", "4"),
+            ("4", "2", "8"),
+            ("8", "2", "16"),
+            ("16", "2", "32"),
+            ("32", "2", "64"),
+            ("64", "2", "128"),
+            ("128", "2", "256"),
+            ("256", "2", "512"),
+            ("512", "2", "1024"),
+            ("1024", "2", "2048"),
+            ("2048", "2", "4096"),
+            ("4096", "2", "8192"),
+            ("8192", "2", "16384"),
+            ("16384", "2", "32768"),
+        ]
+        
+        for test in testSet
+        {
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
+            engineDUT.userInputOperation(symbol: Symbols.multiply.rawValue)
+            
+            XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: 10), test.2)
+            
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        }
+    }
+
+    func testThatIntegerOperationDivisionWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            ("0", "1", "0"),
+            ("0", "2", "0"),
+            ("1", "-1", "-1"),
+            ("-2", "-1", "2"),
+            ("10", "-2", "-5"),
+            ("200", "10", "20"),        
+            ("200", "100", "2"),
+            ("-256", "16", "-16"),
+            ]
+        
+        for test in testSet
+        {
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
+            engineDUT.userInputOperation(symbol: Symbols.divide.rawValue)
+            
+            XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: 10), test.2)
+            
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        }
+    }
+
+    func testThatIntegerOperationModuloDivisionWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            ("0", "1", "0"),
+            ("0", "2", "0"),
+            ("10", "-1", "0"),
+            ("10", "1", "0"),
+            ("10", "2", "0"),
+            ("10", "3", "1"),
+            ("10", "4", "2"),
+            ("10", "5", "0"),
+            ("10", "6", "4"),
+            ("10", "7", "3"),
+            ("10", "8", "2"),
+            ("10", "9", "1"),
+            ("10", "10", "0"),
+            ("7", "7", "0"),
+            ("7", "6", "1"),
+            ("7", "5", "2"),
+            ("7", "4", "3"),
+            ("7", "3", "1"),
+            ("7", "2", "1"),
+            ("7", "1", "0"),
+            ]
+        
+        for test in testSet
+        {
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
+            engineDUT.userInputOperation(symbol: Symbols.moduloN.rawValue)
+            
+            XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: 10), test.2)
+            
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        }
+    }
+
+    
+    func testThatIntegerBINARY_LOGICAL_OperationsWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            // value 0    value 1     AND         OR          XOR         
+            ("0",        "0",         "0",        "0",        "0"),
+            ("0",        "1",         "0",        "1",        "1"),
+            ("1",        "0",         "0",        "1",        "1"),
+            ("1",        "1",         "1",        "1",        "0"),
+            ("11111111", "10101010",  "10101010", "11111111", "1010101"),
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 2)
+            engineDUT.userInputEnter(numericalValue: test.1, radix: 2)            
+            engineDUT.userInputOperation(symbol: Symbols.dup2.rawValue)
+            engineDUT.userInputOperation(symbol: Symbols.dup2.rawValue)
+            
+            engineDUT.userInputOperation(symbol: Symbols.and.rawValue)
+            result = engineDUT.registerValue(registerNumber: 0, radix: 2)
+            XCTAssertEqual(result, test.2 /* AND */)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+
+            engineDUT.userInputOperation(symbol: Symbols.or.rawValue)
+            result = engineDUT.registerValue(registerNumber: 0, radix: 2)
+            XCTAssertEqual(result, test.3 /* OR */)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            
+            engineDUT.userInputOperation(symbol: Symbols.xor.rawValue)
+            result = engineDUT.registerValue(registerNumber: 0, radix: 2)
+            XCTAssertEqual(result, test.4 /* XOR */)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        }
+    }
+
+    func testThatIntegerUNARY_LOGICAL_OperationsWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            // value     ~value        -value
+            ("0",        "-1",         "0"),
+            ("1",        "-10",        "-1"),
+            ("-1",       "0",          "1"),
+            ("-10",      "1",          "10"),
+            ("111",      "-1000",      "-111"),
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 2)
+            engineDUT.userInputOperation(symbol: Symbols.dup.rawValue)
+            
+            engineDUT.userInputOperation(symbol: "~")
+            result = engineDUT.registerValue(registerNumber: 0, radix: 2)
+            XCTAssertEqual(result, test.1 /* ! */)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            
+            engineDUT.userInputOperation(symbol: "+⇔-")
+            result = engineDUT.registerValue(registerNumber: 0, radix: 2)
+            XCTAssertEqual(result, test.2 /* ! */)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        }
+    }
+
+    
+    func testThatIntegerSquareOperationsWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            // value      value2
+            ("0",         "0"),
+            ("1",         "1"),
+            ("-1",        "1"),
+            ("2",         "4"),
+            ("-2",        "4"),
+            ("1234567",   "1524155677489"),
+            ("1524155",   "2323048464025"),
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            
+            engineDUT.userInputOperation(symbol: "X²")
+            result = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.1)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+        }
+    }
+
+    
+    func testThatIntegerTwoExpNOperationsWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            // value      2**N
+            ("0",         "1"),
+            ("1",         "2"),
+            ("-1",        "0"),
+            ("2",         "4"),
+            ("4",         "16"),
+            ("5",         "32"),
+            ("6",         "64"),
+            ("7",         "128"),
+            ("20",        "1048576"),
+            ("48",        "281474976710656"),
+            ("62",        "4611686018427387904"),
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            
+            engineDUT.userInputOperation(symbol: "2ˣ")
+            result = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.1)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+        }
+    }
+    
+    func testThatIntegerFactorialOperationsWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            // value      2**N
+            ("-1",        "0"),     
+            ("0",         "1"),
+            ("1",         "1"),
+            ("2",         "2"),
+            ("3",         "6"),
+            ("4",         "24"),
+            ("5",         "120"),
+            ("6",         "720"), 
+            ("7",         "5040"),
+            ("8",	      "40320"),
+            ("9",	      "362880"),
+            ("10",	      "3628800"),
+            ("11",	      "39916800"),
+            ("12",	      "479001600"),
+            ("13",	      "6227020800"),
+            ("14",	      "87178291200"),
+            ("15",	      "1307674368000"),
+            ("16",	      "20922789888000"),
+            ("17",	      "355687428096000"),
+            ("18",	      "6402373705728000"),
+            ("19",	      "121645100408832000"),
+            ("20",	      "2432902008176640000")        
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            
+            engineDUT.userInputOperation(symbol: Symbols.factorial.rawValue)
+            result = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.1)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+        }
+    }
+
+
+    func testThatIntegerSumOfStackOperationsWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            // values     // sum of values
+            ([""],          "0"),
+            (["0"],         "0"),
+            (["1", "1"],    "2"),
+            (["-4", "-3", "-2", "-1", "0", "1", "2", "3", "4"],    "0"),
+            (["90", "91", "92", "93", "94", "95", "96", "97", "98", "99"],    "945"),
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            for value in test.0
+            {
+                engineDUT.userInputEnter(numericalValue: value, radix: 10)
+            }
+            
+            engineDUT.userInputOperation(symbol: "∑")
+            result = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.1)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+        }
+    }
+
+    
+    func testThatIntegerIncrementAndDecrementOperationsWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            // value      value++       value--
+            ("0",         "1",          "-1"),
+            ("1",         "2",          "0"),
+            ("-1",        "0",          "-2"),
+            ("-2",        "-1",         "-3"),
+            ("4",         "5",          "3"),
+            ("5",         "6",          "4"),
+            ("6",         "7",          "5"),
+            ("7",         "8",          "6")
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            engineDUT.userInputOperation(symbol: Symbols.dup.rawValue)
+            
+            engineDUT.userInputOperation(symbol: "1 +")
+            result = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.1)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+
+            engineDUT.userInputOperation(symbol: "1 -")
+            result = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.2)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+        }
+    }
+
+    
+    func testThatIntegerUNARY_SHIFT_OperationsWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            // value     // <<         // >>
+            ("0",        "0",          "0"),
+            ("1",        "2",          "0"),
+            ("2",        "4",          "1"),
+            ("4",        "8",          "2"),
+            ("8",        "16",         "4"),
+            ("16",       "32",         "8"),
+            ("1123",     "2246",       "561"),
+            ("2567",     "5134",       "1283"),
+            ("-1",       "-2",         "-1"),
+            ("-2",       "-4",         "-1"),
+            ("-4",       "-8",         "-2"),
+            ("-8",       "-16",        "-4"),
+            ("-16",      "-32",        "-8"),
+            ("-1123",    "-2246",      "-562"),
+            ("-2567",    "-5134",      "-1284"),
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            engineDUT.userInputOperation(symbol: Symbols.dup.rawValue)
+            
+            engineDUT.userInputOperation(symbol: Symbols.shiftLeft.rawValue)
+            result = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.1 /* << */)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            
+            engineDUT.userInputOperation(symbol: Symbols.shiftRight.rawValue)
+            result = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.2 /* >> */)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            
+        }
+    }
+
+
+    func testThatIntegerBINARY_SHIFT_OperationsWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            // value     // N       // N <<     // N >>
+            ("0",        "0",       "0",        "0"),
+            ("1",        "1",       "2",        "0"),
+            ("34",       "1",       "68",       "17"),
+            ("34",       "2",       "136",      "8"),
+            ("34",       "3",       "272",      "4"),
+            ("-1",       "1",       "-2",       "-1"),
+            ("-34",      "1",       "-68",      "-17"),
+            ("-34",      "2",       "-136",     "-9"),
+            ("-34",      "3",       "-272",     "-5"),
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
+            engineDUT.userInputOperation(symbol: Symbols.dup2.rawValue)
+            
+            engineDUT.userInputOperation(symbol: Symbols.nShiftLeft.rawValue)
+            result = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.2 /* N << */)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            
+            engineDUT.userInputOperation(symbol: Symbols.nShiftRight.rawValue)
+            result = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.3 /* N >> */)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            
+        }
+    }
+
+    
+    func testThatIntegerGCDOperationsWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            // value0       value1       GCD
+            ("1",           "1",         "1"),
+            ("2",           "4",         "2"),
+            ("44",          "12",        "4"),
+            ("45",          "27",        "9"),
+            ("7",           "13",        "1"),
+            ("-12",         "15",        "3"),
+            ("13",          "1",         "1"),
+            ("5",           "0",         "5"),
+        ]
+                
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
+            
+            engineDUT.userInputOperation(symbol: Symbols.gcd.rawValue)
+            result = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.2)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)                        
+        }
+    }
+
+    func testThatIntegerLCMOperationsWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            // value0       value1       LCM
+            ("1",           "1",          "1"),
+            ("2",           "4",          "4"),
+            ("2",           "5",          "10"),
+            ("2",           "-5",         "10"),
+            ("-2",          "5",          "10"),
+            ("-2",          "-5",         "10"),
+            ("122880",      "153600",     "614400"),
+            ("245760",      "307200",     "1228800"),
+            ("983040",      "307200",     "4915200"),
+            ("45",          "27",         "135"),
+            ("7",           "13",         "91"),
+            ("-12",         "15",         "60"),
+            ("13",          "1",          "13"),
+            ("5",           "1",          "5"),
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
+            
+            engineDUT.userInputOperation(symbol: Symbols.lcm.rawValue)
+            result = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.2)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+        }
+    }
+
+}

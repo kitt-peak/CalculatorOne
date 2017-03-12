@@ -42,7 +42,7 @@ class TestEngineStackOperations: XCTestCase
         XCTAssert(engineDUT.numberOfRegistersWithContent() == 1)
         XCTAssert(engineDUT.registerValue(registerNumber: 0, radix: 10) == testValue)
         
-        engineDUT.userInputOperation(symbol: "DROP")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
         
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 0) == false)
         XCTAssert(engineDUT.numberOfRegistersWithContent() == 0)
@@ -67,13 +67,13 @@ class TestEngineStackOperations: XCTestCase
         XCTAssert(engineDUT.registerValue(registerNumber: 0, radix: 10) == testValue1)
         XCTAssert(engineDUT.registerValue(registerNumber: 1, radix: 10) == testValue0)
         
-        engineDUT.userInputOperation(symbol: "DROP")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
         
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 0) == true)
         XCTAssert(engineDUT.numberOfRegistersWithContent() == 1)
         XCTAssert(engineDUT.registerValue(registerNumber: 0, radix: 10) == testValue0)
 
-        engineDUT.userInputOperation(symbol: "DROP")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
         
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 0) == false)
         XCTAssert(engineDUT.numberOfRegistersWithContent() == 0)
@@ -84,10 +84,10 @@ class TestEngineStackOperations: XCTestCase
     {
         engineDUT.userInputEnter(numericalValue: "42", radix: 10)
         engineDUT.userInputEnter(numericalValue: "55", radix: 10)
-        engineDUT.userInputOperation(symbol: "SWAP")
+        engineDUT.userInputOperation(symbol: Symbols.swap.rawValue)
         
-        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: 10), "55")
-        XCTAssertEqual(engineDUT.registerValue(registerNumber: 1, radix: 10), "42")
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: 10), "42")
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 1, radix: 10), "55")
     }
     
     

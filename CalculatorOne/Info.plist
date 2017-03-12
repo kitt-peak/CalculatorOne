@@ -9,12 +9,12 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>rmsc</string>
+				<string>c1d</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string></string>
 			<key>CFBundleTypeName</key>
-			<string>DocumentType</string>
+			<string>CalculatorOne data</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>????</string>

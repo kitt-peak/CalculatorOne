@@ -11,7 +11,6 @@ import XCTest
 
 class TestEngineClassAlgorithms: XCTestCase 
 {
-
     var engineDUT: Engine!
     
     override func setUp() 

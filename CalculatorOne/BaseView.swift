@@ -21,6 +21,7 @@ class BaseView: NSVisualEffectView
         self.appearance   = GlobalConstants.shared.viewAppearanceParameter.appearance
         self.blendingMode = GlobalConstants.shared.viewAppearanceParameter.blendingMode
         self.material     = GlobalConstants.shared.viewAppearanceParameter.material
+        self.state        = .active
         
         self.wantsLayer = true
         self.layer?.backgroundColor = CGColor.clear

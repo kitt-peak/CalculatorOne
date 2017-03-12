@@ -66,6 +66,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var digitButtonE: NSButton!
     @IBOutlet weak var digitButtonF: NSButton!
     @IBOutlet weak var periodButton: NSButton!
+    @IBOutlet weak var exponentPlusButton: NSButton!
+    @IBOutlet weak var exponentMinusButton: NSButton!
     
     @IBOutlet weak var deleteDigitButton: NSButton!
     @IBOutlet weak var deleteAllDigitsButton: NSButton!
@@ -76,25 +78,74 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var operationMinusButton: NSButton!
     @IBOutlet weak var operationMultiplicationButton: NSButton!
     @IBOutlet weak var operationDivisionButton: NSButton!
+    
     @IBOutlet weak var operationModuloNButton: NSButton!
+    
     @IBOutlet weak var operationSquareButton: NSButton!
+    @IBOutlet weak var operationCubicButton: NSButton!
     @IBOutlet weak var operationReciprocalButton: NSButton!
+    @IBOutlet weak var operationReciprocalSquareButton: NSButton!
+    @IBOutlet weak var operationSineButton: NSButton!
+    @IBOutlet weak var operationCosineButton: NSButton!
+    @IBOutlet weak var operationTangentButton: NSButton!
+    @IBOutlet weak var operationASineButton: NSButton!
+    @IBOutlet weak var operationACosineButton: NSButton!
+    @IBOutlet weak var operationATangentButton: NSButton!
 
-    @IBOutlet weak var operationLogicNotButton: NSButton!
+    @IBOutlet weak var operationYPowerXButton: NSButton!
+    @IBOutlet weak var operationEPowerXButton: NSButton!
+    @IBOutlet weak var operation10PowerXButton: NSButton!
+    @IBOutlet weak var operation2PowerXButton: NSButton!
+    @IBOutlet weak var operationlog10Button: NSButton!
+    @IBOutlet weak var operationlog2Button: NSButton!
+    @IBOutlet weak var operationlogButton: NSButton!
+    @IBOutlet weak var operationlogXYButton: NSButton!
+    @IBOutlet weak var operationSquareRootButton: NSButton!
+    @IBOutlet weak var operationThirdRootButton: NSButton!
+    @IBOutlet weak var operationNthRootButton: NSButton!
+
+    @IBOutlet weak var operationBitwiseLogicNot: NSButton!
     @IBOutlet weak var operationLogicAndButton: NSButton!
     @IBOutlet weak var operationLogicOrButton: NSButton!
     @IBOutlet weak var operationLogicXorButton: NSButton!
 
+    @IBOutlet weak var operationGCDButton: NSButton!
+    @IBOutlet weak var operationLCMButton: NSButton!
+
+    @IBOutlet weak var operationShiftLeftButton: NSButton!
+    @IBOutlet weak var operationShiftRightButton: NSButton!
+    @IBOutlet weak var operationNShiftLeftButton: NSButton!
+    @IBOutlet weak var operationNShiftRightButton: NSButton!
+    @IBOutlet weak var operationIncrementButton: NSButton!
+    @IBOutlet weak var operationDecrementButton: NSButton!
+    @IBOutlet weak var operationFactorialButton: NSButton!
+
     @IBOutlet weak var operationSignChangeButton: NSButton!
-    @IBOutlet weak var operationPiButton: NSButton!
-    @IBOutlet weak var operationSquareRootButton: NSButton!
+    
+    @IBOutlet weak var operationπButton: NSButton!
+    @IBOutlet weak var operationeButton: NSButton!
+
+    @IBOutlet weak var operationc0Button: NSButton!
+    @IBOutlet weak var operatione0Button: NSButton!
+    @IBOutlet weak var operationµ0Button: NSButton!
+    @IBOutlet weak var operationhButton: NSButton!
+    @IBOutlet weak var operationkButton: NSButton!
+    @IBOutlet weak var operationGButton: NSButton!
+    @IBOutlet weak var operationgButton: NSButton!
+    
+    @IBOutlet weak var operationSumOfStackButton: NSButton!
 
     @IBOutlet weak var rotUpButton: NSButton!
     @IBOutlet weak var rotDownButton: NSButton!
     @IBOutlet weak var dupButton: NSButton!
+    @IBOutlet weak var dup2Button: NSButton!
     @IBOutlet weak var swapButton: NSButton!
     @IBOutlet weak var dropButton: NSButton!
     @IBOutlet weak var dropAllButton: NSButton!
+    @IBOutlet weak var depthButton: NSButton!
+    
+    @IBOutlet weak var extraOperationsView: NSScrollView!
+    @IBOutlet weak var extraOperationsInnerView: NSView!
 
     // array to address all digit buttons at once
     private var digitButtons: [NSButton] = [NSButton]()
@@ -125,6 +176,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     override func awakeFromNib()
     {
         super.awakeFromNib()
+        
+        assignButtonTitles()
               
         digitButtons = [ digitButton0, digitButton1, digitButton2, digitButton3, 
                          digitButton4, digitButton5, digitButton6, digitButton7, 
@@ -134,28 +187,120 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         // forces button enable/disable 
         digitsComposing = ""
         
-        typeSelector.setSelected(true, forSegment: 0)
-        radixSelector.setSelected(true, forSegment: 2)
+        typeSelector.setSelected(true, forSegment: OperandType.float.rawValue)
+        radixSelector.setSelected(true, forSegment: Radix.decimal.rawValue)
+        
+        extraOperationsView.documentView = extraOperationsInnerView
+        extraOperationsView.contentView.postsFrameChangedNotifications = true
+        extraOperationsView.contentView.scroll(to: NSPoint(x: 0.0, y: extraOperationsInnerView.frame.size.height - extraOperationsView.frame.size.height))
+        
+        
+    }
+    
+    private func assignButtonTitles()
+    {
+        operationPlusButton.title           = Symbols.plus.rawValue
+        operationMinusButton.title          = Symbols.minus.rawValue
+        operationMultiplicationButton.title = Symbols.multiply.rawValue
+        operationDivisionButton.title       = Symbols.divide.rawValue
+        
+        operationModuloNButton.title        = Symbols.moduloN.rawValue
+        operationLogicOrButton.title        = Symbols.and.rawValue
+        operationLogicOrButton.title        = Symbols.or.rawValue
+        operationLogicXorButton.title       = Symbols.xor.rawValue
+        
+        operationShiftLeftButton.title      = Symbols.shiftLeft.rawValue
+        operationShiftRightButton.title     = Symbols.shiftRight.rawValue
+        operationNShiftLeftButton.title     = Symbols.nShiftLeft.rawValue
+        operationNShiftRightButton.title    = Symbols.nShiftRight.rawValue
+        
+        operationGCDButton.title            = Symbols.gcd.rawValue
+        operationLCMButton.title            = Symbols.lcm.rawValue
+        
+        swapButton.title                    = Symbols.swap.rawValue
+        rotUpButton.title                   = Symbols.rotateUp.rawValue
+        rotDownButton.title                 = Symbols.rotateDown.rawValue
+        
+        dropButton.title                    = Symbols.drop.rawValue
+        dropAllButton.title                 = Symbols.dropAll.rawValue
+        dupButton.title                     = Symbols.dup.rawValue
+        dup2Button.title                    = Symbols.dup2.rawValue
+        depthButton.title                   = Symbols.depth.rawValue
+        
+        operationFactorialButton.title      = Symbols.factorial.rawValue
+        
+        operationπButton.title              = Symbols.π.rawValue
+        operationeButton.title              = Symbols.e.rawValue
+        operationc0Button.title             = Symbols.c0.rawValue
+        operationhButton.title              = Symbols.h.rawValue
+        operationkButton.title              = Symbols.k.rawValue
+        operationgButton.title              = Symbols.g.rawValue
+        operationGButton.title              = Symbols.G.rawValue
     }
     
     func documentDidOpen()
     {
-        
         NotificationCenter.default.addObserver(forName: GlobalNotification.newEngineResult.notificationName, object: nil, queue: nil) 
-        { [unowned self] (notification) in
+        { /*[unowned self]*/ (notification) in
+            guard self.document != nil else { return }
+            
             guard notification.object as? Document == self.document else { return }
             self.updateOperationKeyStatus()
         }
-        
-        userChangedRadix(sender: radixSelector)
                 
-        updateOperationKeyStatus()
+        // Make sure the watched view is sending bounds changed
+        // notifications (which is probably does anyway, but calling this again won't hurt).                
+        // register for those notifications on the synchronized content view        
+        NotificationCenter.default.addObserver(forName: Notification.Name.NSViewBoundsDidChange, object: extraOperationsView.contentView, queue: nil) 
+        { (notification) in
+            
+            // supress new digit setting. This flag is set true if digits are set programmatically
+            guard self.document != nil else { return }            
+            
+            self.document.currentConfiguration[Document.ConfigurationKey.extraOperationsViewYPosition.rawValue] = self.extraOperationsView.contentView.bounds.origin.y
+            
+        }
 
+
+        if let selectedOperandTypeSegment: Int = document.currentConfiguration[Document.ConfigurationKey.operandType.rawValue] as? Int
+        {
+            typeSelector.setSelected(true, forSegment: selectedOperandTypeSegment)            
+        }
+        
+        userChangedOperandType(sender: typeSelector)        
+        
+        if let selectedRadixSegment: Int = document.currentConfiguration[Document.ConfigurationKey.radix.rawValue] as? Int
+        {   
+            radixSelector.setSelected(true, forSegment: selectedRadixSegment)
+        }
+
+        userChangedRadix(sender: radixSelector)
+
+        if let yPos = document.currentConfiguration[Document.ConfigurationKey.extraOperationsViewYPosition.rawValue] as? CGFloat
+        {
+            extraOperationsView.contentView.bounds.origin.y = yPos
+            
+        }
+        
+//        if let selectedExtraOperationsTabIndex: Int = document.currentConfiguration[Document.ConfigurationKey.extraOperationsTabIndex.rawValue] as? Int
+//        {
+//            extraOperationsSelector.setSelected(true, forSegment: selectedExtraOperationsTabIndex)
+//            ///extraOperationsTabView.selectTabViewItem(at: selectedExtraOperationsTabIndex)
+//        }
+
+        //userSelectedExtraOperations(sender: extraOperationsSelector)
+        
+        updateOperationKeyStatus()
     }
     
     func documentWillClose() 
     {
-        
+        NotificationCenter.default.removeObserver(self)        
+    }
+    
+    deinit 
+    {
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Controller logic
@@ -174,6 +319,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         }
         
         radixSelector.setSelected(true, forSegment: newRadix.rawValue)
+        document.currentConfiguration[Document.ConfigurationKey.radix.rawValue] = newRadix.rawValue
     }
     
     /// Inner logic of changing the calculator's operand type. Available are .integer and .float.
@@ -186,7 +332,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
         updateOperationKeyStatus()        
         
-        delegate.userInputOperandType(newType.rawValue)        
+        delegate.userInputOperandType(newType.rawValue)  
+        document.currentConfiguration[Document.ConfigurationKey.operandType.rawValue] = newType.rawValue
     }
     
     var canInputEnter: Bool 
@@ -197,6 +344,11 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     var canInputPeriodCharacter: Bool
     {
         return digitsComposing.characters.contains(".") == false && operandType == .float
+    }
+    
+    var canInputExponent: Bool
+    {
+        return digitsComposing.characters.contains("e") == false && operandType == .float && digitsComposing.characters.count > 0
     }
     
     // MARK: - Action methods
@@ -266,6 +418,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
         enterButton.isEnabled = enableEnter
         periodButton.isEnabled = canInputPeriodCharacter
+        exponentPlusButton.isEnabled = canInputExponent
+        exponentMinusButton.isEnabled = canInputExponent
 
         typeSelector.isEnabled  = true
         radixSelector.isEnabled = operandType == .integer
@@ -278,20 +432,63 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         dropAllButton.isEnabled             = enableUnaryTypeLessOperation
         swapButton.isEnabled                = enableBinaryTypeLessOperation
         
-        operationLogicNotButton.isEnabled   = enableUnaryIntegerOperations
+        operationBitwiseLogicNot.isEnabled   = enableUnaryIntegerOperations
         
         operationPlusButton.isEnabled       = enableBinaryIntegerOperations     || enableBinaryFloatOperations
         operationMinusButton.isEnabled      = enableBinaryIntegerOperations     || enableBinaryFloatOperations
         operationDivisionButton.isEnabled   = enableBinaryIntegerOperations     || enableBinaryFloatOperations
         operationMultiplicationButton.isEnabled = enableBinaryIntegerOperations || enableBinaryFloatOperations
+        operationYPowerXButton.isEnabled   = enableBinaryFloatOperations
+        operationlogXYButton.isEnabled     = enableBinaryFloatOperations
+        
+        operationShiftLeftButton.isEnabled = enableUnaryIntegerOperations
+        operationShiftRightButton.isEnabled = enableUnaryIntegerOperations
+        operationNShiftLeftButton.isEnabled = enableBinaryIntegerOperations
+        operationNShiftRightButton.isEnabled = enableBinaryIntegerOperations
+        operationIncrementButton.isEnabled = enableUnaryIntegerOperations
+        operationDecrementButton.isEnabled = enableUnaryIntegerOperations
+        operationFactorialButton.isEnabled = enableUnaryIntegerOperations
+        operationGCDButton.isEnabled       = enableBinaryIntegerOperations
+        operationLCMButton.isEnabled       = enableBinaryIntegerOperations
         
         operationReciprocalButton.isEnabled = enableUnaryFloatOperations
+        operationReciprocalSquareButton.isEnabled = enableUnaryFloatOperations
+        operationSineButton.isEnabled      = enableUnaryFloatOperations
+        operationASineButton.isEnabled     = enableUnaryFloatOperations
+        operationCosineButton.isEnabled    = enableUnaryFloatOperations
+        operationACosineButton.isEnabled   = enableUnaryFloatOperations
+        operationTangentButton.isEnabled   = enableUnaryFloatOperations
+        operationATangentButton.isEnabled  = enableUnaryFloatOperations
+        operationEPowerXButton.isEnabled   = enableUnaryFloatOperations
+        operation10PowerXButton.isEnabled  = enableUnaryFloatOperations
+        operation2PowerXButton.isEnabled   = enableUnaryIntegerOperations || enableUnaryFloatOperations
+        operationlogButton.isEnabled       = enableUnaryFloatOperations
+        operationlog2Button.isEnabled      = enableUnaryFloatOperations
+        operationlog10Button.isEnabled     = enableUnaryFloatOperations
+        operationCubicButton.isEnabled     = enableUnaryFloatOperations
+        operationThirdRootButton.isEnabled = enableUnaryFloatOperations
+        
+        operationNthRootButton.isEnabled   = enableBinaryFloatOperations
+
+        operationSumOfStackButton.isEnabled = enableUnaryIntegerOperations || enableUnaryFloatOperations
 
         operationModuloNButton.isEnabled    = enableBinaryIntegerOperations
         
         operationLogicXorButton.isEnabled   = enableBinaryIntegerOperations
         operationLogicOrButton.isEnabled    = enableBinaryIntegerOperations
         operationLogicAndButton.isEnabled   = enableBinaryIntegerOperations
+        
+        dup2Button.isEnabled                = enableBinaryTypeLessOperation
+        
+        operationπButton.isEnabled          = operandType == .float
+        operationeButton.isEnabled          = operandType == .float
+        operationhButton.isEnabled          = operandType == .float
+        operationkButton.isEnabled          = operandType == .float
+        operationµ0Button.isEnabled         = operandType == .float
+        operatione0Button.isEnabled         = operandType == .float
+        operationc0Button.isEnabled         = operandType == .float
+        operationgButton.isEnabled          = operandType == .float
+        operationGButton.isEnabled          = operandType == .float
         
         rotUpButton.isEnabled               = enableTernaryTypeLessOperation
         rotDownButton.isEnabled             = enableTernaryTypeLessOperation
@@ -305,10 +502,19 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     /// - Parameter sender: a NSButton with a title such as 0, 1, ... , A, F
     @IBAction func userPressedDigitKey(sender: NSButton)
     {
-        print("| \(#function): input new digit '\(sender.title)'")
+        var newDigit = sender.title
+        
+        print("| \(#function): input new digit '\(newDigit)'")
+
+        switch newDigit 
+        {
+        case "+EXP": newDigit = "e"
+        case "-EXP": newDigit = "e-"
+        default: break
+        }
                 
         // concatenate the new user input digit
-        digitsComposing = digitsComposing + sender.title
+        digitsComposing = digitsComposing + newDigit
 
         print(self)
                 
@@ -384,9 +590,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         {
             //print("\(self) \(#function): enter failed, composed digits '\(digitsComposing)' could not be converted to a numerical value")            
         }
-                
     }
-    
+        
     // MARK: - Support
     
     override var description: String

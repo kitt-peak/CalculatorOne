@@ -38,6 +38,11 @@
                BlueprintName = "CalculatorOneTests"
                ReferencedContainer = "container:CalculatorOne.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "TestEngineIntegerOperations/testThatIntegerAverageOfStackOperationsWorksMathematicallyCorrect()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">
@@ -48,6 +53,11 @@
                BlueprintName = "CalculatorOneUITests"
                ReferencedContainer = "container:CalculatorOne.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "CalculatorOneUITests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

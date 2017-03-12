@@ -1,3 +1,4 @@
+
 //
 //  RegisterViewController.swift
 //  CalculatorOne
@@ -105,28 +106,43 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
             digitsView.value = [.minus, .d0, .d1, .minus]
 
         case .stringRightAligned(let str):
-            // iterate thru each character of the string from right to left
-            // display the string right-aligned
-            for (index, character) in str.characters.reversed().enumerated()
+            
+            // filter for error values NaN and inf
+            if str == "nan" || str == "inf" || str == "-inf"
             {
-                switch character 
+                digits[0] = .dE
+                digits[1] = .dE
+                digits[2] = .dE
+            }
+            else
+            {
+                
+                // iterate thru each character of the string from right to left
+                // display the string right-aligned
+                for (index, character) in str.characters.reversed().enumerated()
                 {
-                case ".":
-                    digits[index] = .dot
-                case "-":
-                    digits[index] = .minus
-                default:
-                    // convert character to digit
-                    let s = String(character)
-                    let v = Int(s, radix: radix)
-                    
-                    if let d: Digit = Digit(rawValue: v!)
+                    switch character 
                     {
-                        digits[index] = d
-                    }
-                    else
-                    {
-                        digits[index] = .blank
+                    case ".":
+                        digits[index] = .dot
+                    case "-":
+                        digits[index] = .minus
+                    case "+": break
+                    case "e", "E": 
+                        digits[index] = .dE
+                    default:
+                        // convert character to digit
+                        let s = String(character)
+                        let v = Int(s, radix: radix)
+                        
+                        if let d: Digit = Digit(rawValue: v!)
+                        {
+                            digits[index] = d
+                        }
+                        else
+                        {
+                            digits[index] = .blank
+                        }
                     }
                 }
             }
@@ -144,6 +160,10 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
                     digits[digitsView.countViews - index - 1] = .dot
                 case "-":
                     digits[digitsView.countViews - index - 1] = .minus
+                case "+": break
+                case "e", "E": 
+                    digits[digitsView.countViews - index - 1] = .dE
+
                 default:
 
                     // convert character to digit

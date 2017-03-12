@@ -40,8 +40,8 @@ enum OperandValue: CustomStringConvertible
     {
         switch self 
         {
-        case .integer(let i): return "integer " + String(describing: i)
-        case .float(let f):   return "float " + String(describing: f)
+        case .integer( _): return "integer " + stringValue
+        case .float( _):   return "float " + stringValue
         }        
     }
 }
@@ -66,7 +66,6 @@ enum Radix: Int
 
 class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, DisplayDataSource, KeypadDataSource
 {
-    
     //MARK: - Mathematical class functions
     
     class func valueWithDigitCleared(value: Int, digitIndex: Int, radix: Int) -> Int
@@ -89,7 +88,48 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         return valueWithDigitCleared + valueNewDigitSignCorrected
     }
     
+    // MARK: - Mathematical class variables
+    class var const_e: Double  { return 2.71828182845904523536028747135266249775724709369995 }
+    class var const_π: Double { return 3.14159265358979323846264338327950288419716939937510 }
     
+    class var const_c0:   Double { return 299792458.0}      /* speed of light in m/s, exact */
+    class var const_µ0:   Double { return 1.256637061E-6 }  /* magnetic constant */
+    class var const_epsilon0: Double { return 8.854187817E-12 } /* electrical constant */
+    class var const_h:    Double { return 6.62607004081E-34 }    /* Planck's constant in J*s */
+    class var const_k:    Double { return 1.3806485279E-23 }    /* Boltzmann constant */
+    class var const_g:    Double { return 9.80665 }           /* earth acceleration */
+    class var const_G:    Double { return 6.6740831E-11 }     /* gravitational constant */
+    
+    
+    //case epsilon0 = "ε₀", µ0 = "μ₀", c0 = "c₀", k0 = "k₀", e0 = "e₀", G = "G", g = "g"
+
+    
+    
+    
+    // MARK: - Integer class functions
+    @nonobjc class func sum(of a: [Int]) -> Int { return a.reduce(0) { (x, y) -> Int in return x + y } }
+    //@nonobjc class func avg(of a: [Int]) -> Int { return a.reduce(0) { (x, y) -> Int in return x + y } / a.count}
+    @nonobjc class func factorial(of a: Int) -> Int 
+    { 
+        if a < 0 { return 0 }
+        if a < 1 { return 1 }
+        return a * Engine.factorial(of: a-1)
+    }
+    @nonobjc class func twoExpN(of n: Int) -> Int { return n < 0 ? 0 : n == 0 ? 1 : (2 << (n-1)) } 
+    
+    /* EUCLID algorithm for GCD */
+    @nonobjc class func gcd(of a: Int, _ b: Int) -> Int { if b == 0 { return a } else { return gcd(of: b, a % b)} }  
+    @nonobjc class func lcm(of a: Int, _ b: Int) -> Int { return abs(abs(a * b) / gcd(of: a, b)) }  
+
+    // MARK: - Double class functions
+    @nonobjc class func sum(of a: [Double]) -> Double { return a.reduce(0.0) { (x, y) -> Double in return x + y } }
+    @nonobjc class func avg(of a: [Double]) -> Double { return a.reduce(0.0) { (x, y) -> Double in return x + y } / Double(a.count)}
+    @nonobjc class func product(of a: [Double]) -> Double { return a.reduce(1.0) { (x, y) -> Double in return x * y } }
+    
+    @nonobjc class func nRoot(of a: Double, _ b: Double) -> Double { return pow(const_e, log(a)/b)}
+    
+    @nonobjc class func geometricalMean(of a: [Double]) -> Double { return Engine.nRoot(of: a.reduce(1.0) { (x, y) -> Double in return x * y },  Double(a.count) ) }
+
     //MARK: - Private properties
     
     private var stack: [OperandValue] = [OperandValue]()
@@ -108,12 +148,50 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
     
     func documentDidOpen() 
     {
-        
+        if let savedStack = document.currentConfiguration[Document.ConfigurationKey.stackValues.rawValue] as? NSArray
+        {
+            if let operandType = document.currentConfiguration[Document.ConfigurationKey.operandType.rawValue] as? Int
+            {
+                switch operandType 
+                {
+                case OperandType.float.rawValue:
+                    
+                    for value in savedStack as! [Double]
+                    {
+                        stack.append(OperandValue.float(value))
+                    }
+
+                case OperandType.integer.rawValue:
+
+                    for value in savedStack as! [Int]
+                    {
+                        stack.append(OperandValue.integer(value))
+                    }
+                    
+                default: break
+                }
+            }
+            
+            updateUI()
+        }
     }
     
     func documentWillClose()
     {
+        // save the stack to the configuration data in the document
         
+        let savedStack: NSMutableArray = NSMutableArray()
+        
+        for value in stack
+        {
+            switch value 
+            {
+            case .float(let f):   savedStack.add(f)
+            case .integer(let i): savedStack.add(i)
+            }
+        }
+        
+        document.currentConfiguration[Document.ConfigurationKey.stackValues.rawValue] = savedStack        
     }
     
     //MARK: - Stack operations    
@@ -165,73 +243,124 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
     
     private enum OperationClass
     {
-        case drop
-        case dropN
-        case dropAll
-        case binary2binary(   (OperandValue, OperandValue) -> (OperandValue, OperandValue))
-        case ternary2ternary( (OperandValue, OperandValue, OperandValue) -> (OperandValue, OperandValue, OperandValue) )
-        case unary2binary(    (OperandValue)      -> (OperandValue, OperandValue))
+        case dropAll, nDrop, depth
         
-        case integerBinary(   (Int, Int)       -> OperandValue)
-        case integerUnary(    (Int)            -> OperandValue)
+        case unary2array(   (OperandValue) -> [(OperandValue)] )
+        case binary2array(  (OperandValue, OperandValue) -> [(OperandValue)] )
+        case ternary2array( (OperandValue, OperandValue, OperandValue) -> [(OperandValue)] )
+                
+        case integerUnary2array(  (Int)      -> ([OperandValue]))
+        case integerBinary2array( (Int, Int) -> ([OperandValue]))
+        case integerArray2array(  ([Int])    -> ([OperandValue]))
         
-        case floatUnary(      (Double) -> OperandValue)
-        case floatBinary(     (Double, Double) -> OperandValue)
-        case floatConstant    (OperandValue)
+        case floatNone2array(   () -> ([OperandValue]))
+        case floatUnary2array(  (Double)         -> ([OperandValue]))
+        case floatBinary2array( (Double, Double) -> ([OperandValue]))
+        case floatArray2array(([Double])          -> [OperandValue])      
 
     }
     
     private var typelessOperations: OperationsTable = 
     [
-        "DUP"       : .unary2binary({ (a: OperandValue) -> (OperandValue, OperandValue) in return (a, a) }),
+      Symbols.dup.rawValue       : .unary2array( { (a: OperandValue) -> [OperandValue] in return ([a, a]) }),
+      Symbols.dup2.rawValue      : .binary2array({ (a: OperandValue, b: OperandValue) -> [OperandValue] in return [b, a, b, a] }),
         
-        "DROP"      : .drop,
-        "DROP ALL"  : .dropAll,
+      Symbols.drop.rawValue      : .unary2array(  { (a: OperandValue) -> [OperandValue] in return []}),
+      Symbols.dropAll.rawValue   : .dropAll,
+      Symbols.depth.rawValue     : .depth,
         
-        "⇔" : .binary2binary ({ (a: OperandValue, b: OperandValue) -> (OperandValue, OperandValue) in return (b, a) }), /*swap*/
+      Symbols.swap.rawValue      : .binary2array ({ (a: OperandValue, b: OperandValue) -> ([OperandValue]) in return [a, b] }), /*swap*/
         
-        "R↓"  : .ternary2ternary ( { (a: OperandValue, b: OperandValue, c: OperandValue) -> (OperandValue, OperandValue, OperandValue) in return (b, c, a) }),
-        "R↑"  : .ternary2ternary ( { (a: OperandValue, b: OperandValue, c: OperandValue) -> (OperandValue, OperandValue, OperandValue) in return (c, a, b) })
-
-        
+      Symbols.rotateDown.rawValue: .ternary2array ( { (a: OperandValue, b: OperandValue, c: OperandValue) -> ([OperandValue]) in return [a, c, b] }),
+      Symbols.rotateUp.rawValue  : .ternary2array ( { (a: OperandValue, b: OperandValue, c: OperandValue) -> ([OperandValue]) in return [b, a, c] })
     ]
     
     private var floatOperations: OperationsTable =
     [
-        "π" : .floatConstant(OperandValue.float(Double.pi)), 
+        Symbols.π.rawValue :    .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_π)] }), 
+        Symbols.e.rawValue :    .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_e)]  }),
+        Symbols.µ0.rawValue:    .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_µ0)]  }),
+        Symbols.epsilon0.rawValue:  .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_epsilon0)] }),
+        Symbols.c0.rawValue:    .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_c0)]  }),
+        Symbols.h.rawValue:     .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_h)]  }),
+        Symbols.k.rawValue:     .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_k)]  }),
+        Symbols.g.rawValue:     .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_g)]  }),
+        Symbols.G.rawValue:     .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_G)]  }),
         
-        "+" : .floatBinary( { (a: Double, b: Double) -> OperandValue in return .float(b + a) }),
-        "-" : .floatBinary( { (a: Double, b: Double) -> OperandValue in return .float(b - a) }),
-        "*" : .floatBinary( { (a: Double, b: Double) -> OperandValue in return .float(b * a) }),
-        "÷" : .floatBinary( { (a: Double, b: Double) -> OperandValue in return .float(b / a) }),
+        Symbols.plus.rawValue     : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(b + a)] }),
+        Symbols.minus.rawValue    : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(b - a)] }),
+        Symbols.multiply.rawValue : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(b * a)] }),
+        Symbols.divide.rawValue   : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(b / a)] }),
         
-        "√" : .floatUnary( { (a: Double)         -> OperandValue in return  .float(sqrt(a))}),
-      "SQR" : .floatUnary( { (a: Double)         -> OperandValue in return  .float(a*a)   }),
-    "1 ÷ X" : .floatUnary( { (a: Double)         -> OperandValue in return  .float(1.0 / a)}),
-       "X²" : .floatUnary( { (a: Double)         -> OperandValue in return  .float(a*a)   }),
+       "Yˣ" : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(pow(b, a))] }),
+   "logY X" : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(log(a) / log(b))] }),
+   
+      "N √" : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.nRoot(of: b, a))] }),
 
-    "+ ⇔ -" : .floatUnary( { (a: Double)         -> OperandValue in return .float(-a)    }),
+        
+       "eˣ" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(pow(const_e, a))] }),
+      "10ˣ" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(pow(10.0, a))] }),
+       "2ˣ" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(pow(2.0, a))] }),
 
+       "ln" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(log(a))] }),
+      "log" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(log10(a))] }),
+       "lb" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(log2(a))] }),
+       
+        "√" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(sqrt(a))] }),
+        "∛" :  .floatUnary2array( { (a: Double)        -> [OperandValue] in return  [.float(Engine.nRoot(of: a, 3.0))] }),
+      "1÷X" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(1.0 / a)] }),
+     "1÷X²" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(1.0 / (a * a))] }),      
+       "X²" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(a*a)]   }),
+       "X³" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(a*a*a)] }),
+
+      "+⇔-" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(-a)]     }),
+      "sin"  : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(sin(a))]  }),
+      "asin" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(asin(a))] }),
+      "cos"  : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(cos(a))]  }),
+      "acos" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(acos(a))] }),
+      "tan"  : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(tan(a))]  }),
+      "atan" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(atan(a))] }),
+      
+      "∑" : .floatArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.sum(of: s))]}),
+    "AVG" : .floatArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.avg(of: s))]}),
+      "∏" : .floatArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.product(of: s))]}),
+     "∏√" : .floatArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.geometricalMean(of: s))]}),
+        
     ]
     
     private var integerOperations: OperationsTable =  [
            
-           "N DROP" : .dropN,
-
-       "+ ⇔ -" : .integerUnary( { (a: Int)         -> OperandValue in return .integer(-a)    }),
+      "N DROP" : .nDrop,
+      
+      Symbols.plus.rawValue     : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b + a)] }),
+      Symbols.minus.rawValue    : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b - a)] }),
+      Symbols.multiply.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b * a)] }),
+      Symbols.divide.rawValue   : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b / a)] }),
+      Symbols.moduloN.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b % a)] }),
            
-           "!" : .integerUnary( { (a: Int)         -> OperandValue in return .integer(~a)  }),
-       
-           "+" : .integerBinary({ (a: Int, b: Int) -> OperandValue in return .integer(b + a) }),
-           "-" : .integerBinary({ (a: Int, b: Int) -> OperandValue in return .integer(b - a) }),
-           "*" : .integerBinary({ (a: Int, b: Int) -> OperandValue in return .integer(b * a) }),
-           "÷" : .integerBinary({ (a: Int, b: Int) -> OperandValue in return .integer(b / a) }),
-           "%" : .integerBinary({ (a: Int, b: Int) -> OperandValue in return .integer(b % a) }),
-           "&" : .integerBinary({ (a: Int, b: Int) -> OperandValue in return .integer(b & a) }),
-           "|" : .integerBinary({ (a: Int, b: Int) -> OperandValue in return .integer(b | a) }),
-           "^" : .integerBinary({ (a: Int, b: Int) -> OperandValue in return .integer(b ^ a) }),
-          "X²" : .integerUnary( { (a: Int)       -> OperandValue in return  .integer(a*a)   }),
+      Symbols.and.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b & a)] }),
+      Symbols.or.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b | a)] }),
+      Symbols.xor.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b ^ a)] }),
+           
+      Symbols.nShiftLeft.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b << a)] }),
+      Symbols.nShiftRight.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b >> a)] }),
+      Symbols.gcd.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(Engine.gcd(of: a, b) )] }),
+      Symbols.lcm.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(Engine.lcm(of: a, b) )] }),
 
+        "+⇔-" : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(-a)]  }),
+           "~" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return [.integer(~a)]  }),
+           
+          "X²" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a*a)]   }),
+          "2ˣ" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(Engine.twoExpN(of: a))] }),
+      Symbols.shiftLeft.rawValue : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a << 1)] }),
+      Symbols.shiftRight.rawValue : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a >> 1)] }),
+         "1 +" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a + 1)] }),
+         "1 -" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a - 1)] }),
+          
+           "∑" : .integerArray2array( { (s: [Int]) -> [OperandValue] in return [.integer( s.reduce(0) { (x, y) -> Int in return x + y })]}),
+          
+          Symbols.factorial.rawValue : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(Engine.factorial(of: a) )] })
+        
     ]
     
     
@@ -282,8 +411,16 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
     }
     
 
+    /// Tests if an enter command with the specified numerical value can be accepted by the engine 
+    /// The engine does not process the numberical value. It only checks if numericalValue is valid
+    ///
+    /// - Parameters:
+    ///   - numericalValue: the value to check as string
+    ///   - radix: the radix of the value
+    /// - Returns: true if the engine numerical value is valid for the engine, otherwise false
     func userWillInputEnter(numericalValue: String, radix: Int) -> Bool
     {
+        // the methods tests if the value can be converted from String to the current operand type
         switch operandType 
         {
         case .integer: 
@@ -297,7 +434,9 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
     
     
     func userInputEnter(numericalValue: String, radix: Int)
-    {        
+    {   
+        guard numericalValue.characters.count > 0 else { return }
+        
         var value: OperandValue!
         
         switch operandType 
@@ -313,86 +452,112 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         updateUI()
     }
     
-    func userInputOperation(symbol: String) 
+    func userInputOperation(symbol: String)
     {
+        DispatchQueue.global(qos: .userInitiated).sync 
+        {
+            self.processOperation(symbol: symbol)
+            
+            DispatchQueue.main.async 
+            {
+                self.updateUI()
+            }
+        }
+        
+    }
+    
+    private func processOperation(symbol: String) 
+    {
+        var typelessOperationCompleted: Bool = true
+        var integerOperationCompleted: Bool = true
+        var floatOperationCompleted: Bool = true
         
         // perform typeless operations first. If no typeless information is found,
         // the program continues to look for integer and floating point operations
         if let currentOperation = typelessOperations[symbol]
         {
-            print("\(self)\n| \(#function): performing operation '\(symbol)'")
-            
             switch currentOperation 
             {
-            case .drop:
-                _ = stack.popLast()!
                 
             case .dropAll:
                 stack.removeAll()
+                
+            case .depth:
+                let a: Int = stack.count 
+                    
+                switch operandType 
+                {
+                case .integer: stack.append(OperandValue.integer(a))
+                case .float  : stack.append(OperandValue.float(Double(a)))
+                }
+                    
+            case .unary2array(let u2aFunction):
+                let a: OperandValue = pop()
+                
+                stack.append(contentsOf: u2aFunction(a))
 
-            case .binary2binary(let swapFunction):
-                var a: OperandValue = pop()
-                var b: OperandValue = pop()
+            case .binary2array(let b2aFunction):
+                let a: OperandValue = pop()
+                let b: OperandValue = pop()
+
+                stack.append(contentsOf: b2aFunction(a, b))
                 
-                (a, b) = swapFunction(a, b)
+            case .ternary2array(let t2aFunction):
+                let a: OperandValue = pop()
+                let b: OperandValue = pop()
+                let c: OperandValue = pop()
                 
-                stack.append(b)
-                stack.append(a)
+                stack.append(contentsOf: t2aFunction(a, b, c))
                 
-                
-            case .ternary2ternary(let ternaryFunction):
-                var a: OperandValue = pop()
-                var b: OperandValue = pop()
-                var c: OperandValue = pop()
-                
-                (a, b, c) = ternaryFunction(a, b, c)
-                
-                stack.append(c)
-                stack.append(b)
-                stack.append(a)
-                
-            case .unary2binary(let unary2binaryFunction):
-                var a: OperandValue = pop()
-                var b: OperandValue = .integer(0)
-                
-                (a, b) = unary2binaryFunction(a)
-                
-                stack.append(b)
-                stack.append(a)
 
             default:
-                break
+                typelessOperationCompleted = false
             }
-            
         }
-        
+        else
+        {
+            typelessOperationCompleted = false
+        }
+
         
         switch operandType
         {
         case .integer:
             
+            floatOperationCompleted = false
+            
             if let currentOperation = integerOperations[symbol]
             {
-                print("\(self)\n| \(#function): performing integer operation '\(symbol)'")
-                
                 switch currentOperation 
                 {
-                case .integerBinary(let binaryFunction):
+                case .integerUnary2array(let int2arrayFunction):
+                    let a: Int = popInteger()
+                    
+                    let r: [OperandValue] = int2arrayFunction(a)
+                    
+                    stack.append(contentsOf: r)
+
+                case .integerBinary2array(let int2arrayFunction):
                     let a: Int = popInteger()
                     let b: Int = popInteger()
                     
-                    let r: OperandValue = binaryFunction(a, b)
+                    let r: [OperandValue] = int2arrayFunction(a, b)
                     
-                    stack.append(r)
+                    stack.append(contentsOf: r)
+
+                                        
+                case .integerArray2array(let arrayFunction):
+                    let s: [Int] = stack.map({ (e: OperandValue) -> Int in
+                        if case .integer(let i) = e { return i}
+                        return -1
+                    })
                     
-                case .integerUnary(let unaryFunction):
-                    let a: Int = popInteger()
+                    let b = arrayFunction(s)
                     
-                    let r: OperandValue = unaryFunction(a)
-                    
-                    stack.append(r)
-                    
-                case .dropN:
+                    stack.removeAll()
+                    stack.append(contentsOf: b)
+                                        
+                case .nDrop:
                     let a: Int = popInteger()
                     
                     for _ in 0..<a
@@ -400,53 +565,77 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
                         _ = stack.popLast()
                     }
                     
-                    
                 default:
-                    break
+                    integerOperationCompleted = false
                 }
             }
             else
             {
-                print("\(self)\n| \(#function): integer operation '\(symbol)' not implemented. Stack was not changed")                    
+                integerOperationCompleted = false
             }
-            
             
         case .float:
             
+            integerOperationCompleted = false
+            
             if let currentOperation = floatOperations[symbol]
             {
-                print("\(self)\n| \(#function): performing float operation '\(symbol)'")
-                
                 switch currentOperation 
                 {
-                case .floatConstant(let c):
-                    stack.append(c)
+
+                case .floatNone2array(let n2aFunction):
+                    let s: [OperandValue] = n2aFunction()
                     
-                case .floatBinary(let binaryFunction):
+                    stack.append(contentsOf: s)
+                    
+                case .floatUnary2array(let unaryFunction):
+                    let a: Double = popFloat()
+                    
+                    let s: [OperandValue] = unaryFunction(a)
+                    
+                    stack.append(contentsOf: s)
+
+                case .floatBinary2array(let binaryFunction):
                     let a: Double = popFloat()
                     let b: Double = popFloat()
                     
-                    let r: OperandValue = binaryFunction(a, b)
+                    let s: [OperandValue] = binaryFunction(a, b)
                     
-                    stack.append(r)
+                    stack.append(contentsOf: s)
                     
-                case .floatUnary(let unaryFunction):
-                    let a: Double = popFloat()
+                case .floatArray2array(let arrayFunction):
+                    let s: [Double] = stack.map({ (e: OperandValue) -> Double in
+                        if case .float(let d) = e { return d }
+                        return -1.0 /*should never be executed*/
+                    })
                     
-                    let r: OperandValue = unaryFunction(a)
+                    let r: [OperandValue] = arrayFunction(s)
                     
-                    stack.append(r)
+                    stack.removeAll()
+                    stack.append(contentsOf: r)
+                    
+                default: 
+                    floatOperationCompleted = false
             
-                default:
-                    break
                 }
             }
+            else
+            {
+                floatOperationCompleted = false
+            }
+
         }
         
-            
-        updateUI() 
-            
-        print(stackDescription)
+        if typelessOperationCompleted == false && integerOperationCompleted == false && floatOperationCompleted == false
+        {
+            print("| engine \(#function): did not recognize operation \(operandType) '\(symbol)', stack not changed")                        
+        }
+        else
+        {
+            print("| engine \(#function): performed operation \(operandType) '\(symbol)'")            
+            print(stackDescription)
+        }
+
 
     }
         

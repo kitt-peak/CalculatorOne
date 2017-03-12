@@ -41,7 +41,7 @@ class GlobalConstants
     
     // computer drawn digit strip image: the are digits described as glyph codes in the font courier
     private let glyphCodes: [UInt] = 
-        [1/*   */, 17/* . */, 
+        [ 1/*   */, 17/* . */, 
          19/* 0 */, 20/* 1 */, 21/* 2 */, 22/* 3 */, 23/* 4 */, 24/* 5 */, 25/* 6 */, 26/* 7 */, 
          27/* 8 */, 28/* 9 */, 36/* A */, 37/* B */, 38/* C */, 39/* D */, 40/* E */, 41/* F */,
          16/* - */]
@@ -93,11 +93,12 @@ class GlobalConstants
         let font = NSFont(name: "Courier", size: digitImageSizeInPoints.height)
         
         // our digits descriped as glyph codes in the font courier
+        /*
         let glyphCodes: [UInt] = [1/*   */, 17/* . */, 
                                   19/* 0 */, 20/* 1 */, 21/* 2 */, 22/* 3 */, 23/* 4 */, 24/* 5 */, 25/* 6 */, 26/* 7 */, 
-                                  27/* 8 */, 28/* 9 */, 36/* A */, 37/* B */, 38/* C */, 39/* D */, 40/* E */, 41/* F */,
+         ∝                        27/* 8 */, 28/* 9 */, 36/* A */, 37/* B */, 38/* C */, 39/* D */, 40/* E */, 41/* F */,
                                   16/* - */]
-        
+        */
         // iterate over all digits (by glyph code for each digit) and add their bezierpaths into the drawing
         for digitIndex: Int in 0 ..< glyphCodes.count
         {
@@ -128,6 +129,97 @@ enum GlobalNotification: String
     
     var notificationName: Notification.Name { return Notification.Name(self.rawValue) }
 }
+
+enum Symbols: String
+{
+    case plus    = "+",         minus = "−",            multiply  = "×",        divide     = "÷"
+    case moduloN = "%",         and   = "&",            or        = "||",       xor        = "⊕"
+    case nShiftLeft = "N ≪",    nShiftRight = "N ≫",    shiftLeft = "≪",       shiftRight  = "≫"
+    case gcd = "gcd",           lcm = "lcm"
+    
+    case swap = "2↑↓",          rotateUp = "3R↑",        rotateDown = "3R↓"
+    case drop = "Drop",         dropAll  = "Drop All"
+    case dup  = "dup",          dup2     = "dup2",       depth = "depth"
+    
+    case factorial = "n!"
+    
+    case π = "π", e = "e"
+    case epsilon0 = "ε₀", µ0 = "μ₀", c0 = "c₀",  e0 = "e₀", G = "G", g = "g", h = "h", k = "k"
+    //case Λ = "Λ", k0 = "k₀"
+}
+
+/*
+ 
+ Boltzmannsche Konstante kB
+ 1.380658·10-23 J/K        ( = 8.617385·10-5 eV/K )
+ 
+ Elementarladung e
+ 1.60217733·10-19 C
+ 
+ Avogadrosche Zahl NA
+ 6.0221367·1023 Teilchen/mol
+ 
+
+ Feinstrukturkonstante .alpha.
+ 1 / 137.0359895
+ 
+ Gaskonstante R
+ R = NA kB
+ 8.31451 m2·kg/s2·K·mol
+ 
+ Molvolumen Vmol
+ 22.41383 m3/kmol
+ 
+ Faradaysche Konstante F
+ F = NA e
+ 9.64846·104 C/mol
+ 
+ g-Faktor des Protons (Landé-Faktor) gH
+ 5.585
+ 
+ Gravitationskonstante G
+ (6.673 +- 0.010)·10-11 m3/kg·s2 (CODATA)
+ 6.67390·10-11 m3/kg·s2 +- 0.0014 % (Jens Gundlach, Univ. of Washington; aus: Der Tagesspiegel 2000-05-08)
+ (6.6873 +- 0.0094)·10-11 m3/kg·s2 (Schwarz et al., Science 282, 2230 (1998))
+ 
+ Erdbeschleunigung g
+ 9.80665 m/s2
+ 
+ Compton-Wellenlänge des Elektrons .lambda.c
+ .lambda.c = h / (me c)
+ 2.42631·10-12 m
+ 
+ Weitere Nützliche Konstanten
+ atomare Energieeinheit Hartree
+ 1 Hartree = e2 / (4 .pi. .epsilon.0 a0)
+ 1 Hartree = 2.625501·106 J/mol (ca. 627.5 kcal/mol)
+ 
+ Nützliche Umrechnungsfaktoren
+ NMR (Kernmagnetische Resonanz)
+ Protonen-Larmor-Frequenz
+ .nu.p = .gamma.p / (2 .pi.) B
+ .nu.p = 42.5764 MHz/T (H2O) 
+ 
+ 
+ 
+ */
+/*
+ 
+
+ "+⇔-" : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(-a)]  }),
+ "~" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return [.integer(~a)]  }),
+ 
+ "X²" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a*a)]   }),
+ "2ˣ" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(Engine.twoExpN(of: a))] }),
+ "1 +" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a + 1)] }),
+ "1 -" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a - 1)] }),
+ 
+ "∑" : .integerArray2array( { (s: [Int]) -> [OperandValue] in return [.integer( s.reduce(0) { (x, y) -> Int in return x + y })]}),
+ 
+ "N!" : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(Engine.factorial(of: a) )] })
+
+ 
+ */
 
 
 /*

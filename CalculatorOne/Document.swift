@@ -34,7 +34,7 @@ class Document: NSDocument, DocumentLifeCycle
     @IBOutlet weak var engine: Engine!
     
     private var dependedObjects: [DependendObjectLifeCycle]!
-        
+
     override init() 
     {
         super.init()
@@ -86,9 +86,19 @@ class Document: NSDocument, DocumentLifeCycle
         
     }
     
+    
+    /// Called when the document instance is fully intialized. If the document is opened from a file, didOpen() is called after
+    /// data is read from file. The method sets the document configuration (from file or a default configuration and calls didOpen()
+    /// on all the objects displayController, keypadController and engine to initialize themselves with document file data 
     internal func didOpen() 
     {
         dependedObjects = [displayController, keypadController, engine]
+        
+        if currentConfiguration.isEmpty == true
+        {
+            currentConfiguration = defaultConfiguration
+
+        }
         
         for controller in dependedObjects
         {
@@ -98,24 +108,56 @@ class Document: NSDocument, DocumentLifeCycle
     }
     
 
-    
+    // MARK: - Read/Write file data
+    enum ConfigurationKey: String
+    {
+        case operandType = "kOperandType", radix = "kRadix", stackValues = "kStackValues", extraOperationsViewYPosition = "kExtraOperationsViewYPosition"
+    }
 
+    // this configuration is used on a new file
+    private let defaultConfiguration: [String : Any] = [
+        ConfigurationKey.operandType.rawValue : 1,              /* .float */
+        ConfigurationKey.radix.rawValue       : 2,              /* .decimal */
+        ConfigurationKey.extraOperationsViewYPosition.rawValue : 0.0,  
+        ConfigurationKey.stackValues.rawValue : []              /* emtpy array of [OperandType] */
+    ]
+
+    // holds the entire set of configuration data as dictionary. Any change will make the document dirty
+    var currentConfiguration: [String : Any] = [:]
+    { didSet { updateChangeCount(.changeDone) }  }
+        
+    
+    /// Called by the document to save data to file. Saves configuration data (operand type, radix) and the stack to the file.
+    ///
+    /// - Parameter typeName: name of the file type. Configured in Info.plist, under document types
+    /// - Returns: the data container with the configuration data and the stack values.
+    /// - Throws: ?
     override func data(ofType typeName: String) throws -> Data 
     {
         // Insert code here to write your document to data of the specified type. If outError != nil, ensure that you create and set an appropriate error when returning nil.
-        return "First Data Written As String".data(using: String.Encoding.utf8)!
+    
+        return NSKeyedArchiver.archivedData(withRootObject: currentConfiguration)
         
         
         // You can also choose to override fileWrapperOfType:error:, writeToURL:ofType:error:, or writeToURL:ofType:forSaveOperation:originalContentsURL:error: instead.
         /*throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)*/
     }
 
-    override func read(from data: Data, ofType typeName: String) throws {
+    /// Called by the document to load the documents data from a file. Used to restore configuration parameters (OperandType, Radix) and the stack
+    ///
+    /// - Parameters:
+    ///   - data: the data container with the configuration parameters (OperandType, Radix) and the stack. If valid, "data" is restored into the document.
+    ///   - typeName: Parameter typeName: name of the file type. Configured in Info.plist, under document types.
+    /// - Throws: ?
+    override func read(from data: Data, ofType typeName: String) throws 
+    {
         // Insert code here to read your document from the given data of the specified type. If outError != nil, ensure that you create and set an appropriate error when returning false.
         
-        if let s = String(data: data, encoding: String.Encoding.utf8) 
+        if let readDictionary = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String : Any]
         {
-            Swift.print(s)
+            //configurationFromFile = readDictionary 
+            //didLoadConfigDataFromFile = true
+            currentConfiguration = readDictionary
         }
         
         // You can also choose to override readFromFileWrapper:ofType:error: or readFromURL:ofType:error: instead.
