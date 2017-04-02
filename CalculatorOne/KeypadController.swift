@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import Carbon
 
 // delegate receives user input: composed digits, enter, operations, radix and operand type changes
 @objc protocol KeypadControllerDelegate 
@@ -16,11 +17,19 @@ import Cocoa
     func userInputEnter(numericalValue: String, radix: Int)
     func userInputOperation(symbol: String)
     func userInputOperandType(_ type: Int)
+    func isMemoryAEmpty() -> Bool
+    func isMemoryBEmpty() -> Bool
+
 }
 
 @objc protocol KeypadDataSource
 {
     func numberOfRegistersWithContent() -> Int
+}
+
+enum OperationModifier
+{
+    case takeStackAsArgument, topOfStackContainsArgumentCount
 }
 
 
@@ -31,7 +40,6 @@ import Cocoa
 /// Works together with a displayController and a document
 class KeypadController: NSObject, DependendObjectLifeCycle 
 {
-    
     @IBOutlet weak var document: Document!
     
     @IBOutlet weak var displayController: DisplayController!
@@ -48,6 +56,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var dataSource: KeypadDataSource!/*AnyObject!*/
 
     @IBOutlet weak var typeSelector: NSSegmentedControl!
+    @IBOutlet weak var stackButton: NSButton!
     
     @IBOutlet weak var digitButton0: NSButton!
     @IBOutlet weak var digitButton1: NSButton!
@@ -88,9 +97,11 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var operationSineButton: NSButton!
     @IBOutlet weak var operationCosineButton: NSButton!
     @IBOutlet weak var operationTangentButton: NSButton!
+    @IBOutlet weak var operationCotangentButton: NSButton!
     @IBOutlet weak var operationASineButton: NSButton!
     @IBOutlet weak var operationACosineButton: NSButton!
     @IBOutlet weak var operationATangentButton: NSButton!
+    @IBOutlet weak var operationACotangentButton: NSButton!
 
     @IBOutlet weak var operationYPowerXButton: NSButton!
     @IBOutlet weak var operationEPowerXButton: NSButton!
@@ -103,6 +114,12 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var operationSquareRootButton: NSButton!
     @IBOutlet weak var operationThirdRootButton: NSButton!
     @IBOutlet weak var operationNthRootButton: NSButton!
+    
+    @IBOutlet weak var operationAverageButton: NSButton!
+    @IBOutlet weak var operationProductButton: NSButton!
+    @IBOutlet weak var operationGeoMeanButton: NSButton!
+    @IBOutlet weak var operationSigmaButton: NSButton!
+    @IBOutlet weak var operationVarianceButton: NSButton!
 
     @IBOutlet weak var operationBitwiseLogicNot: NSButton!
     @IBOutlet weak var operationLogicAndButton: NSButton!
@@ -133,8 +150,14 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var operationGButton: NSButton!
     @IBOutlet weak var operationgButton: NSButton!
     
-    @IBOutlet weak var operationSumOfStackButton: NSButton!
+    @IBOutlet weak var operationSumButton: NSButton!
 
+    @IBOutlet weak var operationCopyStackToMemoryA: NSButton!
+    @IBOutlet weak var operationCopyMemoryAToStack: NSButton!
+    @IBOutlet weak var operationCopyStackToRegisterB: NSButton!
+    @IBOutlet weak var operationCopyMemoryBToStack: NSButton!
+
+    
     @IBOutlet weak var rotUpButton: NSButton!
     @IBOutlet weak var rotDownButton: NSButton!
     @IBOutlet weak var dupButton: NSButton!
@@ -143,7 +166,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var dropButton: NSButton!
     @IBOutlet weak var dropAllButton: NSButton!
     @IBOutlet weak var depthButton: NSButton!
-    
+        
     @IBOutlet weak var extraOperationsView: NSScrollView!
     @IBOutlet weak var extraOperationsInnerView: NSView!
 
@@ -161,6 +184,9 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             updateOperationKeyStatus()
         }
     }
+    
+    // a monitor routine to detect pressing and releasing ALT key events
+    private var altkeyEventMonitor: Any?
         
     @IBOutlet weak var radixSelector: NSSegmentedControl!
     
@@ -172,12 +198,16 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     var operandType: OperandType
     { return typeSelector.selectedSegment == 1 ? .float : .integer }
     
+    var operationModifier: OperationModifier = .takeStackAsArgument
+        { didSet { stackButton.state = (operationModifier == .topOfStackContainsArgumentCount ? NSOnState : NSOffState)
+                   assignButtonTitlesForOperationModifier(operationModifier) } }
+    
     //MARK: - Lifecycle
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
-        assignButtonTitles()
+        assignButtonTitlesForOperationModifier(.takeStackAsArgument)
               
         digitButtons = [ digitButton0, digitButton1, digitButton2, digitButton3, 
                          digitButton4, digitButton5, digitButton6, digitButton7, 
@@ -197,8 +227,166 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
     }
     
-    private func assignButtonTitles()
+    
+    func documentDidOpen()
     {
+        /// Receive a notification from the engine posting new results
+        NotificationCenter.default.addObserver(forName: GlobalNotification.newEngineResult.name, object: nil, queue: nil) 
+        { /*[unowned self]*/ (note) in
+            guard self.document != nil else { return }
+            
+            guard note.object as? Document == self.document else { return }
+            self.updateOperationKeyStatus()
+        }
+                
+        // Make sure the watched view is sending bounds changed
+        // notifications (which is probably does anyway, but calling this again won't hurt).                
+        // register for those notifications on the synchronized content view        
+        NotificationCenter.default.addObserver(forName: Notification.Name.NSViewBoundsDidChange, object: extraOperationsView.contentView, queue: nil) 
+        { (notification) in
+            
+            // supress new digit setting. This flag is set true if digits are set programmatically
+            guard self.document != nil else { return }            
+            
+            self.document.currentSaveDataSet[Document.ConfigurationKey.extraOperationsViewYPosition.rawValue] = self.extraOperationsView.contentView.bounds.origin.y
+            
+        }
+
+
+        if let selectedOperandTypeSegment: Int = document.currentSaveDataSet[Document.ConfigurationKey.operandType.rawValue] as? Int
+        {
+            typeSelector.setSelected(true, forSegment: selectedOperandTypeSegment)            
+        }
+        
+        userChangedOperandType(sender: typeSelector)        
+        
+        if let selectedRadixSegment: Int = document.currentSaveDataSet[Document.ConfigurationKey.radix.rawValue] as? Int
+        {   
+            radixSelector.setSelected(true, forSegment: selectedRadixSegment)
+        }
+
+        userChangedRadix(sender: radixSelector)
+
+        if let yPos = document.currentSaveDataSet[Document.ConfigurationKey.extraOperationsViewYPosition.rawValue] as? CGFloat
+        {
+            extraOperationsView.contentView.bounds.origin.y = yPos
+            
+        }
+        
+        /// add a event monitor. Gives a notification if the ALT key was pressed and released
+        /// the filter does not remove any events, it does not work as filter 
+        altkeyEventMonitor = NSEvent.addLocalMonitorForEvents(matching: NSEventMask.flagsChanged) 
+        { (changedFlagsEvent) -> NSEvent? in
+           
+            if changedFlagsEvent.keyCode == UInt16(kVK_Option) || changedFlagsEvent.keyCode == UInt16(kVK_RightOption)
+            {
+                if changedFlagsEvent.modifierFlags.contains(.option)
+                {
+                    //print("pressed ALT")
+                    self.operationModifier = .topOfStackContainsArgumentCount
+                }
+                else
+                {
+                    // print("released ALT")
+                    self.operationModifier = .takeStackAsArgument
+                }
+            }
+            
+            return changedFlagsEvent
+        }
+        
+//        if let selectedExtraOperationsTabIndex: Int = document.currentSaveDataSet[Document.ConfigurationKey.extraOperationsTabIndex.rawValue] as? Int
+//        {
+//            extraOperationsSelector.setSelected(true, forSegment: selectedExtraOperationsTabIndex)
+//            ///extraOperationsTabView.selectTabViewItem(at: selectedExtraOperationsTabIndex)
+//        }
+
+        //userSelectedExtraOperations(sender: extraOperationsSelector)
+        
+        updateOperationKeyStatus()
+    }
+    
+    func documentWillClose() 
+    {
+        NotificationCenter.default.removeObserver(self)
+        
+        if let monitor = altkeyEventMonitor { NSEvent.removeMonitor(monitor) }
+    }
+    
+    deinit 
+    {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    // MARK: - Controller logic
+    
+    /// Inner logic of Changing the radix of the calculator display and keypad. It causes "enter" on any digits beings composed by the user, will enable/disable digit buttons according to the new radix and update the display to show registers in the new radix. Available radix values are: .binary, .octal, .decimal and .hexadecimal
+    ///
+    /// - Parameter newRadix: the radix can be .binary, .octal, .decimal or .hex
+    private func changeRadix(newRadix: Radix)
+    {
+        // complete any ongoing user input
+        self.userPressedEnterKey(sender: enterButton)
+        
+        for (index, button) in digitButtons.enumerated()
+        {
+            button.isEnabled = (index < newRadix.value ? true : false)
+        }
+        
+        radixSelector.setSelected(true, forSegment: newRadix.rawValue)
+        document.currentSaveDataSet[Document.ConfigurationKey.radix.rawValue] = newRadix.rawValue
+    }
+    
+    /// Inner logic of changing the calculator's operand type. Available are .integer and .float.
+    /// This function will update the engine and the enable/disable status of the keys
+    ///
+    /// - Parameter newType: the new operand type
+    private func changeOperandType(_ newType: OperandType)
+    {
+        print("\(self) \(#function): sending new operation type'\(newType)' to engine")
+        
+        updateOperationKeyStatus()        
+        
+        delegate.userInputOperandType(newType.rawValue)  
+        document.currentSaveDataSet[Document.ConfigurationKey.operandType.rawValue] = newType.rawValue
+    }
+    
+    var canInputEnter: Bool 
+    {
+        return digitsComposing.characters.count > 0 && delegate.userWillInputEnter(numericalValue: digitsComposing, radix: radix.value)
+    }
+    
+    var canInputPeriodCharacter: Bool
+    {
+        return digitsComposing.characters.contains(".") == false && operandType == .float
+    }
+    
+    var canInputExponent: Bool
+    {
+        return digitsComposing.characters.contains("e") == false && operandType == .float && digitsComposing.characters.count > 0
+    }
+    
+    private func assignButtonTitlesForOperationModifier(_ modifier: OperationModifier)
+    {
+        if modifier == .takeStackAsArgument
+        {
+            operationSumButton.title        = Symbols.sum.rawValue
+            operationAverageButton.title    = Symbols.avg.rawValue
+            operationProductButton.title    = Symbols.product.rawValue
+            operationGeoMeanButton.title    = Symbols.geoMean.rawValue
+            operationSigmaButton.title      = Symbols.sigma.rawValue
+            operationVarianceButton.title   = Symbols.variance.rawValue
+        }
+        else if modifier == .topOfStackContainsArgumentCount
+        {
+            operationSumButton.title        = "N " + Symbols.sum.rawValue
+            operationAverageButton.title    = "N " + Symbols.avg.rawValue
+            operationProductButton.title    = "N " + Symbols.product.rawValue
+            operationGeoMeanButton.title    = "N " + Symbols.geoMean.rawValue
+            operationSigmaButton.title      = "N " + Symbols.sigma.rawValue
+            operationVarianceButton.title   = "N " + Symbols.variance.rawValue
+        }
+
         operationPlusButton.title           = Symbols.plus.rawValue
         operationMinusButton.title          = Symbols.minus.rawValue
         operationMultiplicationButton.title = Symbols.multiply.rawValue
@@ -228,6 +416,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         depthButton.title                   = Symbols.depth.rawValue
         
         operationFactorialButton.title      = Symbols.factorial.rawValue
+
         
         operationπButton.title              = Symbols.π.rawValue
         operationeButton.title              = Symbols.e.rawValue
@@ -236,120 +425,36 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationkButton.title              = Symbols.k.rawValue
         operationgButton.title              = Symbols.g.rawValue
         operationGButton.title              = Symbols.G.rawValue
-    }
-    
-    func documentDidOpen()
-    {
-        NotificationCenter.default.addObserver(forName: GlobalNotification.newEngineResult.notificationName, object: nil, queue: nil) 
-        { /*[unowned self]*/ (notification) in
-            guard self.document != nil else { return }
-            
-            guard notification.object as? Document == self.document else { return }
-            self.updateOperationKeyStatus()
-        }
-                
-        // Make sure the watched view is sending bounds changed
-        // notifications (which is probably does anyway, but calling this again won't hurt).                
-        // register for those notifications on the synchronized content view        
-        NotificationCenter.default.addObserver(forName: Notification.Name.NSViewBoundsDidChange, object: extraOperationsView.contentView, queue: nil) 
-        { (notification) in
-            
-            // supress new digit setting. This flag is set true if digits are set programmatically
-            guard self.document != nil else { return }            
-            
-            self.document.currentConfiguration[Document.ConfigurationKey.extraOperationsViewYPosition.rawValue] = self.extraOperationsView.contentView.bounds.origin.y
-            
-        }
-
-
-        if let selectedOperandTypeSegment: Int = document.currentConfiguration[Document.ConfigurationKey.operandType.rawValue] as? Int
-        {
-            typeSelector.setSelected(true, forSegment: selectedOperandTypeSegment)            
-        }
         
-        userChangedOperandType(sender: typeSelector)        
+        operationYPowerXButton.title        = Symbols.yExpX.rawValue
+        operationlogXYButton.title          = Symbols.logYX.rawValue
+        operation10PowerXButton.title       = Symbols.tenExpX.rawValue
+        operation2PowerXButton.title        = Symbols.twoExpX.rawValue
+        operationlog2Button.title           = Symbols.log2.rawValue
+        operationlogButton.title            = Symbols.logE.rawValue
+        operationlog10Button.title          = Symbols.log10.rawValue
         
-        if let selectedRadixSegment: Int = document.currentConfiguration[Document.ConfigurationKey.radix.rawValue] as? Int
-        {   
-            radixSelector.setSelected(true, forSegment: selectedRadixSegment)
-        }
-
-        userChangedRadix(sender: radixSelector)
-
-        if let yPos = document.currentConfiguration[Document.ConfigurationKey.extraOperationsViewYPosition.rawValue] as? CGFloat
-        {
-            extraOperationsView.contentView.bounds.origin.y = yPos
-            
-        }
+        operationNthRootButton.title        = Symbols.nRoot.rawValue
+        operationSquareRootButton.title     = Symbols.root.rawValue
+        operationThirdRootButton.title      = Symbols.thridRoot.rawValue
         
-//        if let selectedExtraOperationsTabIndex: Int = document.currentConfiguration[Document.ConfigurationKey.extraOperationsTabIndex.rawValue] as? Int
-//        {
-//            extraOperationsSelector.setSelected(true, forSegment: selectedExtraOperationsTabIndex)
-//            ///extraOperationsTabView.selectTabViewItem(at: selectedExtraOperationsTabIndex)
-//        }
-
-        //userSelectedExtraOperations(sender: extraOperationsSelector)
+        operationReciprocalButton.title     = Symbols.reciprocal.rawValue
+        operationReciprocalSquareButton.title = Symbols.reciprocalSquare.rawValue
+        operationSquareButton.title         = Symbols.square.rawValue
+        operationCubicButton.title          = Symbols.cubic.rawValue
+        
+        operationSineButton.title            = Symbols.sinus.rawValue
+        operationASineButton.title           = Symbols.asinus.rawValue
+        operationCosineButton.title          = Symbols.cosinus.rawValue
+        operationACosineButton.title         = Symbols.acosinus.rawValue
+        operationTangentButton.title         = Symbols.tangens.rawValue
+        operationATangentButton.title        = Symbols.atangens.rawValue
+        operationCotangentButton.title       = Symbols.cotangens.rawValue
+        operationACotangentButton.title      = Symbols.acotangens.rawValue
         
         updateOperationKeyStatus()
     }
-    
-    func documentWillClose() 
-    {
-        NotificationCenter.default.removeObserver(self)        
-    }
-    
-    deinit 
-    {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    // MARK: - Controller logic
-    
-    /// Inner logic of Changing the radix of the calculator display and keypad. It causes "enter" on any digits beings composed by the user, will enable/disable digit buttons according to the new radix and update the display to show registers in the new radix. Available radix values are: .binary, .octal, .decimal and .hexadecimal
-    ///
-    /// - Parameter newRadix: the radix can be .binary, .octal, .decimal or .hex
-    private func changeRadix(newRadix: Radix)
-    {
-        // complete any ongoing user input
-        self.userPressedEnterKey(sender: enterButton)
-        
-        for (index, button) in digitButtons.enumerated()
-        {
-            button.isEnabled = (index < newRadix.value ? true : false)
-        }
-        
-        radixSelector.setSelected(true, forSegment: newRadix.rawValue)
-        document.currentConfiguration[Document.ConfigurationKey.radix.rawValue] = newRadix.rawValue
-    }
-    
-    /// Inner logic of changing the calculator's operand type. Available are .integer and .float.
-    /// This function will update the engine and the enable/disable status of the keys
-    ///
-    /// - Parameter newType: the new operand type
-    private func changeOperandType(_ newType: OperandType)
-    {
-        print("\(self) \(#function): sending new operation type'\(newType)' to engine")
-        
-        updateOperationKeyStatus()        
-        
-        delegate.userInputOperandType(newType.rawValue)  
-        document.currentConfiguration[Document.ConfigurationKey.operandType.rawValue] = newType.rawValue
-    }
-    
-    var canInputEnter: Bool 
-    {
-        return digitsComposing.characters.count > 0 && delegate.userWillInputEnter(numericalValue: digitsComposing, radix: radix.value)
-    }
-    
-    var canInputPeriodCharacter: Bool
-    {
-        return digitsComposing.characters.contains(".") == false && operandType == .float
-    }
-    
-    var canInputExponent: Bool
-    {
-        return digitsComposing.characters.contains("e") == false && operandType == .float && digitsComposing.characters.count > 0
-    }
+
     
     // MARK: - Action methods
     
@@ -413,8 +518,9 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         let enableUnaryIntegerOperations:  Bool = operandType == .integer && ((availableOperandsCount > 0) || enableEnter)
         let enableBinaryIntegerOperations: Bool = operandType == .integer && ((availableOperandsCount > 1) || (enableEnter && availableOperandsCount > 0))
 
-        let enableUnaryFloatOperations:    Bool = operandType == .float && ((availableOperandsCount > 0) || enableEnter)
-        let enableBinaryFloatOperations:   Bool = operandType == .float && ((availableOperandsCount > 1) || (enableEnter && availableOperandsCount > 0))
+        let enableUnaryFloatOperations:    Bool = operandType == .float       && ((availableOperandsCount > 0) || enableEnter)
+        let enableBinaryFloatOperations:   Bool = enableUnaryFloatOperations  && (availableOperandsCount > 1)
+        let enableTernaryFloatOperations:  Bool = enableBinaryFloatOperations && (availableOperandsCount > 2)
         
         enterButton.isEnabled = enableEnter
         periodButton.isEnabled = canInputPeriodCharacter
@@ -423,6 +529,29 @@ class KeypadController: NSObject, DependendObjectLifeCycle
 
         typeSelector.isEnabled  = true
         radixSelector.isEnabled = operandType == .integer
+
+        if operationModifier == .takeStackAsArgument
+        {
+            operationSumButton.isEnabled       = enableUnaryIntegerOperations || enableUnaryFloatOperations
+            operationAverageButton.isEnabled   = enableUnaryFloatOperations
+            operationProductButton.isEnabled   = enableUnaryFloatOperations
+            operationGeoMeanButton.isEnabled   = enableUnaryFloatOperations
+            operationSigmaButton.isEnabled     = enableBinaryFloatOperations
+            operationVarianceButton.isEnabled  = enableBinaryFloatOperations
+
+        }
+        else if operationModifier == .topOfStackContainsArgumentCount
+        {
+            operationSumButton.isEnabled       = enableBinaryIntegerOperations  || enableBinaryFloatOperations                        
+            operationAverageButton.isEnabled   = enableBinaryFloatOperations
+            operationProductButton.isEnabled   = enableBinaryIntegerOperations  || enableBinaryFloatOperations
+            operationGeoMeanButton.isEnabled   = enableTernaryFloatOperations
+            operationSigmaButton.isEnabled     = enableTernaryFloatOperations
+            
+        }
+        
+        operationCopyMemoryAToStack.isEnabled  = !delegate.isMemoryAEmpty()
+        operationCopyMemoryBToStack.isEnabled  = !delegate.isMemoryBEmpty()
         
         operationSignChangeButton.isEnabled = enableUnaryIntegerOperations || enableUnaryFloatOperations
         operationSquareButton.isEnabled     = enableUnaryIntegerOperations || enableUnaryFloatOperations
@@ -459,6 +588,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationACosineButton.isEnabled   = enableUnaryFloatOperations
         operationTangentButton.isEnabled   = enableUnaryFloatOperations
         operationATangentButton.isEnabled  = enableUnaryFloatOperations
+        operationCotangentButton.isEnabled = enableUnaryFloatOperations
+        operationACotangentButton.isEnabled = enableUnaryFloatOperations
         operationEPowerXButton.isEnabled   = enableUnaryFloatOperations
         operation10PowerXButton.isEnabled  = enableUnaryFloatOperations
         operation2PowerXButton.isEnabled   = enableUnaryIntegerOperations || enableUnaryFloatOperations
@@ -468,10 +599,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationCubicButton.isEnabled     = enableUnaryFloatOperations
         operationThirdRootButton.isEnabled = enableUnaryFloatOperations
         
-        operationNthRootButton.isEnabled   = enableBinaryFloatOperations
-
-        operationSumOfStackButton.isEnabled = enableUnaryIntegerOperations || enableUnaryFloatOperations
-
+        operationNthRootButton.isEnabled   = enableBinaryFloatOperations        
         operationModuloNButton.isEnabled    = enableBinaryIntegerOperations
         
         operationLogicXorButton.isEnabled   = enableBinaryIntegerOperations
@@ -519,7 +647,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         print(self)
                 
         // display the composed user input as string
-        let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.notificationName, object: document, userInfo: ["StringValue" : digitsComposing])
+        let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.name, object: document, userInfo: ["StringValue" : digitsComposing])
         NotificationCenter.default.post(updateUINote)
     }
     
@@ -534,7 +662,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             print(self)
 
             // display the string 
-            let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.notificationName, object: document, 
+            let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.name, object: document, 
                                                           userInfo: ["StringValue" : digitsComposing])
             NotificationCenter.default.post(updateUINote)
         }
@@ -551,7 +679,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             print(self)
             
             // display the string 
-            let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.notificationName, object: document, 
+            let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.name, object: document, 
                                                           userInfo: ["StringValue" : digitsComposing])
             NotificationCenter.default.post(updateUINote)
         }
@@ -590,6 +718,13 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         {
             //print("\(self) \(#function): enter failed, composed digits '\(digitsComposing)' could not be converted to a numerical value")            
         }
+    }
+    
+    @IBAction func userPressedOperationModifierButton(sender: NSButton)
+    {
+        guard sender == stackButton else { return }
+        
+        operationModifier = stackButton.state == NSOnState ? .topOfStackContainsArgumentCount : .takeStackAsArgument
     }
         
     // MARK: - Support

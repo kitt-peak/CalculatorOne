@@ -67,7 +67,7 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
         registerViewController0.acceptsValueChangesByUI = true
         
         
-        NotificationCenter.default.addObserver(forName: GlobalNotification.newEngineResult.notificationName, object: nil, queue: nil) 
+        NotificationCenter.default.addObserver(forName: GlobalNotification.newEngineResult.name, object: nil, queue: nil) 
         { [unowned self] (notification) in
             
             guard notification.object as? Document == self.document else { return }
@@ -77,7 +77,7 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
             self.updateRegisterDisplay(source: DataSource.engine, radix: radix)
         }
         
-        NotificationCenter.default.addObserver(forName: GlobalNotification.newKeypadEntry.notificationName, object: nil, queue: nil) 
+        NotificationCenter.default.addObserver(forName: GlobalNotification.newKeypadEntry.name, object: nil, queue: nil) 
         { [ unowned self] (notification) in
             
             guard notification.object as? Document == self.document else { return }
@@ -136,8 +136,7 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
 
             // then, update the top register with the supplied value.
             registerViewController0.representedValue = .stringLeftAligned(value)        
-        }
-
+        }        
     }
     
     

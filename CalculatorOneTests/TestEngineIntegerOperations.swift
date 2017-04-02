@@ -276,7 +276,7 @@ class TestEngineIntegerOperations: XCTestCase {
             
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             
-            engineDUT.userInputOperation(symbol: "X²")
+            engineDUT.userInputOperation(symbol: Symbols.square.rawValue)
             result = engineDUT.registerValue(registerNumber: 0, radix: 10)
             XCTAssertEqual(result, test.1)
             engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
@@ -317,7 +317,7 @@ class TestEngineIntegerOperations: XCTestCase {
     func testThatIntegerFactorialOperationsWorksMathematicallyCorrect()
     {
         let testSet = [
-            // value      2**N
+            // value      value!
             ("-1",        "0"),     
             ("0",         "1"),
             ("1",         "1"),
@@ -376,11 +376,26 @@ class TestEngineIntegerOperations: XCTestCase {
                 engineDUT.userInputEnter(numericalValue: value, radix: 10)
             }
             
-            engineDUT.userInputOperation(symbol: "∑")
+            engineDUT.userInputOperation(symbol: Symbols.sum.rawValue)
             result = engineDUT.registerValue(registerNumber: 0, radix: 10)
             XCTAssertEqual(result, test.1)
             engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
         }
+        
+        
+        // test the sum of all integers from 1 to 100: expected result = 5050
+        for value: Int in 1...100
+        {
+            engineDUT.userInputEnter(numericalValue: String(value), radix: 10)
+        }
+        
+        engineDUT.userInputOperation(symbol: Symbols.sum.rawValue)
+        
+        XCTAssertEqual(engineDUT.numberOfRegistersWithContent(), 1)
+        XCTAssertEqual(String(engineDUT.registerValue(registerNumber: 0, radix: 10)), "5050")
+        
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+
     }
 
     
@@ -557,6 +572,11 @@ class TestEngineIntegerOperations: XCTestCase {
             XCTAssertEqual(result, test.2)
             engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
         }
+    }
+    
+    
+    func testThatIntegerSumOperationWorksMathematicallyCorrect()
+    {
     }
 
 }

@@ -88,51 +88,13 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         return valueWithDigitCleared + valueNewDigitSignCorrected
     }
     
-    // MARK: - Mathematical class variables
-    class var const_e: Double  { return 2.71828182845904523536028747135266249775724709369995 }
-    class var const_π: Double { return 3.14159265358979323846264338327950288419716939937510 }
-    
-    class var const_c0:   Double { return 299792458.0}      /* speed of light in m/s, exact */
-    class var const_µ0:   Double { return 1.256637061E-6 }  /* magnetic constant */
-    class var const_epsilon0: Double { return 8.854187817E-12 } /* electrical constant */
-    class var const_h:    Double { return 6.62607004081E-34 }    /* Planck's constant in J*s */
-    class var const_k:    Double { return 1.3806485279E-23 }    /* Boltzmann constant */
-    class var const_g:    Double { return 9.80665 }           /* earth acceleration */
-    class var const_G:    Double { return 6.6740831E-11 }     /* gravitational constant */
     
     
-    //case epsilon0 = "ε₀", µ0 = "μ₀", c0 = "c₀", k0 = "k₀", e0 = "e₀", G = "G", g = "g"
-
-    
-    
-    
-    // MARK: - Integer class functions
-    @nonobjc class func sum(of a: [Int]) -> Int { return a.reduce(0) { (x, y) -> Int in return x + y } }
-    //@nonobjc class func avg(of a: [Int]) -> Int { return a.reduce(0) { (x, y) -> Int in return x + y } / a.count}
-    @nonobjc class func factorial(of a: Int) -> Int 
-    { 
-        if a < 0 { return 0 }
-        if a < 1 { return 1 }
-        return a * Engine.factorial(of: a-1)
-    }
-    @nonobjc class func twoExpN(of n: Int) -> Int { return n < 0 ? 0 : n == 0 ? 1 : (2 << (n-1)) } 
-    
-    /* EUCLID algorithm for GCD */
-    @nonobjc class func gcd(of a: Int, _ b: Int) -> Int { if b == 0 { return a } else { return gcd(of: b, a % b)} }  
-    @nonobjc class func lcm(of a: Int, _ b: Int) -> Int { return abs(abs(a * b) / gcd(of: a, b)) }  
-
-    // MARK: - Double class functions
-    @nonobjc class func sum(of a: [Double]) -> Double { return a.reduce(0.0) { (x, y) -> Double in return x + y } }
-    @nonobjc class func avg(of a: [Double]) -> Double { return a.reduce(0.0) { (x, y) -> Double in return x + y } / Double(a.count)}
-    @nonobjc class func product(of a: [Double]) -> Double { return a.reduce(1.0) { (x, y) -> Double in return x * y } }
-    
-    @nonobjc class func nRoot(of a: Double, _ b: Double) -> Double { return pow(const_e, log(a)/b)}
-    
-    @nonobjc class func geometricalMean(of a: [Double]) -> Double { return Engine.nRoot(of: a.reduce(1.0) { (x, y) -> Double in return x * y },  Double(a.count) ) }
-
     //MARK: - Private properties
     
     private var stack: [OperandValue] = [OperandValue]()
+    private var memoryA: [OperandValue] = [OperandValue]() 
+    private var memoryB: [OperandValue] = [OperandValue]() 
     
     private var operandType: OperandType = .integer
     
@@ -148,9 +110,9 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
     
     func documentDidOpen() 
     {
-        if let savedStack = document.currentConfiguration[Document.ConfigurationKey.stackValues.rawValue] as? NSArray
+        if let savedStack = document.currentSaveDataSet[Document.ConfigurationKey.stackValues.rawValue] as? NSArray
         {
-            if let operandType = document.currentConfiguration[Document.ConfigurationKey.operandType.rawValue] as? Int
+            if let operandType = document.currentSaveDataSet[Document.ConfigurationKey.operandType.rawValue] as? Int
             {
                 switch operandType 
                 {
@@ -170,16 +132,67 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
                     
                 default: break
                 }
-            }
-            
-            updateUI()
+            }            
         }
+
+        if let savedMemoryA = document.currentSaveDataSet[Document.ConfigurationKey.memoryAValues.rawValue] as? NSArray
+        {
+            if let operandType = document.currentSaveDataSet[Document.ConfigurationKey.operandType.rawValue] as? Int
+            {
+                switch operandType 
+                {
+                case OperandType.float.rawValue:
+                    
+                    for value in savedMemoryA as! [Double]
+                    {
+                        memoryA.append(OperandValue.float(value))
+                    }
+                    
+                case OperandType.integer.rawValue:
+                    
+                    for value in savedMemoryA as! [Int]
+                    {
+                        memoryA.append(OperandValue.integer(value))
+                    }
+                    
+                default: break
+                }
+            }            
+        }
+
+        if let savedMemoryB = document.currentSaveDataSet[Document.ConfigurationKey.memoryBValues.rawValue] as? NSArray
+        {
+            if let operandType = document.currentSaveDataSet[Document.ConfigurationKey.operandType.rawValue] as? Int
+            {
+                switch operandType 
+                {
+                case OperandType.float.rawValue:
+                    
+                    for value in savedMemoryB as! [Double]
+                    {
+                        memoryB.append(OperandValue.float(value))
+                    }
+                    
+                case OperandType.integer.rawValue:
+                    
+                    for value in savedMemoryB as! [Int]
+                    {
+                        memoryB.append(OperandValue.integer(value))
+                    }
+                    
+                default: break
+                }
+            }            
+        }
+
+        
+        updateUI()
+
     }
     
     func documentWillClose()
     {
-        // save the stack to the configuration data in the document
-        
+        // save the stack to the configuration data in the document        
         let savedStack: NSMutableArray = NSMutableArray()
         
         for value in stack
@@ -191,7 +204,36 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
             }
         }
         
-        document.currentConfiguration[Document.ConfigurationKey.stackValues.rawValue] = savedStack        
+        document.currentSaveDataSet[Document.ConfigurationKey.stackValues.rawValue] = savedStack        
+        
+        // save memory A to the configuration data in the document        
+        let savedMemoryA: NSMutableArray = NSMutableArray()
+        
+        for value in memoryA
+        {
+            switch value 
+            {
+            case .float(let f):   savedMemoryA.add(f)
+            case .integer(let i): savedMemoryA.add(i)
+            }
+        }
+        
+        document.currentSaveDataSet[Document.ConfigurationKey.memoryAValues.rawValue] = savedMemoryA        
+
+        // save memory B to the configuration data in the document        
+        let savedMemoryB: NSMutableArray = NSMutableArray()
+        
+        for value in memoryB
+        {
+            switch value 
+            {
+            case .float(let f):   savedMemoryB.add(f)
+            case .integer(let i): savedMemoryB.add(i)
+            }
+        }
+        
+        document.currentSaveDataSet[Document.ConfigurationKey.memoryBValues.rawValue] = savedMemoryB        
+
     }
     
     //MARK: - Stack operations    
@@ -244,19 +286,22 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
     private enum OperationClass
     {
         case dropAll, nDrop, depth
+        case copyStackToA, copyStackToB, copyAToStack, copyBToStack
         
         case unary2array(   (OperandValue) -> [(OperandValue)] )
         case binary2array(  (OperandValue, OperandValue) -> [(OperandValue)] )
         case ternary2array( (OperandValue, OperandValue, OperandValue) -> [(OperandValue)] )
                 
-        case integerUnary2array(  (Int)      -> ([OperandValue]))
-        case integerBinary2array( (Int, Int) -> ([OperandValue]))
-        case integerArray2array(  ([Int])    -> ([OperandValue]))
+        case integerUnary2array(  (Int)      -> [OperandValue])
+        case integerBinary2array( (Int, Int) -> [OperandValue])
+        case integerArray2array(  ([Int])    -> [OperandValue])
+        case integerNArray2array( ([Int])    -> [OperandValue])
         
         case floatNone2array(   () -> ([OperandValue]))
-        case floatUnary2array(  (Double)         -> ([OperandValue]))
-        case floatBinary2array( (Double, Double) -> ([OperandValue]))
+        case floatUnary2array(  (Double)         ->  [OperandValue])
+        case floatBinary2array( (Double, Double) ->  [OperandValue])
         case floatArray2array(([Double])          -> [OperandValue])      
+        case floatNArray2array(([Double])         -> [OperandValue])      
 
     }
     
@@ -272,7 +317,12 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
       Symbols.swap.rawValue      : .binary2array ({ (a: OperandValue, b: OperandValue) -> ([OperandValue]) in return [a, b] }), /*swap*/
         
       Symbols.rotateDown.rawValue: .ternary2array ( { (a: OperandValue, b: OperandValue, c: OperandValue) -> ([OperandValue]) in return [a, c, b] }),
-      Symbols.rotateUp.rawValue  : .ternary2array ( { (a: OperandValue, b: OperandValue, c: OperandValue) -> ([OperandValue]) in return [b, a, c] })
+      Symbols.rotateUp.rawValue  : .ternary2array ( { (a: OperandValue, b: OperandValue, c: OperandValue) -> ([OperandValue]) in return [b, a, c] }),
+      
+      Symbols.copyAToStack.rawValue : .copyAToStack,
+      Symbols.copyBToStack.rawValue : .copyBToStack,
+      Symbols.copyStackToA.rawValue : .copyStackToA,
+      Symbols.copyStackToB.rawValue : .copyStackToB,
     ]
     
     private var floatOperations: OperationsTable =
@@ -286,45 +336,47 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         Symbols.k.rawValue:     .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_k)]  }),
         Symbols.g.rawValue:     .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_g)]  }),
         Symbols.G.rawValue:     .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_G)]  }),
+        Symbols.plus.rawValue     : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.add(b, a))] }),
+        Symbols.minus.rawValue    : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.subtract(b, a))] }),
+        Symbols.multiply.rawValue : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.multiply(b, a))] }),
+        Symbols.divide.rawValue   : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.divide(b, a))] }),
+        Symbols.yExpX.rawValue : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(pow(b, a))] }),
+        Symbols.logYX.rawValue : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(log(a) / log(b))] }),
+        Symbols.nRoot.rawValue   : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.nRoot(of: b, a))] }),
+        Symbols.eExpX.rawValue   : .floatUnary2array(  { (a: Double) -> [OperandValue] in return [.float(pow(const_e, a))] }),
+        Symbols.tenExpX.rawValue : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(pow(10.0, a))] }),
+        Symbols.twoExpX.rawValue : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(pow(2.0, a))] }),
+        Symbols.logE.rawValue    : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(log(a))] }),
+        Symbols.log10.rawValue   : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(log10(a))] }),
+        Symbols.log2.rawValue    : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(log2(a))] }),
+        Symbols.root.rawValue : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(sqrt(a))] }),
+        Symbols.thridRoot.rawValue :  .floatUnary2array( { (a: Double)   -> [OperandValue] in return  [.float(Engine.thirdRoot(of: a))] }),
+        Symbols.reciprocal.rawValue: .floatUnary2array( { (a: Double)       -> [OperandValue] in return  [.float(1.0 / a)] }),
+        Symbols.reciprocalSquare.rawValue: .floatUnary2array( { (a: Double) -> [OperandValue] in return  [.float(1.0 / (a * a))] }),      
+        Symbols.square.rawValue : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(a*a)]   }),
+        Symbols.cubic.rawValue  : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(a*a*a)] }),
         
-        Symbols.plus.rawValue     : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(b + a)] }),
-        Symbols.minus.rawValue    : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(b - a)] }),
-        Symbols.multiply.rawValue : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(b * a)] }),
-        Symbols.divide.rawValue   : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(b / a)] }),
-        
-       "Yˣ" : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(pow(b, a))] }),
-   "logY X" : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(log(a) / log(b))] }),
-   
-      "N √" : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.nRoot(of: b, a))] }),
-
-        
-       "eˣ" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(pow(const_e, a))] }),
-      "10ˣ" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(pow(10.0, a))] }),
-       "2ˣ" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(pow(2.0, a))] }),
-
-       "ln" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(log(a))] }),
-      "log" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(log10(a))] }),
-       "lb" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(log2(a))] }),
-       
-        "√" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(sqrt(a))] }),
-        "∛" :  .floatUnary2array( { (a: Double)        -> [OperandValue] in return  [.float(Engine.nRoot(of: a, 3.0))] }),
-      "1÷X" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(1.0 / a)] }),
-     "1÷X²" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(1.0 / (a * a))] }),      
-       "X²" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(a*a)]   }),
-       "X³" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(a*a*a)] }),
-
-      "+⇔-" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(-a)]     }),
-      "sin"  : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(sin(a))]  }),
-      "asin" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(asin(a))] }),
-      "cos"  : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(cos(a))]  }),
-      "acos" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(acos(a))] }),
-      "tan"  : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(tan(a))]  }),
-      "atan" : .floatUnary2array( { (a: Double)         -> [OperandValue] in return [.float(atan(a))] }),
-      
-      "∑" : .floatArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.sum(of: s))]}),
-    "AVG" : .floatArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.avg(of: s))]}),
-      "∏" : .floatArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.product(of: s))]}),
-     "∏√" : .floatArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.geometricalMean(of: s))]}),
+      "+⇔-" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(-a)]}),
+        Symbols.sinus.rawValue  : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.sinus(a))]  }),
+        Symbols.asinus.rawValue : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.arcSinus(a))] }),
+        Symbols.cosinus.rawValue  : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.cosinus(a))]  }),
+        Symbols.acosinus.rawValue : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.arcCosine(a))] }),
+        Symbols.tangens.rawValue  : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.tangens(a))]  }),
+        Symbols.atangens.rawValue : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.arcTangens(a))] }),
+        Symbols.cotangens.rawValue  : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.cotangens(a))]  }),
+        Symbols.acotangens.rawValue : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.arcCotangens(a))] }),
+    Symbols.sum.rawValue  : .floatArray2array({ (s: [Double]) ->      [OperandValue] in return [.float(Engine.sum(of: s))]}),
+    Symbols.nSum.rawValue : .floatNArray2array({(s: [Double]) ->      [OperandValue] in return [.float(Engine.sum(of: s))]}),
+    Symbols.avg.rawValue  : .floatArray2array({ (s: [Double]) ->      [OperandValue] in return [.float(Engine.avg(of: s))]}),
+    Symbols.nAvg.rawValue : .floatNArray2array({ (s: [Double]) ->     [OperandValue] in return [.float(Engine.avg(of: s))]}),
+    Symbols.product.rawValue  : .floatArray2array({ (s: [Double]) ->  [OperandValue] in return [.float(Engine.product(of: s))]}),
+    Symbols.nProduct.rawValue : .floatNArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.product(of: s))]}),
+    Symbols.geoMean.rawValue  : .floatArray2array({  (s: [Double]) -> [OperandValue] in return [.float(Engine.geometricalMean(of: s))]}),
+    Symbols.nGeoMean.rawValue : .floatNArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.geometricalMean(of: s))]}),
+    Symbols.sigma.rawValue    : .floatArray2array({  (s: [Double]) -> [OperandValue] in return [.float(Engine.standardDeviation(of: s))]}),
+    Symbols.nSigma.rawValue   : .floatNArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.standardDeviation(of: s))]}),
+    Symbols.variance.rawValue : .floatArray2array( { (s: [Double]) -> [OperandValue] in return [.float(Engine.variance(of: s))]}),
+    Symbols.nVariance.rawValue: .floatNArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.variance(of: s))]}),
         
     ]
     
@@ -350,24 +402,246 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         "+⇔-" : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(-a)]  }),
            "~" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return [.integer(~a)]  }),
            
-          "X²" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a*a)]   }),
+      Symbols.square.rawValue : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a*a)]   }),
           "2ˣ" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(Engine.twoExpN(of: a))] }),
       Symbols.shiftLeft.rawValue : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a << 1)] }),
       Symbols.shiftRight.rawValue : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a >> 1)] }),
          "1 +" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a + 1)] }),
          "1 -" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a - 1)] }),
           
-           "∑" : .integerArray2array( { (s: [Int]) -> [OperandValue] in return [.integer( s.reduce(0) { (x, y) -> Int in return x + y })]}),
-          
-          Symbols.factorial.rawValue : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(Engine.factorial(of: a) )] })
+      Symbols.sum.rawValue  : .integerArray2array( { (s: [Int]) -> [OperandValue] in return [.integer(Engine.sum(of: s))]}),
+      Symbols.nSum.rawValue : .integerNArray2array( { (s: [Int]) -> [OperandValue] in return [.integer(Engine.sum(of: s))]}),
+      
+      Symbols.factorial.rawValue : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(Engine.factorial(of: a) )] })
         
     ]
     
+    private func processOperation(symbol: String) 
+    {
+        var typelessOperationCompleted: Bool = true
+        var integerOperationCompleted: Bool = true
+        var floatOperationCompleted: Bool = true
+        
+        // perform typeless operations first. If no typeless information is found,
+        // the program continues to look for integer and floating point operations
+        if let currentOperation = typelessOperations[symbol]
+        {
+            switch currentOperation 
+            {
+                
+            case .dropAll:
+                stack.removeAll()
+                
+            case .depth:
+                let a: Int = stack.count 
+                
+                switch operandType 
+                {
+                case .integer: stack.append(OperandValue.integer(a))
+                case .float  : stack.append(OperandValue.float(Double(a)))
+                }
+                
+            case .unary2array(let u2aFunction):
+                let a: OperandValue = pop()
+                
+                stack.append(contentsOf: u2aFunction(a))
+                
+            case .binary2array(let b2aFunction):
+                let a: OperandValue = pop()
+                let b: OperandValue = pop()
+                
+                stack.append(contentsOf: b2aFunction(a, b))
+                
+            case .ternary2array(let t2aFunction):
+                let a: OperandValue = pop()
+                let b: OperandValue = pop()
+                let c: OperandValue = pop()
+                
+                stack.append(contentsOf: t2aFunction(a, b, c))
+                
+            case .copyAToStack:
+                stack.removeAll()
+                stack.append(contentsOf: memoryA)
+                
+            case .copyBToStack: 
+                stack.removeAll()
+                stack.append(contentsOf: memoryB)
+                
+            case .copyStackToA:
+                memoryA.removeAll()                
+                memoryA.append(contentsOf: stack)
+                
+            case .copyStackToB:
+                memoryB.removeAll()                
+                memoryB.append(contentsOf: stack)
+                
+            default:
+                typelessOperationCompleted = false
+            }
+        }
+        else
+        {
+            typelessOperationCompleted = false
+        }
+        
+        
+        switch operandType
+        {
+        case .integer:
+            
+            floatOperationCompleted = false
+            
+            if let currentOperation = integerOperations[symbol]
+            {
+                switch currentOperation 
+                {
+                case .integerUnary2array(let int2arrayFunction):
+                    let a: Int = popInteger()
+                    
+                    let r: [OperandValue] = int2arrayFunction(a)
+                    
+                    stack.append(contentsOf: r)
+                    
+                case .integerBinary2array(let int2arrayFunction):
+                    let a: Int = popInteger()
+                    let b: Int = popInteger()
+                    
+                    let r: [OperandValue] = int2arrayFunction(a, b)
+                    
+                    stack.append(contentsOf: r)
+                    
+                    
+                case .integerArray2array(let arrayFunction):
+                    let s: [Int] = stack.map({ (e: OperandValue) -> Int in
+                        if case .integer(let i) = e { return i}
+                        return -1
+                    })
+                    
+                    let b = arrayFunction(s)
+                    
+                    stack.removeAll()
+                    stack.append(contentsOf: b)
+                    
+                    /*take N arguments from the stack */
+                case .integerNArray2array(let arrayFunction):
+                    
+                    let n: Int   = popInteger()    // specifies the number of arguments to pop from the stack
+                    var s: [Int] = [Int]()         // the array of elements popped from the stack
+                    
+                    for _ : Int in 0 ..< n          // pop the specified number of arguments from the stack and put into array
+                    {
+                        s.append(popInteger())
+                    }
+                    
+                    let r: [OperandValue] = arrayFunction(s)
+                    stack.append(contentsOf: r)
+                    
+                case .nDrop:
+                    let a: Int = popInteger()
+                    
+                    for _ in 0..<a
+                    {
+                        _ = stack.popLast()
+                    }
+                    
+                default:
+                    integerOperationCompleted = false
+                }
+            }
+            else
+            {
+                integerOperationCompleted = false
+            }
+            
+        case .float:
+            
+            integerOperationCompleted = false
+            
+            if let currentOperation = floatOperations[symbol]
+            {
+                switch currentOperation 
+                {
+                    
+                case .floatNone2array(let n2aFunction):
+                    let s: [OperandValue] = n2aFunction()
+                    
+                    stack.append(contentsOf: s)
+                    
+                case .floatUnary2array(let unaryFunction):
+                    let a: Double = popFloat()
+                    
+                    let s: [OperandValue] = unaryFunction(a)
+                    
+                    stack.append(contentsOf: s)
+                    
+                case .floatBinary2array(let binaryFunction):
+                    let a: Double = popFloat()
+                    let b: Double = popFloat()
+                    
+                    let s: [OperandValue] = binaryFunction(a, b)
+                    
+                    stack.append(contentsOf: s)
+                    
+                case .floatArray2array(let arrayFunction):
+                    
+                    // copy the entire stack into the array stackCopy
+                    let stackCopy: [Double] = stack.map({ (e: OperandValue) -> Double in
+                        if case .float(let d) = e { return d }
+                        return -1.0 /*should never be executed*/
+                    })
+                    
+                    stack.removeAll()
+                    
+                    if stackCopy.count > 0
+                    {   let r: [OperandValue] = arrayFunction(stackCopy)
+                        stack.append(contentsOf: r) }
+                    
+                    /*take N arguments from the stack */
+                case .floatNArray2array(let arrayFunction):
+                    
+                    let n: Double   = popFloat()    // specifies the number of arguments to pop from the stack
+                    var s: [Double] = [Double]()    // the array of elements popped from the stack
+                    
+                    for _ : Int in 0 ..< Int(n)          // pop the specified number of arguments from the stack and put into array
+                    {
+                        s.append(popFloat())
+                    }
+                    
+                    let r: [OperandValue] = arrayFunction(s)
+                    stack.append(contentsOf: r)
+                    
+                    
+                default: 
+                    floatOperationCompleted = false
+                    
+                }
+            }
+            else
+            {
+                floatOperationCompleted = false
+            }
+            
+        }
+        
+        if typelessOperationCompleted == false && integerOperationCompleted == false && floatOperationCompleted == false
+        {
+            print("| engine \(#function): did not recognize operation \(operandType) '\(symbol)', stack not changed")                        
+        }
+        else
+        {
+            print("| engine \(#function): performed operation \(operandType) '\(symbol)'")            
+            print(description)
+        }
+        
+        
+    }
+    
+
     
     // MARK: - Output to user
     private func updateUI()
     {
-        let updateUINote: Notification = Notification(name: GlobalNotification.newEngineResult.notificationName, object: document, userInfo: [:])
+        let updateUINote: Notification = Notification(name: GlobalNotification.newEngineResult.name, object: document, userInfo: [:])
         NotificationCenter.default.post(updateUINote)
     }
 
@@ -396,7 +670,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         {
             operandType = newOperandType
             
-            // convert all elements on the stack to the new operand
+            // convert all elements on the stack to the new operand type
             for (index, value) in stack.enumerated()
             {
                 switch value 
@@ -405,6 +679,27 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
                 case .float(let f):   stack[index] = .integer(Int(f))
                 }
             }
+            
+            // convert all elements in register A to the new operand type
+            for (index, value) in memoryA.enumerated()
+            {
+                switch value 
+                {
+                case .integer(let i): memoryA[index] = .float(Double(i))
+                case .float(let f):   memoryA[index] = .integer(Int(f))
+                }
+            }
+
+            // convert all elements in register B to the new operand type
+            for (index, value) in memoryB.enumerated()
+            {
+                switch value 
+                {
+                case .integer(let i): memoryB[index] = .float(Double(i))
+                case .float(let f):   memoryB[index] = .integer(Int(f))
+                }
+            }
+
             
             updateUI()
         }
@@ -466,179 +761,16 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         
     }
     
-    private func processOperation(symbol: String) 
+    func isMemoryAEmpty() -> Bool 
     {
-        var typelessOperationCompleted: Bool = true
-        var integerOperationCompleted: Bool = true
-        var floatOperationCompleted: Bool = true
-        
-        // perform typeless operations first. If no typeless information is found,
-        // the program continues to look for integer and floating point operations
-        if let currentOperation = typelessOperations[symbol]
-        {
-            switch currentOperation 
-            {
-                
-            case .dropAll:
-                stack.removeAll()
-                
-            case .depth:
-                let a: Int = stack.count 
-                    
-                switch operandType 
-                {
-                case .integer: stack.append(OperandValue.integer(a))
-                case .float  : stack.append(OperandValue.float(Double(a)))
-                }
-                    
-            case .unary2array(let u2aFunction):
-                let a: OperandValue = pop()
-                
-                stack.append(contentsOf: u2aFunction(a))
-
-            case .binary2array(let b2aFunction):
-                let a: OperandValue = pop()
-                let b: OperandValue = pop()
-
-                stack.append(contentsOf: b2aFunction(a, b))
-                
-            case .ternary2array(let t2aFunction):
-                let a: OperandValue = pop()
-                let b: OperandValue = pop()
-                let c: OperandValue = pop()
-                
-                stack.append(contentsOf: t2aFunction(a, b, c))
-                
-
-            default:
-                typelessOperationCompleted = false
-            }
-        }
-        else
-        {
-            typelessOperationCompleted = false
-        }
-
-        
-        switch operandType
-        {
-        case .integer:
-            
-            floatOperationCompleted = false
-            
-            if let currentOperation = integerOperations[symbol]
-            {
-                switch currentOperation 
-                {
-                case .integerUnary2array(let int2arrayFunction):
-                    let a: Int = popInteger()
-                    
-                    let r: [OperandValue] = int2arrayFunction(a)
-                    
-                    stack.append(contentsOf: r)
-
-                case .integerBinary2array(let int2arrayFunction):
-                    let a: Int = popInteger()
-                    let b: Int = popInteger()
-                    
-                    let r: [OperandValue] = int2arrayFunction(a, b)
-                    
-                    stack.append(contentsOf: r)
-
-                                        
-                case .integerArray2array(let arrayFunction):
-                    let s: [Int] = stack.map({ (e: OperandValue) -> Int in
-                        if case .integer(let i) = e { return i}
-                        return -1
-                    })
-                    
-                    let b = arrayFunction(s)
-                    
-                    stack.removeAll()
-                    stack.append(contentsOf: b)
-                                        
-                case .nDrop:
-                    let a: Int = popInteger()
-                    
-                    for _ in 0..<a
-                    {
-                        _ = stack.popLast()
-                    }
-                    
-                default:
-                    integerOperationCompleted = false
-                }
-            }
-            else
-            {
-                integerOperationCompleted = false
-            }
-            
-        case .float:
-            
-            integerOperationCompleted = false
-            
-            if let currentOperation = floatOperations[symbol]
-            {
-                switch currentOperation 
-                {
-
-                case .floatNone2array(let n2aFunction):
-                    let s: [OperandValue] = n2aFunction()
-                    
-                    stack.append(contentsOf: s)
-                    
-                case .floatUnary2array(let unaryFunction):
-                    let a: Double = popFloat()
-                    
-                    let s: [OperandValue] = unaryFunction(a)
-                    
-                    stack.append(contentsOf: s)
-
-                case .floatBinary2array(let binaryFunction):
-                    let a: Double = popFloat()
-                    let b: Double = popFloat()
-                    
-                    let s: [OperandValue] = binaryFunction(a, b)
-                    
-                    stack.append(contentsOf: s)
-                    
-                case .floatArray2array(let arrayFunction):
-                    let s: [Double] = stack.map({ (e: OperandValue) -> Double in
-                        if case .float(let d) = e { return d }
-                        return -1.0 /*should never be executed*/
-                    })
-                    
-                    let r: [OperandValue] = arrayFunction(s)
-                    
-                    stack.removeAll()
-                    stack.append(contentsOf: r)
-                    
-                default: 
-                    floatOperationCompleted = false
-            
-                }
-            }
-            else
-            {
-                floatOperationCompleted = false
-            }
-
-        }
-        
-        if typelessOperationCompleted == false && integerOperationCompleted == false && floatOperationCompleted == false
-        {
-            print("| engine \(#function): did not recognize operation \(operandType) '\(symbol)', stack not changed")                        
-        }
-        else
-        {
-            print("| engine \(#function): performed operation \(operandType) '\(symbol)'")            
-            print(stackDescription)
-        }
-
-
+        return memoryA.isEmpty
     }
-        
+    
+    func isMemoryBEmpty() -> Bool 
+    {
+        return memoryB.isEmpty
+    }
+
 
     //MARK: - Keypad data source protocoll
     func numberOfRegistersWithContent() -> Int 
@@ -679,12 +811,22 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
     {
         return "| Stack [\(stack.count)]: " + stack.description
     }
+
+    private var memoryADescription: String
+    {
+        return "| Reg. A [\(memoryA.count)]: " + memoryA.description
+    }
+
+    private var memoryBDescription: String
+    {
+        return "| Reg. B [\(memoryB.count)]: " + memoryB.description
+    }
     
     override var description: String
     {
         var str: String = "Engine [\(Unmanaged.passUnretained(self).toOpaque())]\n" 
 
-        str = str + stackDescription
+        str = str + stackDescription + "\n" + memoryADescription + "\n" + memoryBDescription
         
         return str
     }

@@ -124,10 +124,11 @@ class GlobalConstants
 
 enum GlobalNotification: String
 {
-    case newEngineResult = "newEngineResult"
-    case newKeypadEntry  = "newKeypadEntry"
+    case newEngineResult     = "newEngineResult"
+    case newKeypadEntry      = "newKeypadEntry"
+
     
-    var notificationName: Notification.Name { return Notification.Name(self.rawValue) }
+    var name: Notification.Name { return Notification.Name(self.rawValue) }
 }
 
 enum Symbols: String
@@ -136,15 +137,32 @@ enum Symbols: String
     case moduloN = "%",         and   = "&",            or        = "||",       xor        = "⊕"
     case nShiftLeft = "N ≪",    nShiftRight = "N ≫",    shiftLeft = "≪",       shiftRight  = "≫"
     case gcd = "gcd",           lcm = "lcm"
+    case sum = "∑",             nSum = "N ∑"
     
-    case swap = "2↑↓",          rotateUp = "3R↑",        rotateDown = "3R↓"
-    case drop = "Drop",         dropAll  = "Drop All"
-    case dup  = "dup",          dup2     = "dup2",       depth = "depth"
+    case swap = "2↑↓",          rotateUp  = "3R↑",        rotateDown = "3R↓"
+    case drop = "Drop",         dropAll   = "Drop All"
+    case dup  = "dup",          dup2      = "dup2",       depth      = "depth"
+    case avg  = "∅",            product   = "∏",          geoMean    = "∏ ᴺ√"
+    case nAvg = "N ∅",          nProduct  = "N ∏",        nGeoMean   = "N ∏ ᴺ√"
     
     case factorial = "n!"
+    case yExpX     = "Yˣ",      logYX     = "logY X"
+    case eExpX     = "eˣ",      tenExpX   = "10ˣ",         twoExpX    = "2ˣ"
+    case logE      = "ln",      log10     = "log",         log2       = "lb"
+    case root      = "√",       thridRoot = "∛",           nRoot      = "ᴺ√"
+    case square    = "x²",      cubic     = "x³"
+    case reciprocal = "⅟x",     reciprocalSquare = "⅟x²"
+    
+    case sinus  = "sin",        cosinus   = "cos",          tangens   = "tan",      cotangens = "cot"
+    case asinus = "asin",       acosinus  = "acos",         atangens  = "atan",     acotangens = "acot"
+    
+    case sigma     = "σ",       nSigma    = "N σ"
+    case variance  = "var",     nVariance = "N var"
     
     case π = "π", e = "e"
     case epsilon0 = "ε₀", µ0 = "μ₀", c0 = "c₀",  e0 = "e₀", G = "G", g = "g", h = "h", k = "k"
+    
+    case copyStackToA = "䷀ → A", copyStackToB = "䷀ → B", copyAToStack = "䷀ ← A", copyBToStack = "䷀ ← B" 
     //case Λ = "Λ", k0 = "k₀"
 }
 

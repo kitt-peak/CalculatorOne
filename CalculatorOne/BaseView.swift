@@ -45,6 +45,7 @@ class BaseView: NSVisualEffectView
     }
     
     override var isOpaque: Bool { return false }
+    
 }
 
 

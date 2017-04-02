@@ -94,9 +94,9 @@ class Document: NSDocument, DocumentLifeCycle
     {
         dependedObjects = [displayController, keypadController, engine]
         
-        if currentConfiguration.isEmpty == true
+        if currentSaveDataSet.isEmpty == true
         {
-            currentConfiguration = defaultConfiguration
+            currentSaveDataSet = defaultConfiguration
 
         }
         
@@ -111,7 +111,10 @@ class Document: NSDocument, DocumentLifeCycle
     // MARK: - Read/Write file data
     enum ConfigurationKey: String
     {
-        case operandType = "kOperandType", radix = "kRadix", stackValues = "kStackValues", extraOperationsViewYPosition = "kExtraOperationsViewYPosition"
+        case operandType = "kOperandType"
+        case radix = "kRadix"
+        case stackValues = "kStackValues", memoryAValues = "kMemoryAValues", memoryBValues = "kMemoryBValues"
+        case extraOperationsViewYPosition = "kExtraOperationsViewYPosition"
     }
 
     // this configuration is used on a new file
@@ -119,11 +122,13 @@ class Document: NSDocument, DocumentLifeCycle
         ConfigurationKey.operandType.rawValue : 1,              /* .float */
         ConfigurationKey.radix.rawValue       : 2,              /* .decimal */
         ConfigurationKey.extraOperationsViewYPosition.rawValue : 0.0,  
-        ConfigurationKey.stackValues.rawValue : []              /* emtpy array of [OperandType] */
+        ConfigurationKey.stackValues.rawValue   : [],             /* emtpy array of [OperandType] */
+        ConfigurationKey.memoryAValues.rawValue : [],             /* emtpy array of [OperandType] */
+        ConfigurationKey.memoryBValues.rawValue : []              /* emtpy array of [OperandType] */
     ]
 
     // holds the entire set of configuration data as dictionary. Any change will make the document dirty
-    var currentConfiguration: [String : Any] = [:]
+    var currentSaveDataSet: [String : Any] = [:]
     { didSet { updateChangeCount(.changeDone) }  }
         
     
@@ -136,7 +141,7 @@ class Document: NSDocument, DocumentLifeCycle
     {
         // Insert code here to write your document to data of the specified type. If outError != nil, ensure that you create and set an appropriate error when returning nil.
     
-        return NSKeyedArchiver.archivedData(withRootObject: currentConfiguration)
+        return NSKeyedArchiver.archivedData(withRootObject: currentSaveDataSet)
         
         
         // You can also choose to override fileWrapperOfType:error:, writeToURL:ofType:error:, or writeToURL:ofType:forSaveOperation:originalContentsURL:error: instead.
@@ -153,11 +158,11 @@ class Document: NSDocument, DocumentLifeCycle
     {
         // Insert code here to read your document from the given data of the specified type. If outError != nil, ensure that you create and set an appropriate error when returning false.
         
-        if let readDictionary = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String : Any]
+        if let loadedDataSet = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String : Any]
         {
             //configurationFromFile = readDictionary 
             //didLoadConfigDataFromFile = true
-            currentConfiguration = readDictionary
+            currentSaveDataSet = loadedDataSet
         }
         
         // You can also choose to override readFromFileWrapper:ofType:error: or readFromURL:ofType:error: instead.
