@@ -16,15 +16,18 @@ import Carbon
     func userWillInputEnter(numericalValue: String, radix: Int) -> Bool
     func userInputEnter(numericalValue: String, radix: Int)
     func userInputOperation(symbol: String)
-    func userInputOperandType(_ type: Int)
-    func isMemoryAEmpty() -> Bool
-    func isMemoryBEmpty() -> Bool
-
+    func userInputOperandType(_ type: Int, storeInUndoBuffer: Bool)
+    func undo()
+    func redo()
 }
 
 @objc protocol KeypadDataSource
 {
     func numberOfRegistersWithContent() -> Int
+    func isMemoryAEmpty() -> Bool
+    func isMemoryBEmpty() -> Bool
+    func canUndo() -> Bool
+    func canRedo() -> Bool
 }
 
 enum OperationModifier
@@ -89,6 +92,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var operationDivisionButton: NSButton!
     
     @IBOutlet weak var operationModuloNButton: NSButton!
+    @IBOutlet weak var operationPrimeFactorsButton: NSButton!
     
     @IBOutlet weak var operationSquareButton: NSButton!
     @IBOutlet weak var operationCubicButton: NSButton!
@@ -102,6 +106,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var operationACosineButton: NSButton!
     @IBOutlet weak var operationATangentButton: NSButton!
     @IBOutlet weak var operationACotangentButton: NSButton!
+    @IBOutlet weak var operationConvert2Value2dBButton: NSButton!
 
     @IBOutlet weak var operationYPowerXButton: NSButton!
     @IBOutlet weak var operationEPowerXButton: NSButton!
@@ -149,7 +154,27 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var operationkButton: NSButton!
     @IBOutlet weak var operationGButton: NSButton!
     @IBOutlet weak var operationgButton: NSButton!
-    
+
+    @IBOutlet weak var operation7M68Button: NSButton!
+    @IBOutlet weak var operation30M72Button: NSButton!
+    @IBOutlet weak var operation122M88Button: NSButton!
+    @IBOutlet weak var operation153M6Button: NSButton!
+    @IBOutlet weak var operation245M76Button: NSButton!
+    //@IBOutlet weak var operation368M64Button: NSButton!
+    @IBOutlet weak var operation1966M08Button: NSButton!
+    @IBOutlet weak var operation2457M6Button: NSButton!
+    @IBOutlet weak var operation2949M12Button: NSButton!
+    @IBOutlet weak var operation4915M2Button: NSButton!
+    @IBOutlet weak var operation5898M24Button: NSButton!
+    //@IBOutlet weak var operation3939M16Button: NSButton!
+    @IBOutlet weak var operation25M0Button: NSButton!
+    @IBOutlet weak var operation100M0Button: NSButton!
+    @IBOutlet weak var operation125M0Button: NSButton!
+    @IBOutlet weak var operation156M25Button: NSButton!
+
+    @IBOutlet weak var operationM66D64Button: NSButton!
+    @IBOutlet weak var operationM64D66Button: NSButton!
+
     @IBOutlet weak var operationSumButton: NSButton!
 
     @IBOutlet weak var operationCopyStackToMemoryA: NSButton!
@@ -166,6 +191,9 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var dropButton: NSButton!
     @IBOutlet weak var dropAllButton: NSButton!
     @IBOutlet weak var depthButton: NSButton!
+    
+    @IBOutlet weak var undoButton: NSButton!
+    @IBOutlet weak var redoButton: NSButton!
         
     @IBOutlet weak var extraOperationsView: NSScrollView!
     @IBOutlet weak var extraOperationsInnerView: NSView!
@@ -236,8 +264,19 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             guard self.document != nil else { return }
             
             guard note.object as? Document == self.document else { return }
+            
+            if let userInfo = note.userInfo
+            {
+                if let opType = userInfo["OperandTypeKey"] as? OperandType
+                {
+                    self.typeSelector.setSelected(true, forSegment: opType.rawValue)
+                }
+            }
+            
             self.updateOperationKeyStatus()
         }
+        
+
                 
         // Make sure the watched view is sending bounds changed
         // notifications (which is probably does anyway, but calling this again won't hurt).                
@@ -334,6 +373,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         }
         
         radixSelector.setSelected(true, forSegment: newRadix.rawValue)
+        displayController.changeRadix(newRadix)            
+        
         document.currentSaveDataSet[Document.ConfigurationKey.radix.rawValue] = newRadix.rawValue
     }
     
@@ -345,10 +386,15 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     {
         print("\(self) \(#function): sending new operation type'\(newType)' to engine")
         
-        updateOperationKeyStatus()        
+        if newType == .float
+        {
+            changeRadix(newRadix: .decimal)
+        }
         
-        delegate.userInputOperandType(newType.rawValue)  
+        delegate.userInputOperandType(newType.rawValue, storeInUndoBuffer: true)  
         document.currentSaveDataSet[Document.ConfigurationKey.operandType.rawValue] = newType.rawValue
+        
+        updateOperationKeyStatus()        
     }
     
     var canInputEnter: Bool 
@@ -416,7 +462,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         depthButton.title                   = Symbols.depth.rawValue
         
         operationFactorialButton.title      = Symbols.factorial.rawValue
-
+        operationPrimeFactorsButton.title   = Symbols.primes.rawValue
         
         operationπButton.title              = Symbols.π.rawValue
         operationeButton.title              = Symbols.e.rawValue
@@ -451,6 +497,30 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationATangentButton.title        = Symbols.atangens.rawValue
         operationCotangentButton.title       = Symbols.cotangens.rawValue
         operationACotangentButton.title      = Symbols.acotangens.rawValue
+        operationConvert2Value2dBButton.title = Symbols.conv22bB.rawValue
+        
+        
+        operation7M68Button.title           = Symbols.const7M68.rawValue
+        operation30M72Button.title          = Symbols.const30M72.rawValue
+        operation122M88Button.title         = Symbols.const122M88.rawValue
+        operation153M6Button.title          = Symbols.const153M6.rawValue
+        operation245M76Button.title         = Symbols.const245M76.rawValue
+        //operation368M64Button.title       
+        operation1966M08Button.title        = Symbols.const1966M08.rawValue
+        operation2457M6Button.title         = Symbols.const2457M6.rawValue
+        operation2949M12Button.title        = Symbols.const2949M12.rawValue
+        //operation3939M16Button.title    
+        operation4915M2Button.title         = Symbols.const4915M2.rawValue
+        operation5898M24Button.title        = Symbols.const5898M24.rawValue
+        operation25M0Button.title           = Symbols.const25M0.rawValue
+        operation100M0Button.title          = Symbols.const100M0.rawValue
+        operation125M0Button.title          = Symbols.const125M0.rawValue
+        operation156M25Button.title         = Symbols.const156M25.rawValue
+
+        operationSignChangeButton.title     = Symbols.invertSign.rawValue
+        
+        undoButton.title                    = Symbols.undo.rawValue
+        redoButton.title                    = Symbols.redo.rawValue
         
         updateOperationKeyStatus()
     }
@@ -478,12 +548,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         case 1:     newOperandType = .float
         default:    break
         }
-        
-        if newOperandType == .float
-        {
-            changeRadix(newRadix: .decimal)
-        }
-        
+                
         changeOperandType(newOperandType)
     }
     
@@ -494,9 +559,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         if let newRadix = Radix(rawValue: radixSelector.selectedSegment)
         {
             // ask the keypad controller to deal with the new radix: will cause to press "enter(value_in_display)
-            changeRadix(newRadix: newRadix)
-            
-            displayController.changeRadix(newRadix)            
+            // and also update the display
+            changeRadix(newRadix: newRadix)            
         }
     }
 
@@ -518,9 +582,9 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         let enableUnaryIntegerOperations:  Bool = operandType == .integer && ((availableOperandsCount > 0) || enableEnter)
         let enableBinaryIntegerOperations: Bool = operandType == .integer && ((availableOperandsCount > 1) || (enableEnter && availableOperandsCount > 0))
 
-        let enableUnaryFloatOperations:    Bool = operandType == .float       && ((availableOperandsCount > 0) || enableEnter)
-        let enableBinaryFloatOperations:   Bool = enableUnaryFloatOperations  && (availableOperandsCount > 1)
-        let enableTernaryFloatOperations:  Bool = enableBinaryFloatOperations && (availableOperandsCount > 2)
+        let enableUnaryFloatOperations:    Bool = operandType == .float && ((availableOperandsCount > 0) || enableEnter)
+        let enableBinaryFloatOperations:   Bool = operandType == .float && ((availableOperandsCount > 1) || (enableEnter && availableOperandsCount > 0))
+        let enableTernaryFloatOperations:  Bool = operandType == .float && ((availableOperandsCount > 2) || (enableEnter && availableOperandsCount > 1))
         
         enterButton.isEnabled = enableEnter
         periodButton.isEnabled = canInputPeriodCharacter
@@ -550,8 +614,11 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             
         }
         
-        operationCopyMemoryAToStack.isEnabled  = !delegate.isMemoryAEmpty()
-        operationCopyMemoryBToStack.isEnabled  = !delegate.isMemoryBEmpty()
+        operationCopyMemoryAToStack.isEnabled  = !dataSource.isMemoryAEmpty()
+        operationCopyMemoryBToStack.isEnabled  = !dataSource.isMemoryBEmpty()
+        
+        undoButton.isEnabled = dataSource.canUndo()
+        redoButton.isEnabled = dataSource.canRedo()
         
         operationSignChangeButton.isEnabled = enableUnaryIntegerOperations || enableUnaryFloatOperations
         operationSquareButton.isEnabled     = enableUnaryIntegerOperations || enableUnaryFloatOperations
@@ -562,6 +629,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         swapButton.isEnabled                = enableBinaryTypeLessOperation
         
         operationBitwiseLogicNot.isEnabled   = enableUnaryIntegerOperations
+        operationPrimeFactorsButton.isEnabled = enableUnaryIntegerOperations
         
         operationPlusButton.isEnabled       = enableBinaryIntegerOperations     || enableBinaryFloatOperations
         operationMinusButton.isEnabled      = enableBinaryIntegerOperations     || enableBinaryFloatOperations
@@ -569,6 +637,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationMultiplicationButton.isEnabled = enableBinaryIntegerOperations || enableBinaryFloatOperations
         operationYPowerXButton.isEnabled   = enableBinaryFloatOperations
         operationlogXYButton.isEnabled     = enableBinaryFloatOperations
+        operationConvert2Value2dBButton.isEnabled = enableBinaryFloatOperations
         
         operationShiftLeftButton.isEnabled = enableUnaryIntegerOperations
         operationShiftRightButton.isEnabled = enableUnaryIntegerOperations
@@ -599,9 +668,12 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationCubicButton.isEnabled     = enableUnaryFloatOperations
         operationThirdRootButton.isEnabled = enableUnaryFloatOperations
         
+        operationM66D64Button.isEnabled     = enableUnaryFloatOperations
+        operationM64D66Button.isEnabled     = enableUnaryFloatOperations
+        
         operationNthRootButton.isEnabled   = enableBinaryFloatOperations        
         operationModuloNButton.isEnabled    = enableBinaryIntegerOperations
-        
+                
         operationLogicXorButton.isEnabled   = enableBinaryIntegerOperations
         operationLogicOrButton.isEnabled    = enableBinaryIntegerOperations
         operationLogicAndButton.isEnabled   = enableBinaryIntegerOperations
@@ -618,6 +690,23 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationgButton.isEnabled          = operandType == .float
         operationGButton.isEnabled          = operandType == .float
         
+        operation7M68Button.isEnabled       = operandType == .float
+        operation30M72Button.isEnabled       = operandType == .float
+        operation122M88Button.isEnabled       = operandType == .float
+        operation153M6Button.isEnabled       = operandType == .float
+        operation245M76Button.isEnabled       = operandType == .float
+        //operation368M64Button.isEnabled       = operandType == .float
+        operation1966M08Button.isEnabled       = operandType == .float
+        operation2457M6Button.isEnabled       = operandType == .float
+        operation2949M12Button.isEnabled       = operandType == .float
+        //operation3939M16Button.isEnabled       = operandType == .float
+        operation4915M2Button.isEnabled       = operandType == .float
+        operation5898M24Button.isEnabled       = operandType == .float
+        operation25M0Button.isEnabled       = operandType == .float
+        operation100M0Button.isEnabled       = operandType == .float
+        operation125M0Button.isEnabled       = operandType == .float
+        operation156M25Button.isEnabled       = operandType == .float
+
         rotUpButton.isEnabled               = enableTernaryTypeLessOperation
         rotDownButton.isEnabled             = enableTernaryTypeLessOperation
     }
@@ -726,6 +815,19 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
         operationModifier = stackButton.state == NSOnState ? .topOfStackContainsArgumentCount : .takeStackAsArgument
     }
+    
+    @IBAction func userPressedUndoOrRedoButton(sender: NSButton)
+    {
+        guard sender == undoButton || sender == redoButton else { return }
+        
+        if sender == undoButton
+        {
+            delegate.undo()
+        }
+        
+        print("| \(#function): user pressed <'\(sender.title)'> button, sending to engine")
+    }
+
         
     // MARK: - Support
     

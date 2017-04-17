@@ -22,7 +22,7 @@ class TestEngineOperandDisplayFormat: XCTestCase {
         engineDUT = Engine()
         XCTAssertNotNil(engineDUT)   
         
-        engineDUT.userInputOperandType(OperandType.integer.rawValue)
+        engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)
     }
     
     override func tearDown() {

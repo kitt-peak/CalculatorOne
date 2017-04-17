@@ -32,7 +32,7 @@ class TestEngineTypeLessOperation: XCTestCase {
     func testThatOperationDUPCorrectlyDuplicatesTheTopOfStack()
     {
         let testValue: String = "12345"
-        engineDUT.userInputOperandType(OperandType.integer.rawValue)        
+        engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)        
         
         XCTAssertEqual(engineDUT.numberOfRegistersWithContent(), 0)
         
@@ -57,7 +57,7 @@ class TestEngineTypeLessOperation: XCTestCase {
         let testValue1: String =  "1.1111"
         let testValue2: String = "-2.2222"
         
-        engineDUT.userInputOperandType(OperandType.float.rawValue)        
+        engineDUT.userInputOperandType(OperandType.float.rawValue, storeInUndoBuffer: false)        
         
         XCTAssertEqual(engineDUT.numberOfRegistersWithContent(), 0)
         
@@ -81,7 +81,7 @@ class TestEngineTypeLessOperation: XCTestCase {
     
     func testThatOperationDROPRemovesTheTopValueFromTheStack()
     {
-        engineDUT.userInputOperandType(OperandType.integer.rawValue)        
+        engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)        
     
         let n = 100
         
@@ -109,7 +109,7 @@ class TestEngineTypeLessOperation: XCTestCase {
     
     func testThatOperationDROPALLCorrectlyRemovesAllVAluesFromTheStack()
     {
-        engineDUT.userInputOperandType(OperandType.integer.rawValue)        
+        engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)        
         
         // put a huge number of values on the stack and drop them all, the check for an empty stack
         for i in 0..<10 
@@ -127,7 +127,7 @@ class TestEngineTypeLessOperation: XCTestCase {
     
     func testThatOperationSWAPCorrectlyExchangesTopOfStackValues()
     {
-        engineDUT.userInputOperandType(OperandType.float.rawValue)        
+        engineDUT.userInputOperandType(OperandType.float.rawValue, storeInUndoBuffer: false)        
         
         let value1 = "1.2345"
         let value2 = "0.4444"
@@ -150,7 +150,7 @@ class TestEngineTypeLessOperation: XCTestCase {
     
     func testThatOperationROTATEDOWNCorrectlyExchangesTopOfStackValues()
     {
-        engineDUT.userInputOperandType(OperandType.float.rawValue)        
+        engineDUT.userInputOperandType(OperandType.float.rawValue, storeInUndoBuffer: false)        
         
         let value1 = "1.2345"
         let value2 = "0.4444"
@@ -176,7 +176,7 @@ class TestEngineTypeLessOperation: XCTestCase {
 
     func testThatOperationROTATEUPCorrectlyExchangesTopOfStackValues()
     {
-        engineDUT.userInputOperandType(OperandType.float.rawValue)        
+        engineDUT.userInputOperandType(OperandType.float.rawValue, storeInUndoBuffer: false)        
         
         let value1 = "1.2345"
         let value2 = "0.4444"
@@ -202,7 +202,7 @@ class TestEngineTypeLessOperation: XCTestCase {
     
     func testThatOperationDEPTHCorrectlyCountsTheFloatElementsOnTheStack()
     {
-        engineDUT.userInputOperandType(OperandType.float.rawValue)        
+        engineDUT.userInputOperandType(OperandType.float.rawValue, storeInUndoBuffer: false)        
 
         for i in 1..<30
         {
@@ -216,7 +216,7 @@ class TestEngineTypeLessOperation: XCTestCase {
 
     func testThatOperationDEPTHCorrectlyCountsTheIntegerElementsOnTheStack()
     {
-        engineDUT.userInputOperandType(OperandType.integer.rawValue)        
+        engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)        
         
         for i in 1..<30
         {

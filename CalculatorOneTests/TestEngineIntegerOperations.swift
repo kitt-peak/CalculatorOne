@@ -21,7 +21,7 @@ class TestEngineIntegerOperations: XCTestCase {
         engineDUT = Engine()
         XCTAssertNotNil(engineDUT)
         
-        engineDUT.userInputOperandType(OperandType.integer.rawValue)        
+        engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)        
     }
     
     override func tearDown() {
@@ -573,6 +573,68 @@ class TestEngineIntegerOperations: XCTestCase {
             engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
         }
     }
+    
+    
+    //--------< prime factors >-----------------------------------------
+    func testThatIntegerPrimeFactorDivisionOperationsWorksMathematicallyCorrect()
+    {
+        let testSet = [
+            // values                       // prime factors
+            ("0",                           ["0"]),
+            ("1",                           ["1"]),
+            ("2",                           ["2"]),
+            ("3",                           ["3"]),
+            ("4",                           ["2", "2"]),
+            ("5",                           ["5"]),
+            ("6",                           ["3", "2"]),
+            ("7",                           ["7"]),
+            ("8",                           ["2", "2", "2"]),
+            ("9",                           ["3", "3"]),
+            ("10",                          ["5", "2"]),
+            ("1234567890",                  ["3803", "3607", "5", "3", "3", "2"]),
+            ("998877665544332211",          ["9833", "9277", "883", "547", "229", "11", "3", "3"]) 
+            ]
+        
+        for test in testSet
+        {
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            
+            // the prime factor function replaces the number on top of the stack by its prime factors
+            // this is at least one value and can be multiple values all on the stack
+            engineDUT.userInputOperation(symbol: Symbols.primes.rawValue)
+            
+            // test for the correct number of prime factors. Determine the number of prime factors on the stack
+            engineDUT.userInputOperation(symbol: Symbols.depth.rawValue)
+            let countFactorsStr: String = engineDUT.registerValue(registerNumber: 0, radix: 10)
+            if let countFactors: Int = Int(countFactorsStr)
+            {
+                // drop the count, not needed any more
+                engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+                
+                // read each factor, one by one, into an array
+                var resultFactors: [String] = [String]()
+                for _ in 0..<countFactors
+                {
+                    let factor: String = engineDUT.registerValue(registerNumber: 0, radix: 10)
+                    engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+                    
+                    resultFactors.append(factor)
+                }
+                
+                // compare to the expected result
+                XCTAssertEqual(test.1, resultFactors)
+                
+            }
+            else
+            {
+                // error - the number of prime factors is not an integer
+                XCTFail("Test failure: could not convert string value to Integer value")
+            }
+            
+            
+        }
+    }
+
     
     
     func testThatIntegerSumOperationWorksMathematicallyCorrect()

@@ -170,7 +170,107 @@ class Document: NSDocument, DocumentLifeCycle
         /*throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)*/
     }
     
+    
+    // MARK: - copy/paste
+    
+    @IBAction func copyStack(sender: AnyObject)
+    {
+        if sender is NSMenuItem
+        {
+            let menuItem = sender as! NSMenuItem
+            
+            if menuItem.title == "Copy Top Stack"
+            {
+                let valueToCopy = engine.registerValue(registerNumber: 0, radix: 10)
+                let pasteBoard = NSPasteboard.general()
+                pasteBoard.clearContents()
+                pasteBoard.writeObjects([valueToCopy as NSPasteboardWriting])
+            }
+            else if menuItem.title == "Copy Stack"
+            {
+                let countStackItems: Int = Int(engine.numberOfRegistersWithContent())
+                var valuesToCopy: [String] = [String]()
+                for reg in (0..<countStackItems).reversed()
+                {
+                    let valueStr: String = engine.registerValue(registerNumber: reg, radix: 10)
+                    valuesToCopy.append(valueStr)
+                }
 
-
+                let flatValues: String = valuesToCopy.joined(separator: "\n")
+                
+                let pasteBoard = NSPasteboard.general()
+                pasteBoard.clearContents()
+                
+                pasteBoard.writeObjects([flatValues as NSPasteboardWriting])
+                
+            }
+        }
+    }
+    
+    @IBAction func pasteToStack(sender: AnyObject)
+    {
+        if sender is NSMenuItem
+        {
+            for valueString in currentPasteBoardItems()
+            {
+                if engine.userWillInputEnter(numericalValue: valueString, radix: 10) == true
+                {
+                    engine.userInputEnter(numericalValue: valueString, radix: 10)
+                }
+                else
+                {
+                    Swift.print("! \(#function) does not accept <\(valueString)> to paste to the stack")
+                }                            
+            }
+        }
+    }
+    
+    override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool 
+    {
+        if item is NSMenuItem
+        {
+            let menuItem = item as! NSMenuItem
+            
+            if menuItem.title == "Copy Top Stack" || menuItem.title == "Copy Stack"
+            {
+                return engine.hasValueForRegister(registerNumber: 0)
+            }
+            else if menuItem.title == "Paste"
+            {
+                for valueString in currentPasteBoardItems()
+                {
+                    if engine.userWillInputEnter(numericalValue: valueString, radix: 10) == true
+                    {
+                        // at least one item on the pasteboard can be converted to a numerical value
+                        return true
+                    }
+                }
+                    
+                return false                
+            }
+        }
+        
+        return super.validateUserInterfaceItem(item)
+    }
+    
+    private func currentPasteBoardItems() -> [String]
+    {
+        let pasteBoard = NSPasteboard.general()
+        var stringItems: [String] = [String]()
+        
+        if let items = pasteBoard.pasteboardItems
+        {
+            for item in items
+            {
+                if let stringItem = item.string(forType: "public.utf8-plain-text")
+                {
+                    stringItems.append(contentsOf: stringItem.components(separatedBy: CharacterSet.whitespacesAndNewlines))                    
+                }
+            }
+        }
+        
+        return stringItems
+    }
+    
 }
 

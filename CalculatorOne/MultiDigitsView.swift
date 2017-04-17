@@ -203,5 +203,5 @@ class MultiDigitsView: BaseView, DigitViewDelegate
         
         return true
     }
-    
+
 }

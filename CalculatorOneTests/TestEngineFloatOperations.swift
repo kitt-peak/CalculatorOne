@@ -23,7 +23,7 @@ class TestEngineFloatOperations: XCTestCase
         engineDUT = Engine()
         XCTAssertNotNil(engineDUT)
         
-        engineDUT.userInputOperandType(OperandType.float.rawValue)        
+        engineDUT.userInputOperandType(OperandType.float.rawValue, storeInUndoBuffer: false)        
     }
     
     override func tearDown()
@@ -182,6 +182,117 @@ class TestEngineFloatOperations: XCTestCase
         }
     }
 
+    
+    func testThatOperation_Const7M68_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const7M68.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "7680000.0")
+    }
+
+    func testThatOperation_Const30M72_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const30M72.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "30720000.0")
+    }
+
+    func testThatOperation_Const122M88_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const122M88.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "122880000.0")
+    }
+
+    func testThatOperation_Const153M6_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const153M6.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "153600000.0")
+    }
+
+    func testThatOperation_Const245M76_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const245M76.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "245760000.0")
+    }
+
+    func testThatOperation_Const386M64_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const368M64.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "368640000.0")
+    }
+
+    func testThatOperation_Const25M0_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const25M0.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "25000000.0")
+    }
+
+    func testThatOperation_Const100M0_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const100M0.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "100000000.0")
+    }
+
+    func testThatOperation_Const156M25_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const156M25.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "156250000.0")
+    }
+
+    func testThatOperation_Const125M0_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const125M0.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "125000000.0")
+    }
+
+    func testThatOperation_Const1966M08_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const1966M08.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "1966080000.0")
+    }
+    
+    func testThatOperation_Const2456M7_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const2457M6.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "2457600000.0")
+    }
+    
+    func testThatOperation_Const2949M12_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const2949M12.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "2949120000.0")
+    }
+    
+    func testThatOperation_Const3072M0_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const3072M0.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "3072000000.0")
+    }
+
+    func testThatOperation_Const3686M4_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const3868M4.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "3686400000.0")
+    }
+
+    func testThatOperation_Const3932M16_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const3932M16.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "3932160000.0")
+    }
+
+    func testThatOperation_Const4915M2_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const4915M2.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "4915200000.0")
+    }
+    
+    func testThatOperation_Const5898M24_WorksMathematicallyCorrect()
+    {
+        engineDUT.userInputOperation(symbol: Symbols.const5898M24.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "5898240000.0")
+    }
+
+    
+    
     
     func testThatFloatOperationAddWorksMathematicallyCorrect()
     {
@@ -355,7 +466,7 @@ class TestEngineFloatOperations: XCTestCase
     func testThatFloatOperationLogXYWorksMathematicallyCorrect()
     {
         let testSet = [
-            // value0       value1          log value0, value1
+            // value1       value0          log value0, value1
             ("2.0",         "4.0",                  "2.0"),
             ("2.0",         "1.0",                  "0.0"),
             ("2.0",         "8.0",                  "3.0"),
@@ -366,8 +477,8 @@ class TestEngineFloatOperations: XCTestCase
         
         for test in testSet
         {
-            engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
             engineDUT.userInputEnter(numericalValue: test.1, radix: Radix.decimal.value)
+            engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
             
             engineDUT.userInputOperation(symbol: Symbols.logYX.rawValue)
             
@@ -712,14 +823,14 @@ class TestEngineFloatOperations: XCTestCase
         let testSet = [
             // value0               sin value0              asin(sin(value0)
             ("0.0",                 "0.0",                  "0.0"),
-            ("1.5707963268",        "1.0",                  "1.5707963268"),        // pi/2
-            ("3.14159265359",       "0.0",                  "0.0"),                 // pi
-            ("4.71238898038",       "-1.0",                 "-1.5707963268"),       // 3pi/2
-            ("6.28318530718",       "0.0",                  "0.0"),                 // 2pi
-            ("-1.5707963268",       "-1.0",                 "-1.5707963268"),       // -pi/2
-            ("-3.14159265359",      "0.0",                  "0.0"),                 // -pi
-            ("-4.71238898038",      "1.0",                  "1.5707963268"),        // -3pi/2
-            ("-6.28318530718",      "0.0",                  "0.0"),                 // -2pi
+            ("1.5707963267949",     "1.0",                  "1.5707963267949"),        // pi/2
+            ("3.14159265358979",    "0.0",                  "0.0"),                 // pi
+            ("4.71238898038469",    "-1.0",                 "-1.5707963267949"),       // 3pi/2
+            ("6.28318530717959",    "0.0",                  "0.0"),                 // 2pi
+            ("-1.5707963267949",    "-1.0",                 "-1.5707963267949"),       // -pi/2
+            ("-3.14159265358979",   "0.0",                  "0.0"),                 // -pi
+            ("-4.71238898038469",   "1.0",                  "1.5707963267949"),        // -3pi/2
+            ("-6.28318530717959",   "0.0",                  "0.0"),                 // -2pi
             ]
         
         for test in testSet
@@ -758,29 +869,29 @@ class TestEngineFloatOperations: XCTestCase
         }
     }
 
-    //--------< cos x >-----------------------------------------
+    //--------< cos x, acos x>-----------------------------------------
     func testThatFloatOperationCosinusWorksMathematicallyCorrect()
     {
         let testSet = [
-            // value0               cos value0
-            ("0.0",                 "1.0"),
-            ("1.5707963268",        "0.0"),                 // pi/2
-            ("3.14159265359",       "-1.0"),                // pi
-            ("4.71238898038",       "0.0"),                 // 3pi/2
-            ("6.28318530718",       "1.0"),                 // 2pi
-            ("-1.5707963268",       "0.0"),                 // -pi/2
-            ("-3.14159265359",      "-1.0"),                // -pi
-            ("-4.71238898038",      "0.0"),                 // -3pi/2
-            ("-6.28318530718",      "1.0"),                 // -2pi
+            // value0               cos value0              acos(cos(value0))
+            ("0.0",                 "1.0",                  "0.0"),
+            ("1.5707963267949",     "0.0",                  "1.5707963267949"),         // pi/2
+            ("3.14159265358979",    "-1.0",                 "3.14159265358979"),        // pi
+            ("4.71238898038469",    "0.0",                  "1.5707963267949"),         // 3pi/2
+            ("6.28318530717959",    "1.0",                  "0.0"),                     // 2pi
+            ("-1.5707963267949",    "0.0",                  "1.5707963267949"),         // -pi/2
+            ("-3.14159265358979",   "-1.0",                 "3.14159265358979"),        // -pi
+            ("-4.71238898038469",   "0.0",                  "1.5707963267949"),         // -3pi/2
+            ("-6.28318530717959",   "1.0",                  "0.0"),                     // -2pi
         ]
         
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: "cos")
+            engineDUT.userInputOperation(symbol: Symbols.cosinus.rawValue)
             
-            let expectedResult = Double(test.1)
-            let engineResult   = Double(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value))
+            var expectedResult = Double(test.1)
+            var engineResult   = Double(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value))
             
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
@@ -792,23 +903,40 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
+            engineDUT.userInputOperation(symbol: Symbols.acosinus.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            expectedResult = Double(test.2)
+            engineResult   = Double(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value))
+            
+            if let expectedResult = expectedResult,
+                let engineResult   = engineResult
+            {
+                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+            }
+            else
+            {
+                XCTFail("Test failure: could not convert string value to Double value")
+            }
+            
         }
     }
     
-    //--------< tangens x >-----------------------------------------
+    //--------< tan x, atan x>-----------------------------------------
     func testThatFloatOperationTangensWorksMathematicallyCorrect()
     {
         let testSet = [
-            // value0               tan value0
-            ("-1",                  "-1.55740772465"),
-            ("-0.2",                "-0.202710035509"),
-            ("-0.1",                "-0.100334672085"),
-            ("0.0",                 "0.0"),
-            ("0.1",                 "0.100334672085"),
-            ("0.2",                 "0.202710035509"),
-            ("1",                   "1.55740772465"),
+            // value0               tan value0                  atan(tan(value0))
+            ("0.0",                 "0.0",                      "0.0"),
+            ("1.0",                 "1.5574077246549",          "1.0"),
+            ("2.0",                 "-2.18503986326152",        "-1.14159265358979"),
+            ("3.0",                 "-0.142546543074278",       "-0.141592653589793"),
+            ("4.0",                 "1.15782128234958",         "0.858407346410207"),
+            ("5.0",                 "-3.38051500624658",        "-1.28318530717959"),
+            ("-1.0",                "-1.5574077246549",         "-1.0"),
+            ("-2.0",                "2.18503986326152",         "1.14159265358979"),
+            ("-3.0",                "0.142546543074278",        "0.141592653589793"),
+            ("-4.0",                "-1.15782128234958",        "-0.858407346410207"),
+            ("-5.0",                "3.38051500624658",         "1.28318530717959"),            
         ]
         
         for test in testSet
@@ -816,8 +944,8 @@ class TestEngineFloatOperations: XCTestCase
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
             engineDUT.userInputOperation(symbol: Symbols.tangens.rawValue)
             
-            let expectedResult = Double(test.1)
-            let engineResult   = Double(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value))
+            var expectedResult = Double(test.1)
+            var engineResult   = Double(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value))
             
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
@@ -829,31 +957,49 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
+            engineDUT.userInputOperation(symbol: Symbols.atangens.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            expectedResult = Double(test.2)
+            engineResult   = Double(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value))
+            
+            if let expectedResult = expectedResult,
+                let engineResult   = engineResult
+            {
+                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+            }
+            else
+            {
+                XCTFail("Test failure: could not convert string value to Double value")
+            }
+            
         }
     }
     
-    //--------< tangens x >-----------------------------------------
+    //--------< cot x, acotan x>-----------------------------------------
     func testThatFloatOperationCotangensWorksMathematicallyCorrect()
     {
         let testSet = [
-            // value0               cot value0
-            ("-1",                  "-0.642092615936"),
-            ("-0.2",                "-4.93315487558"),
-            ("-0.1",                "-9.9666444233"),
-            ("0.1",                 "9.9666444233"),
-            ("0.2",                 "4.93315487558"),
-            ("1",                   "0.642092615936"),
+            // value0               cot value0                  acot(cot(value0))
+            ("1.0",                 "0.642092615934331",        "1.0"),
+            ("2.0",                 "-0.457657554360286",       "2.0"),
+            ("3.0",                 "-7.01525255143453",        "3.0"),
+            ("4.0",                 "0.863691154450617",        "0.858407346410207"),
+            ("5.0",                 "-0.295812915532746",       "1.858407346410207"),
+            ("-1.0",                "-0.642092615934331",       "2.14159265358979"),
+            ("-2.0",                "0.457657554360286",        "1.14159265358979"),
+            ("-3.0",                "7.01525255143453",         "0.141592653589793"),
+            ("-4.0",                "-0.863691154450617",       "2.28318530717959"),
+            ("-5.0",                "0.295812915532746",        "1.28318530717959"),            
             ]
+
         
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
             engineDUT.userInputOperation(symbol: Symbols.cotangens.rawValue)
             
-            let expectedResult = Double(test.1)
-            let engineResult   = Double(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value))
+            var expectedResult = Double(test.1)
+            var engineResult   = Double(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value))
             
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
@@ -865,11 +1011,23 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
+            engineDUT.userInputOperation(symbol: Symbols.acotangens.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            expectedResult = Double(test.2)
+            engineResult   = Double(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value))
+            
+            if let expectedResult = expectedResult,
+                let engineResult   = engineResult
+            {
+                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+            }
+            else
+            {
+                XCTFail("Test failure: could not convert string value to Double value")
+            }
+            
         }
     }
-
 
 
     //--------< sum stack >-----------------------------------------

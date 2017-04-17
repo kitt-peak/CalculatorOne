@@ -43,7 +43,6 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
     { didSet 
         { 
             digitsView.radix = radix 
-            //digitsView.value = digitsForRegisterValue(representedValue)            
         }
     }
     

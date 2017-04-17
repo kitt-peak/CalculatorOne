@@ -47,13 +47,13 @@ class TestEngineOperandChange: XCTestCase {
         for test in testSet
         {
             // start the test with calculator in .float mode
-            engineDUT.userInputOperandType(OperandType.float.rawValue)        
+            engineDUT.userInputOperandType(OperandType.float.rawValue, storeInUndoBuffer: false)        
 
             // enter a .float number
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
 
             // convert the stack to .integer
-            engineDUT.userInputOperandType(OperandType.float.rawValue)        
+            engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)        
 
             // test for correct conversion
             XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: 10), test.1)
@@ -77,7 +77,7 @@ class TestEngineOperandChange: XCTestCase {
         for test in testSet
         {
             // start the test with calculator in .float mode
-            engineDUT.userInputOperandType(OperandType.float.rawValue)        
+            engineDUT.userInputOperandType(OperandType.float.rawValue, storeInUndoBuffer: false)        
             
             // enter several .float numbers
             for floatValue in test.0
@@ -86,7 +86,7 @@ class TestEngineOperandChange: XCTestCase {
             }
             
             // convert the stack to .integer
-            engineDUT.userInputOperandType(OperandType.float.rawValue)        
+            engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)        
             
             // test for correct conversion
             for (index, integerValue) in test.1.enumerated()
@@ -116,13 +116,13 @@ class TestEngineOperandChange: XCTestCase {
         for test in testSet
         {
             // start the test with calculator in .integer mode
-            engineDUT.userInputOperandType(OperandType.integer.rawValue)        
+            engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)        
             
             // enter a .integer number
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             
             // convert the stack to .float
-            engineDUT.userInputOperandType(OperandType.float.rawValue)        
+            engineDUT.userInputOperandType(OperandType.float.rawValue, storeInUndoBuffer: false)        
             
             // test for correct conversion
             XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: 10), test.1)

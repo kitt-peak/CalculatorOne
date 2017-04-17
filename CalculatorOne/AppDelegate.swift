@@ -33,6 +33,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
         }
     }
     
-
+    @IBAction func copy(sender: AnyObject)
+    {
+        NSLog("%@ %s", self, #function)
+        
+    }
 }
 

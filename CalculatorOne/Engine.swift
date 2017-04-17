@@ -63,6 +63,13 @@ enum Radix: Int
     }
 }
 
+enum UndoItem 
+{
+    case stack([OperandValue])
+    case operandType(OperandType)
+    case radix(Radix)
+}
+
 
 class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, DisplayDataSource, KeypadDataSource
 {
@@ -94,7 +101,9 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
     
     private var stack: [OperandValue] = [OperandValue]()
     private var memoryA: [OperandValue] = [OperandValue]() 
-    private var memoryB: [OperandValue] = [OperandValue]() 
+    private var memoryB: [OperandValue] = [OperandValue]()
+    
+    private var undoBuffer: [UndoItem] = [UndoItem]()
     
     private var operandType: OperandType = .integer
     
@@ -185,6 +194,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
             }            
         }
 
+        undoBuffer.removeAll()
         
         updateUI()
 
@@ -336,27 +346,46 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         Symbols.k.rawValue:     .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_k)]  }),
         Symbols.g.rawValue:     .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_g)]  }),
         Symbols.G.rawValue:     .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_G)]  }),
+        
+        Symbols.const7M68.rawValue :   .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_7M68)] }), 
+        Symbols.const30M72.rawValue :  .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_30M72)] }), 
+        Symbols.const122M88.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_122M88)] }), 
+        Symbols.const245M76.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_245M76)] }), 
+        Symbols.const153M6.rawValue :  .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_153M6)] }), 
+        Symbols.const368M64.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_368M64)] }), 
+        Symbols.const1966M08.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_1966M08)] }), 
+        Symbols.const2457M6.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_2457M6)] }), 
+        Symbols.const2949M12.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_2949M12)] }), 
+        Symbols.const3072M0.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_3072M0)] }), 
+        Symbols.const3868M4.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_3686M4)] }), 
+        Symbols.const3932M16.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_3932M16)] }), 
+        Symbols.const4915M2.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_4915M2)] }), 
+        Symbols.const5898M24.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_5898M24)] }),
+        Symbols.const25M0.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_25M0)] }),
+        Symbols.const100M0.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_100M0)] }),
+        Symbols.const125M0.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_125M0)] }),
+        Symbols.const156M25.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(const_156M25)] }),
+        
         Symbols.plus.rawValue     : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.add(b, a))] }),
         Symbols.minus.rawValue    : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.subtract(b, a))] }),
         Symbols.multiply.rawValue : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.multiply(b, a))] }),
         Symbols.divide.rawValue   : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.divide(b, a))] }),
-        Symbols.yExpX.rawValue : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(pow(b, a))] }),
-        Symbols.logYX.rawValue : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(log(a) / log(b))] }),
+        Symbols.yExpX.rawValue : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.xExpY(of: b, exp: a))] }),
+        Symbols.logYX.rawValue : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.logXBaseY(b, base: a))] }),
         Symbols.nRoot.rawValue   : .floatBinary2array( { (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.nRoot(of: b, a))] }),
-        Symbols.eExpX.rawValue   : .floatUnary2array(  { (a: Double) -> [OperandValue] in return [.float(pow(const_e, a))] }),
-        Symbols.tenExpX.rawValue : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(pow(10.0, a))] }),
-        Symbols.twoExpX.rawValue : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(pow(2.0, a))] }),
-        Symbols.logE.rawValue    : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(log(a))] }),
-        Symbols.log10.rawValue   : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(log10(a))] }),
-        Symbols.log2.rawValue    : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(log2(a))] }),
-        Symbols.root.rawValue : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(sqrt(a))] }),
-        Symbols.thridRoot.rawValue :  .floatUnary2array( { (a: Double)   -> [OperandValue] in return  [.float(Engine.thirdRoot(of: a))] }),
-        Symbols.reciprocal.rawValue: .floatUnary2array( { (a: Double)       -> [OperandValue] in return  [.float(1.0 / a)] }),
-        Symbols.reciprocalSquare.rawValue: .floatUnary2array( { (a: Double) -> [OperandValue] in return  [.float(1.0 / (a * a))] }),      
-        Symbols.square.rawValue : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(a*a)]   }),
-        Symbols.cubic.rawValue  : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(a*a*a)] }),
-        
-      "+⇔-" : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(-a)]}),
+        Symbols.eExpX.rawValue   : .floatUnary2array(  { (a: Double) -> [OperandValue] in return [.float(Engine.eExpX(of: a))] }),
+        Symbols.tenExpX.rawValue : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.xExpY(of: 10.0, exp: a))] }),
+        Symbols.twoExpX.rawValue : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.xExpY(of: 2.0,  exp: a))] }),
+        Symbols.logE.rawValue    : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.logBaseE(of: a))] }),
+        Symbols.log10.rawValue   : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.logBase10(of: a))] }),
+        Symbols.log2.rawValue    : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.logBase2(of: a))] }),
+        Symbols.root.rawValue : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(Engine.squareRoot(of: a))] }),
+        Symbols.thridRoot.rawValue :  .floatUnary2array( { (a: Double)   -> [OperandValue] in return  [.float(Engine.cubicRoot(of: a))] }),
+        Symbols.reciprocal.rawValue: .floatUnary2array( { (a: Double)       -> [OperandValue] in return  [.float(Engine.reciprocal(of: a))] }),
+        Symbols.reciprocalSquare.rawValue: .floatUnary2array( { (a: Double) -> [OperandValue] in return  [.float(Engine.reciprocalSquare(of: a))] }),      
+        Symbols.square.rawValue : .floatUnary2array( { (a: Double)         -> [OperandValue] in return   [.float(Engine.square(of: a))] }),
+        Symbols.cubic.rawValue  : .floatUnary2array( { (a: Double)         -> [OperandValue] in return   [.float(Engine.cubic(of: a))] }),
+        Symbols.invertSign.rawValue: .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.invertSign(of: a))] }),
         Symbols.sinus.rawValue  : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.sinus(a))]  }),
         Symbols.asinus.rawValue : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.arcSinus(a))] }),
         Symbols.cosinus.rawValue  : .floatUnary2array( { (a: Double) -> [OperandValue] in return [.float(Engine.cosinus(a))]  }),
@@ -378,6 +407,12 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
     Symbols.variance.rawValue : .floatArray2array( { (s: [Double]) -> [OperandValue] in return [.float(Engine.variance(of: s))]}),
     Symbols.nVariance.rawValue: .floatNArray2array({ (s: [Double]) -> [OperandValue] in return [.float(Engine.variance(of: s))]}),
         
+    Symbols.multiply66divide64.rawValue : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(a * 33.0 / 32.0)] }),
+    Symbols.multiply64divide66.rawValue : .floatUnary2array( { (a: Double)         -> [OperandValue] in return  [.float(a * 32.0 / 33.0)] }),
+    
+    Symbols.conv22bB.rawValue : .floatBinary2array({ (a: Double, b: Double) -> [OperandValue] in return [.float(20.0 * log10(a / b)) ]}),
+
+    
     ]
     
     private var integerOperations: OperationsTable =  [
@@ -412,7 +447,12 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
       Symbols.sum.rawValue  : .integerArray2array( { (s: [Int]) -> [OperandValue] in return [.integer(Engine.sum(of: s))]}),
       Symbols.nSum.rawValue : .integerNArray2array( { (s: [Int]) -> [OperandValue] in return [.integer(Engine.sum(of: s))]}),
       
-      Symbols.factorial.rawValue : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(Engine.factorial(of: a) )] })
+      Symbols.factorial.rawValue : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(Engine.factorial(of: a) )] }),
+      
+      "PF" : .integerUnary2array( { (a: Int) -> [OperandValue]  in 
+            let r: [Int] = Engine.primeFactors(of: a)  
+            return r.map { (x: Int) -> OperandValue in return .integer(x) }
+      })
         
     ]
     
@@ -426,6 +466,9 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         // the program continues to look for integer and floating point operations
         if let currentOperation = typelessOperations[symbol]
         {
+            // store the current stack for potential undo-operation
+            addToRedoBuffer(item: .stack(stack))
+
             switch currentOperation 
             {
                 
@@ -493,6 +536,9 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
             
             if let currentOperation = integerOperations[symbol]
             {
+                // store the current stack for potential undo-operation
+                addToRedoBuffer(item: .stack(stack))
+                
                 switch currentOperation 
                 {
                 case .integerUnary2array(let int2arrayFunction):
@@ -559,6 +605,9 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
             
             if let currentOperation = floatOperations[symbol]
             {
+                // store the current stack for potential undo-operation
+                addToRedoBuffer(item: .stack(stack))
+                
                 switch currentOperation 
                 {
                     
@@ -632,16 +681,38 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
             print("| engine \(#function): performed operation \(operandType) '\(symbol)'")            
             print(description)
         }
-        
-        
     }
     
-
+    
+    // MARK: - Undo/Redo 
+    private func addToRedoBuffer(item: UndoItem)
+    {
+        undoBuffer.append(item)
+    }
+    
+    private func undoLastItem()
+    {
+        if let item: UndoItem = undoBuffer.popLast()
+        {
+            switch item
+            {
+            case .stack(let formerStack):
+                stack = formerStack
+                updateUI()
+                
+            case .radix(let formerRadix):
+                break
+                
+            case .operandType(let formerOperandType):
+                userInputOperandType(formerOperandType.rawValue, storeInUndoBuffer: false)
+            }
+        }
+    }
     
     // MARK: - Output to user
     private func updateUI()
     {
-        let updateUINote: Notification = Notification(name: GlobalNotification.newEngineResult.name, object: document, userInfo: [:])
+        let updateUINote: Notification = Notification(name: GlobalNotification.newEngineResult.name, object: document, userInfo: ["OperandTypeKey": operandType])
         NotificationCenter.default.post(updateUINote)
     }
 
@@ -664,10 +735,19 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         }
     }
     
-    func userInputOperandType(_ type: Int) 
+    func userInputOperandType(_ type: Int, storeInUndoBuffer: Bool) 
     {
         if let newOperandType: OperandType = OperandType(rawValue: type)
         {
+            // no conversion if the new operand type is equal to the current operand type
+            guard newOperandType != operandType else { return }
+            
+            // store the current operandType for potential undo-operation
+            if storeInUndoBuffer == true
+            {
+                addToRedoBuffer(item: .operandType(operandType))
+            }
+            
             operandType = newOperandType
             
             // convert all elements on the stack to the new operand type
@@ -700,7 +780,6 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
                 }
             }
 
-            
             updateUI()
         }
     }
@@ -740,6 +819,9 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         case .float:   value = OperandValue.float(Double(numericalValue)!)
         }
         
+        // store the current stack for potential undo-operation
+        addToRedoBuffer(item: .stack(stack))
+        
         print("\(self)\n| \(#function): adding '\(value)' to top of stack")
         stack.append(value)
         print(stackDescription)
@@ -761,22 +843,27 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         
     }
     
-    func isMemoryAEmpty() -> Bool 
+    func undo() 
     {
-        return memoryA.isEmpty
+        undoLastItem()
+        updateUI()
     }
     
-    func isMemoryBEmpty() -> Bool 
+    func redo() 
     {
-        return memoryB.isEmpty
+        
     }
-
-
+    
     //MARK: - Keypad data source protocoll
     func numberOfRegistersWithContent() -> Int 
     {
         return stack.count
     }
+    
+    func isMemoryAEmpty() -> Bool { return memoryA.isEmpty }
+    func isMemoryBEmpty() -> Bool { return memoryB.isEmpty }
+    func canUndo() -> Bool { return undoBuffer.count > 0 }
+    func canRedo() -> Bool { return false }
     
     //MARK: - Display data source protocoll
     func hasValueForRegister(registerNumber: Int) -> Bool 
@@ -822,11 +909,19 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         return "| Reg. B [\(memoryB.count)]: " + memoryB.description
     }
     
+    private var undoStackDescription: String
+    {
+        return "| Undo [\(undoBuffer.count)]" 
+    }
+    
     override var description: String
     {
         var str: String = "Engine [\(Unmanaged.passUnretained(self).toOpaque())]\n" 
 
-        str = str + stackDescription + "\n" + memoryADescription + "\n" + memoryBDescription
+        str = str + stackDescription + "\n" 
+                  + memoryADescription + "\n" 
+                  + memoryBDescription + "\n"
+                  + undoStackDescription
         
         return str
     }

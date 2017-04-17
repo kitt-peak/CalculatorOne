@@ -126,8 +126,8 @@ enum GlobalNotification: String
 {
     case newEngineResult     = "newEngineResult"
     case newKeypadEntry      = "newKeypadEntry"
+    case newOperandType      = "newOperandType"
 
-    
     var name: Notification.Name { return Notification.Name(self.rawValue) }
 }
 
@@ -145,7 +145,7 @@ enum Symbols: String
     case avg  = "∅",            product   = "∏",          geoMean    = "∏ ᴺ√"
     case nAvg = "N ∅",          nProduct  = "N ∏",        nGeoMean   = "N ∏ ᴺ√"
     
-    case factorial = "n!"
+    case factorial = "n!",      primes    = "PF"
     case yExpX     = "Yˣ",      logYX     = "logY X"
     case eExpX     = "eˣ",      tenExpX   = "10ˣ",         twoExpX    = "2ˣ"
     case logE      = "ln",      log10     = "log",         log2       = "lb"
@@ -156,6 +156,7 @@ enum Symbols: String
     case sinus  = "sin",        cosinus   = "cos",          tangens   = "tan",      cotangens = "cot"
     case asinus = "asin",       acosinus  = "acos",         atangens  = "atan",     acotangens = "acot"
     
+    case conv22bB = "2→dB"
     case sigma     = "σ",       nSigma    = "N σ"
     case variance  = "var",     nVariance = "N var"
     
@@ -163,6 +164,20 @@ enum Symbols: String
     case epsilon0 = "ε₀", µ0 = "μ₀", c0 = "c₀",  e0 = "e₀", G = "G", g = "g", h = "h", k = "k"
     
     case copyStackToA = "䷀ → A", copyStackToB = "䷀ → B", copyAToStack = "䷀ ← A", copyBToStack = "䷀ ← B" 
+    
+    case invertSign = "±"
+    
+    case const7M68 = "7M68",        const30M72 = "30M72",       const122M88 = "122M88"
+    case const153M6 = "153M6",      const245M76 = "245M76",     const368M64 = "368M64"
+    case const1966M08 = "1966M08",  const2457M6 = "2457M6",     const2949M12 = "2949M12"
+    case const3072M0  = "3072M0",   const3868M4 = "3686M4"
+    case const3932M16 = "3932M16",  const4915M2 = "4915M2",     const5898M24 = "5898M24"
+    case const25M0 = "25M0",        const100M0 = "100M0",       const125M0 = "125M0"
+    case const156M25 = "156M25"
+    
+    case multiply66divide64 = "66 × 64 ÷",                      multiply64divide66 = "64 × 66 ÷"
+    case undo = "↩︎",  redo = "↪︎"
+
     //case Λ = "Λ", k0 = "k₀"
 }
 
