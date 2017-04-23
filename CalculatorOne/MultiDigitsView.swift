@@ -10,7 +10,8 @@ import Cocoa
 
 protocol MultiDigitViewDelegate
 {
-    func userEventShouldSetValue(_ value: Int) -> Bool
+    //func userEventShouldSetValue(_ value: Int) -> Bool
+    func userWillChangeDigitWithIndex(_ index: Int, toDigitValue: Int) -> Bool
 }
 
 /// Displays multiple digits (0 to F, point, minus) in a vertical scroll view, allows the user to change the digit by scrolling
@@ -30,7 +31,7 @@ class MultiDigitsView: BaseView, DigitViewDelegate
     
     var delegate: MultiDigitViewDelegate?
     
-    var allowsValueChangesByUI: Bool = false
+    var acceptsValueChangesByUI: Bool = false
     
     // represents the digit shown in the view
     var value: [Digit] = [Digit]()
@@ -68,10 +69,7 @@ class MultiDigitsView: BaseView, DigitViewDelegate
     
     required init?(coder: NSCoder)
     {
-        //let frameRect = CGRect.zero
-        //let newFrame: CGRect = CGRect(origin: frameRect.origin, size: DigitView.constantSize)
-        super.init(coder: coder)
-        
+        super.init(coder: coder)        
     }
     
     override func awakeFromNib() 
@@ -113,12 +111,6 @@ class MultiDigitsView: BaseView, DigitViewDelegate
         }  
     }
     
-    
-//    func resetToZero()
-//    {
-//        value = ""
-//    }
-    
     func configureViewForRadix(_ radix: Int)
     {
         for digitView in digitViews
@@ -159,11 +151,6 @@ class MultiDigitsView: BaseView, DigitViewDelegate
         }
     }
     
-//    private func scrollToDigit(_ digit: Digit, animated: Bool)
-//    {
-//        
-//    }
-//    
     func setDigit(_ digit: Digit, index: Int, animated: Bool)
     {
         digitViews[index].setDigit(digit, animated: animated)
@@ -175,33 +162,23 @@ class MultiDigitsView: BaseView, DigitViewDelegate
     }
     
     
-    func userEventShouldSetDigit(_ digit: Digit, fromView: DigitView) -> Bool 
+    func userScrollEventWillChangeDigit(_ digit: Digit, fromView: DigitView) -> Bool 
     {
-        guard allowsValueChangesByUI == true else { return false }
+        guard acceptsValueChangesByUI == true else { return false }
         
-        // the user updated one digit in the multi-digit view. 
-        // the index of that digit is:
-        if let indexOfUpdatedDigit = digitViews.index(of: fromView)
+        // the user tries to tweak one digit by scrolling in a multi-digit view. 
+        // the index of that digit is: tweakedDigitIndex
+        if let tweakedDigitIndex: Int = digitViews.index(of: fromView)
         {
-            //TODO: this patch is no good.
-//            if value == nil
-//            {
-//                value = 0
-//            }
-//            
-//            let newValue: Int = Engine.valueWithDigitReplaced(value: value!, digitIndex: indexOfUpdatedDigit, newDigitValue: digit.rawValue, radix: radix)
-//                        
-//            if delegate?.userEventShouldSetValue(newValue) == true
-//            {
-//                value = newValue
-//            }
+            // ask the controller if a digit tweak is permissible
+            return delegate?.userWillChangeDigitWithIndex(tweakedDigitIndex, toDigitValue: digit.rawValue) ?? false
         }
         else
         {
             assertionFailure("! Failure: digit view \(fromView) was not found in the digitview array of \(self)")
         }
         
-        return true
+        return false
     }
 
 }

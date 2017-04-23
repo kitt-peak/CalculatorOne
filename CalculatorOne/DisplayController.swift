@@ -13,7 +13,8 @@ import Cocoa
     func numberOfRegistersWithContent() -> Int
     func hasValueForRegister(registerNumber: Int) -> Bool
     func registerValue(registerNumber: Int, radix: Int) -> String
-    //func registerValueChanged(newValue: Int, forRegisterNumber: Int)
+    func registerValueWillChange(newValue: String, forRegisterNumber: Int) -> Bool
+    func registerValueDidChange(newValue: String, forRegisterNumber: Int)
 }
 
 enum DataSource
@@ -23,7 +24,7 @@ enum DataSource
 }
 
 
-class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControllerDelegate 
+class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControllerDelegate
 {
 
     @IBOutlet weak var document: Document!
@@ -35,8 +36,6 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     @IBOutlet weak var registerViewController2: RegisterViewController!
     @IBOutlet weak var registerViewController1: RegisterViewController!
     @IBOutlet weak var registerViewController0: RegisterViewController!
-    { didSet { registerViewController0.delegate = self } }
-    
 
     @IBOutlet weak var dataSource: DisplayDataSource!/*AnyObject!*/
 
@@ -48,6 +47,11 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
         
         registerViewControllers = [registerViewController0, registerViewController1, 
                                    registerViewController2, registerViewController3]
+        
+        for reg in registerViewControllers
+        {
+            reg.delegate = self
+        }
     }
     
     deinit 
@@ -59,12 +63,12 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     {
         for controller in registerViewControllers
         {
-            controller.acceptsValueChangesByUI = false
+            controller.acceptsValueChangesByUI = true
             controller.documentDidOpen()
         }
         
         // allow the top register view to update its value by the user through the UI
-        registerViewController0.acceptsValueChangesByUI = true
+        // registerViewController0.acceptsValueChangesByUI = true
         
         
         NotificationCenter.default.addObserver(forName: GlobalNotification.newEngineResult.name, object: nil, queue: nil) 
@@ -117,7 +121,7 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
             for (index, controller) in registerViewControllers.enumerated()
             {
                 controller.representedValue = dataSource.hasValueForRegister(registerNumber: index) 
-                    ?   .stringRightAligned(dataSource.registerValue(registerNumber: index, radix: radix.value))   //.integer(dataSource.registerValue(registerNumber: index)) 
+                    ?   .stringRightAligned(dataSource.registerValue(registerNumber: index, radix: radix.value))
                     :   .stringRightAligned("")
             }
             
@@ -128,13 +132,11 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
             for (index, controller) in registerViewControllers.dropFirst().enumerated()
             {
                 controller.representedValue = dataSource.hasValueForRegister(registerNumber: index) 
-                    ?   .stringRightAligned(dataSource.registerValue(registerNumber: index, radix: radix.value))   //.integer(dataSource.registerValue(registerNumber: index)) 
+                    ?   .stringRightAligned(dataSource.registerValue(registerNumber: index, radix: radix.value)) 
                     :   .stringRightAligned("")                    
-//                    ?   .integer(dataSource.registerValue(registerNumber: index)) 
-//                    :   .string("")
             }
 
-            // then, update the top register with the supplied value.
+            // then, update the top of stack register with the supplied value.
             registerViewController0.representedValue = .stringLeftAligned(value)        
         }        
     }
@@ -142,12 +144,10 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     
     func changeRadix(_ radix: Radix)
     {
-                
         for controller in registerViewControllers
         { controller.radix = radix.value }
                 
         updateRegisterDisplay(source: .engine, radix: radix)
-        
     }
     
 
@@ -156,18 +156,57 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     func userShouldChangeValue(_ value: Int, inRegister: RegisterViewController) -> Bool 
     {
 
-        for (index, register) in registerViewControllers.enumerated()
+        for (_/*index*/, register) in registerViewControllers.enumerated()
         {
             if register == inRegister
             {
                 //dataSource.registerValueChanged(newValue: value, forRegisterNumber: index)
             }
-            
         }
-        
-        
         return false
     }
+    
+    private func registerNumberForController(_ viewController: RegisterViewController) -> Int?
+    {
+        for (index, vC) in registerViewControllers.enumerated()
+        {
+            if viewController == vC { return index }
+        }
+        
+        return nil
+    }
+    
+    
+    //MARK: - RegisterViewController protocoll
+    func userWillTweakValue(_ valueStr: String, inRegister: RegisterViewController) -> Bool
+    {
+        if let registerNumber = registerNumberForController(inRegister)
+        {
+            // Can valueStr be represented as a numerical Value? If yes, return true, otherwise, false
+            if dataSource.registerValueWillChange(newValue: valueStr, forRegisterNumber: registerNumber) == true
+            {
+                return true
+            }
+            
+        }
+
+        return false
+    }
+    
+    func userDidTweakValue(_ valueStr: String, inRegister: RegisterViewController)
+    {
+        // convert valueStr to a numerical value and enter into the specified register
+        if let registerNumber = registerNumberForController(inRegister)
+        {
+            dataSource.registerValueDidChange(newValue: valueStr, forRegisterNumber: registerNumber)
+            
+            //updateRegisterDisplay(source: DataSource.engine, radix: keypadController.radix)
+            inRegister.representedValue = RegisterValueRepresentation.stringRightAligned(valueStr)
+            
+            //dataSource.registerValue(registerNumber: registerNumber, radix: keypadController.radix.value)
+        }        
+    }
+
     
     
 }

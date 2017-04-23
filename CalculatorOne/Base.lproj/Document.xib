@@ -1701,7 +1701,7 @@ DQ
                             </textFieldCell>
                         </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KCa-xz-Oih">
-                            <rect key="frame" x="0.0" y="453" width="248" height="23"/>
+                            <rect key="frame" x="0.0" y="453" width="312" height="23"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KQI-Ew-WHj">
                                     <rect key="frame" x="-6" y="-5" width="68" height="32"/>
@@ -1755,14 +1755,29 @@ DQ
                                         <action selector="userPressedOperationKeyWithSender:" target="jjE-6B-5wI" id="jUR-Ih-NU3"/>
                                     </connections>
                                 </button>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UuC-Gl-J1Q">
+                                    <rect key="frame" x="250" y="-5" width="68" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="56" id="xLz-Y8-ao1"/>
+                                    </constraints>
+                                    <buttonCell key="cell" type="push" title="rnd" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="NG6-el-mIg">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="userPressedOperationKeyWithSender:" target="jjE-6B-5wI" id="KFx-sd-awS"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <visibilityPriorities>
                                 <integer value="1000"/>
                                 <integer value="1000"/>
                                 <integer value="1000"/>
                                 <integer value="1000"/>
+                                <integer value="1000"/>
                             </visibilityPriorities>
                             <customSpacing>
+                                <real value="3.4028234663852886e+38"/>
                                 <real value="3.4028234663852886e+38"/>
                                 <real value="3.4028234663852886e+38"/>
                                 <real value="3.4028234663852886e+38"/>

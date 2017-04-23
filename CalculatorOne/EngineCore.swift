@@ -273,5 +273,20 @@ extension Engine
         return -x
     }
     
+    @nonobjc class func randomNumber() -> Double
+    {
+        let n1: UInt64 = UInt64(arc4random())
+        let n2: UInt64 = UInt64(arc4random())
+        
+        var n: UInt64 = n1 << 32
+        n = n | n2
+        
+        let r: Double = Double(n) / Double (UInt64.max)
+        
+        return r
+    }
+    
+    
+    
     
  }

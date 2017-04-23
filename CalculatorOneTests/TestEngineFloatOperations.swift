@@ -1319,6 +1319,56 @@ class TestEngineFloatOperations: XCTestCase
         }
     }
 
+    //-------<Random number>--------------------------------------------------------------
+    func testThatFloatRandomNumberResultsAreWithinTheExpectedRange()
+    {
+        // generate random numbers and test that they are in the range of 0 to 1.0
+        for _ in 0..<100
+        {
+            engineDUT.userInputOperation(symbol: Symbols.random.rawValue)
+            
+            if let engineResult = Double(engineDUT.registerValue(registerNumber: 0, radix: 10))
+            {
+                XCTAssertTrue(engineResult >= 0.0 && engineResult <= 1.0)
+            }
+            else
+            {
+                XCTFail("Test failure: could not convert string value to Double value")
+            }
+
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            
+        }
+    }
+    
+    func testThatFloatRandomNumberResultsAreOnAverageZeroPointFive()
+    {
+        // generate random numbers and test that they are around 0.5 on average
+        for _ in 0..<10
+        {
+            for _ in 0..<1000
+            {
+                engineDUT.userInputOperation(symbol: Symbols.random.rawValue)
+            }
+            
+            engineDUT.userInputOperation(symbol: Symbols.avg.rawValue)
+            
+            if let engineResult = Double(engineDUT.registerValue(registerNumber: 0, radix: 10))
+            {
+                XCTAssertEqualWithAccuracy(engineResult, 0.5, accuracy: 0.1)
+            }
+            else
+            {
+                XCTFail("Test failure: could not convert string value to Double value")
+            }
+            
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        }
+    }
+    
+
+    
+    
 }
 
 

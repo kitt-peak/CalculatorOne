@@ -8,9 +8,6 @@
 
 import Foundation
 
-
-
-
 func sign<T: Integer>(_ x: T) -> Int
 {
     return x == 0 ? 1 : (x > 0 ? 1 : -1)
@@ -71,30 +68,29 @@ enum UndoItem
 }
 
 
-class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, DisplayDataSource, KeypadDataSource
+class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  DisplayDataSource, KeypadDataSource
 {
-    //MARK: - Mathematical class functions
-    
-    class func valueWithDigitCleared(value: Int, digitIndex: Int, radix: Int) -> Int
-    {
-        let leftDigitsSetToZero: Int = value % Int(pow(Double(radix), Double(digitIndex + 1)))
-        let rightDigits: Int         = value % Int(pow(Double(radix), Double(digitIndex)))
-        
-        let newValue = value - leftDigitsSetToZero + rightDigits
-    
-        return newValue
-    }
-    
-    
-    class func valueWithDigitReplaced(value: Int, digitIndex: Int, newDigitValue: Int, radix: Int) -> Int
-    {
-        let valueWithDigitCleared: Int = Engine.valueWithDigitCleared(value: value, digitIndex: digitIndex, radix: radix)
-        let valueNewDigit: Int         = newDigitValue * Int(pow(Double(radix),Double(digitIndex)))
-        let valueNewDigitSignCorrected = valueNewDigit * sign(value)
-        
-        return valueWithDigitCleared + valueNewDigitSignCorrected
-    }
-    
+//    
+//    class func valueWithDigitCleared(value: Int, digitIndex: Int, radix: Int) -> Int
+//    {
+//        let leftDigitsSetToZero: Int = value % Int(pow(Double(radix), Double(digitIndex + 1)))
+//        let rightDigits: Int         = value % Int(pow(Double(radix), Double(digitIndex)))
+//        
+//        let newValue = value - leftDigitsSetToZero + rightDigits
+//    
+//        return newValue
+//    }
+//    
+//    
+//    class func valueWithDigitReplaced(value: Int, digitIndex: Int, newDigitValue: Int, radix: Int) -> Int
+//    {
+//        let valueWithDigitCleared: Int = Engine.valueWithDigitCleared(value: value, digitIndex: digitIndex, radix: radix)
+//        let valueNewDigit: Int         = newDigitValue * Int(pow(Double(radix),Double(digitIndex)))
+//        let valueNewDigitSignCorrected = valueNewDigit * sign(value)
+//        
+//        return valueWithDigitCleared + valueNewDigitSignCorrected
+//    }
+//    
     
     
     //MARK: - Private properties
@@ -286,7 +282,41 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         
         assertionFailure("! Abort due to mismatched engine stack type")
         abort()
+    }
+    
+    private func updateStackAtIndex(_ index: Int, withValue: OperandValue)
+    {
+        if index >= 0 && index <= stack.endIndex
+        {
+            stack[index] = withValue
+        }
+        else
+        {
+            assertionFailure("! Error stack update index <\(index)> out of range (allowed stack index range: \(stack.startIndex)..<\(stack.endIndex))")
+        }
         
+    }
+    
+    // MARK: - Helper functiona
+    private func operandValue(fromString: String) -> OperandValue?
+    {
+        switch operandType 
+        {
+        case .float:
+            // test and convert to operant type .float
+            if let d: Double = Double(fromString)
+            {
+                return OperandValue.float(d)
+            }
+        case .integer:
+            // test and convert to operant type .integer
+            if let i: Int = Int(fromString)
+            {
+                 return OperandValue.integer(i)
+            }
+        }
+        
+        return nil
     }
 
     
@@ -412,6 +442,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
     
     Symbols.conv22bB.rawValue : .floatBinary2array({ (a: Double, b: Double) -> [OperandValue] in return [.float(20.0 * log10(a / b)) ]}),
 
+    Symbols.random.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(Engine.randomNumber())] }),
     
     ]
     
@@ -678,8 +709,8 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         }
         else
         {
-            print("| engine \(#function): performed operation \(operandType) '\(symbol)'")            
-            print(description)
+            //print("| engine \(#function): performed operation \(operandType) '\(symbol)'")            
+            //print(description)
         }
     }
     
@@ -700,7 +731,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
                 stack = formerStack
                 updateUI()
                 
-            case .radix(let formerRadix):
+            case .radix(_/* let formerRadix*/):
                 break
                 
             case .operandType(let formerOperandType):
@@ -720,7 +751,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
     // MARK: - Keypad controller delegate: user input
     func userUpdatedStackTopValue(_ updatedValue: String, radix: Int)
     {
-        if let updatedInt: Int = Int(updatedValue, radix: radix)
+        if let _/*updatedInt*/: Int = Int(updatedValue, radix: radix)
         {
             if stack.isEmpty
             {
@@ -822,9 +853,9 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         // store the current stack for potential undo-operation
         addToRedoBuffer(item: .stack(stack))
         
-        print("\(self)\n| \(#function): adding '\(value)' to top of stack")
+        //print("\(self)\n| \(#function): adding '\(value)' to top of stack")
         stack.append(value)
-        print(stackDescription)
+        //print(stackDescription)
 
         updateUI()
     }
@@ -865,6 +896,8 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
     func canUndo() -> Bool { return undoBuffer.count > 0 }
     func canRedo() -> Bool { return false }
     
+    
+    
     //MARK: - Display data source protocoll
     func hasValueForRegister(registerNumber: Int) -> Bool 
     {
@@ -881,6 +914,41 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate, Disp
         case .float(let f):   return String(describing: f)
         }
     }
+    
+    
+    func registerValueWillChange(newValue: String, forRegisterNumber: Int) -> Bool
+    {
+        // is registerNumber valid (are that many values on the stack)
+        if hasValueForRegister(registerNumber: forRegisterNumber) == false 
+        {
+            return false
+        }
+        
+        // Can valueStr be represented as a numerical Value? If yes, return true, otherwise, false
+        return operandValue(fromString: newValue) != nil
+    }
+    
+    
+    func registerValueDidChange(newValue: String, forRegisterNumber: Int)
+    {
+        // is registerNumber valid (are that many values on the stack)
+        if hasValueForRegister(registerNumber: forRegisterNumber) == true
+        {
+            // convert valueStr to a numerical value and enter into the specified register
+            if let v: OperandValue = operandValue(fromString: newValue)
+            {
+                updateStackAtIndex(forRegisterNumber, withValue: v)
+                
+                print(stackDescription)
+                
+                return
+            } 
+        }
+        
+        print("! engine does not accepts <\(newValue)> as value in register #\(forRegisterNumber)")
+        
+    }
+
     
     func registerValueChanged(newValue: Int, forRegisterNumber: Int) 
     {

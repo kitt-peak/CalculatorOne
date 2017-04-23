@@ -11,8 +11,7 @@ import Cocoa
 /*
  Constraining Scrolling
  
- Subclasses of NSView override the adjustScroll: method to provide a view fine-grained control of its position during scrolling. A custom view subclass can quantize scrolling into regular units—to the edges of a spreadsheet’s cells, for example—or simply limit scrolling to a specific region of the view. The adjustScroll: method provides the proposed rectangle that the scrolling mechanism will make visible and expects the subclass to return the passed rectangle or an altered rectangle that will constrain the scrolling.
- 
+  
  Listing 4 shows an implementation of adjustScroll: that constrains scrolling of the view to 72 pixel increments, even when dragging the scroll knob.
  
  Listing 4  Constraining scrolling with adjustScroll:
@@ -27,7 +26,6 @@ import Cocoa
  // return the modified rectangle
  return modifiedRect;
  }
- The adjustScroll: method is not used when scrolling is initiated by lower-level scrolling methods provided by NSClipView (scrollToPoint:) and NSScrollView (scrollRectToVisible:).
  
  
  */
@@ -37,6 +35,14 @@ class ConstraintScrollView: NSView
     var minimumScrollOriginY: CGFloat = 0.0
     var maximumScrollOriginY: CGFloat = 100000.0
     
+    
+    // Subclasses of NSView override the adjustScroll: method to provide a view fine-grained control of its position during scrolling. A custom view subclass can quantize scrolling into regular units—to the edges of a spreadsheet’s cells, for example—or simply limit scrolling to a specific region of the view. The adjustScroll: method provides the proposed rectangle that the scrolling mechanism will make visible and expects the subclass to return the passed rectangle or an altered rectangle that will constrain the scrolling.
+
+    //The adjustScroll: method is not used when scrolling is initiated by lower-level scrolling methods provided by NSClipView (scrollToPoint:) and NSScrollView (scrollRectToVisible:).
+    /// adjustScrollView limits the vertical scroll y coordinate to the y coordinate provided in the newVisible argument 
+    ///
+    /// - Parameter newVisible: NSRect to which the scrill area will be limited to. This implementation only uses .newVisible.origin.y to constraint the scroll area
+    /// - Returns: the NSRect to which the scroll view contraints its scroll area
     override func adjustScroll(_ newVisible: NSRect) -> NSRect 
     {
         var modifiedRect = newVisible
@@ -46,6 +52,4 @@ class ConstraintScrollView: NSView
             
         return modifiedRect
     }
-
-    
 }

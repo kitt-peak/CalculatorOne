@@ -11,7 +11,9 @@ import Cocoa
 
 protocol RegisterViewControllerDelegate 
 {
-    func userShouldChangeValue(_: Int, inRegister: RegisterViewController) -> Bool
+    //func userShouldChangeValue(_: Int, inRegister: RegisterViewController) -> Bool
+    func userWillTweakValue(_: String, inRegister: RegisterViewController) -> Bool
+    func userDidTweakValue(_ : String, inRegister: RegisterViewController)
 }
 
 enum RegisterValueRepresentation
@@ -26,11 +28,11 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
     
     @IBOutlet var digitsView: MultiDigitsView!
     { didSet { digitsView.delegate = self } }
-    
+        
     var delegate: RegisterViewControllerDelegate!
     
     var acceptsValueChangesByUI: Bool = false
-    { didSet { digitsView.allowsValueChangesByUI = acceptsValueChangesByUI } }
+    { didSet { digitsView.acceptsValueChangesByUI = acceptsValueChangesByUI } }
     
     var representedValue: RegisterValueRepresentation = .stringRightAligned("")
     { didSet 
@@ -186,16 +188,53 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
     
     
     
-    func userEventShouldSetValue(_ value: Int) -> Bool 
+    //MARK: - MultiDigitViewDelegate
+    
+    func userWillChangeDigitWithIndex(_ index: Int, toDigitValue: Int) -> Bool
     {
         guard acceptsValueChangesByUI == true else { return false }
+
+        // get the current value of the register as string
+        var newValue: String = ""
         
-        if delegate.userShouldChangeValue(value, inRegister: self) == true
+        switch representedValue 
         {
+        case .stringRightAligned(let str):
+            
+            for i in (0..<digitsView.countViews)
+            {
+                if i == index
+                {
+                    let c: String = String(toDigitValue, radix: radix)
+                    newValue = c.appending(newValue)
+                }
+                else if i < str.characters.count
+                {
+                    let c: String = String(Array(str.characters)[str.characters.count - i - 1])
+                    newValue = c.appending(newValue)
+                }
+                else
+                {
+                    newValue = (" ").appending(newValue)
+                }
+            }
+            
+        default:
+            //TODO: implement changes of right-aligned string values
+            break
+        }
+        
+        newValue = newValue.trimmingCharacters(in: CharacterSet.whitespaces)
+        
+        if delegate.userWillTweakValue(newValue, inRegister: self) == true
+        {
+            delegate.userDidTweakValue(newValue, inRegister: self)
+            
+            //print(newRegisterContent)
             return true
         }
         
         return false
     }
-    
+
 }
