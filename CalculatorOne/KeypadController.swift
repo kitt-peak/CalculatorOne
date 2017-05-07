@@ -12,7 +12,7 @@ import Carbon
 // delegate receives user input: composed digits, enter, operations, radix and operand type changes
 @objc protocol KeypadControllerDelegate 
 {
-    func userUpdatedStackTopValue(_ updatedValue: String, radix: Int)
+    //func userUpdatedStackTopValue(_ updatedValue: String, radix: Int)
     func userWillInputEnter(numericalValue: String, radix: Int) -> Bool
     func userInputEnter(numericalValue: String, radix: Int)
     func userInputOperation(symbol: String)
@@ -736,7 +736,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         print(self)
                 
         // display the composed user input as string
-        let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.name, object: document, userInfo: ["StringValue" : digitsComposing])
+        let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.name, object: document, userInfo: [GlobalKey.numbericString.name : digitsComposing])
         NotificationCenter.default.post(updateUINote)
     }
     

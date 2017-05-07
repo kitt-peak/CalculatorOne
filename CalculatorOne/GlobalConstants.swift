@@ -131,6 +131,13 @@ enum GlobalNotification: String
     var name: Notification.Name { return Notification.Name(self.rawValue) }
 }
 
+enum GlobalKey: String
+{
+    case numbericString = "numericString"
+    
+    var name: String { return self.rawValue }
+}
+
 enum Symbols: String
 {
     case plus    = "+",         minus = "−",            multiply  = "×",        divide     = "÷"

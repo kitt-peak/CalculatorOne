@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12118"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12120"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
@@ -1262,10 +1262,10 @@ DQ
                 <outlet property="displayView" destination="f9U-o9-vHH" id="2Wo-QY-F8M"/>
                 <outlet property="document" destination="-2" id="38n-hV-k3Y"/>
                 <outlet property="keypadController" destination="jjE-6B-5wI" id="mfu-Tn-fwK"/>
-                <outlet property="registerViewController0" destination="3RH-ix-ZZq" id="8D2-1M-mVl"/>
-                <outlet property="registerViewController1" destination="xZW-Fw-wnK" id="QoE-ce-97a"/>
-                <outlet property="registerViewController2" destination="AUY-T2-SWr" id="m6X-24-Pql"/>
-                <outlet property="registerViewController3" destination="itf-So-7NF" id="lAB-LH-R5s"/>
+                <outlet property="registerViewControllerFourth" destination="itf-So-7NF" id="0av-h3-ddN"/>
+                <outlet property="registerViewControllerSecond" destination="xZW-Fw-wnK" id="T7k-2l-Xh3"/>
+                <outlet property="registerViewControllerThird" destination="AUY-T2-SWr" id="djb-8c-GrN"/>
+                <outlet property="registerViewControllerTop" destination="3RH-ix-ZZq" id="wOD-Fa-dzW"/>
             </connections>
         </customObject>
         <customObject id="pfO-2r-1bK" customClass="Engine" customModule="CalculatorOne" customModuleProvider="target">

@@ -11,49 +11,63 @@ import Cocoa
 
 protocol RegisterViewControllerDelegate 
 {
-    //func userShouldChangeValue(_: Int, inRegister: RegisterViewController) -> Bool
-    func userWillTweakValue(_: String, inRegister: RegisterViewController) -> Bool
-    func userDidTweakValue(_ : String, inRegister: RegisterViewController)
+    func userWillTweakRepresentedValue(_: RegisterViewController.RepresentedValue, inRegister: RegisterViewController) -> Bool
+    func userDidTweakRepresentedValue(_ : RegisterViewController.RepresentedValue, inRegister: RegisterViewController)
 }
 
-enum RegisterValueRepresentation
-{
-    case integer(Int)
-    case stringLeftAligned(String)
-    case stringRightAligned(String)
-}
 
+/// Manages one Multidigit view.
+///
+/// Base class: NSObject for object creation and outlets in Interface builder
+/// Conforms to: 
+/// - DependendObjectLifeCyle: to get life cycle notifications from Document
+/// - MultiDigitViewDelegate: user can change digits by scrolling a digit (UI)
+/// 
+/// This class wants another object to comply to RegisterViewControllerDelegate for 
+/// forwarding user changes of digits by scrolling
+/// 
+/// This class is the delegate of its multi digit view
 class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitViewDelegate
 {
+    // defines the alignment of a value in a multi digit display
+    enum Alignment 
+    {
+        case left           // first digit at the left hand side, used during value entry by the user
+        case right          // last digit at the right hand side. This is the normal alignment of values in a multi digit view
+    }
     
+    // the value that the controller represents and shows thru its multi digit view
+    struct RepresentedValue 
+    {
+        var content: String           // the content, as string
+        var radix: Radix              // number radix (bin, dec, oct or hex)
+        var alignment: Alignment      // left or right
+    }
+    
+    // one digit view is managed by this class. For this purpose, this class becomes the delegate if the multi digit view
     @IBOutlet var digitsView: MultiDigitsView!
     { didSet { digitsView.delegate = self } }
-        
+    
+    // for reporting digits changes coming from the multi digit view
     var delegate: RegisterViewControllerDelegate!
     
+    // blocking digit changes in the UI. This state is passed down to the multi digits view
     var acceptsValueChangesByUI: Bool = false
     { didSet { digitsView.acceptsValueChangesByUI = acceptsValueChangesByUI } }
-    
-    var representedValue: RegisterValueRepresentation = .stringRightAligned("")
+
+    // the value that the multi digit view shows. The value is a string, either left or right aligned in its digits view
+    var representedValue: RepresentedValue = RepresentedValue(content: "", radix: Radix.decimal, alignment: .right)
     { didSet 
-        { 
-            digitsView.value = digitsForRegisterValue(representedValue)            
+        {   digitsView.radix = representedValue.radix.value
+            digitsView.value = digitsForRepresentedValue(representedValue) 
         } 
     }
-    
-    var radix: Int = 10
-    { didSet 
-        { 
-            digitsView.radix = radix 
-        }
-    }
-    
-    
+        
+    //MARK: - Life cycle
     override func awakeFromNib()
     {
         super.awakeFromNib()
     }
-    
     
     func documentDidOpen()
     {
@@ -65,15 +79,20 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
         
     }
     
-    
-    private func digitsForRegisterValue(_ representation: RegisterValueRepresentation) -> [Digit]
+    // MARK: - Class logic
+    /// Generates an array of digits from a RepresentedValue with the digits correctly
+    /// set according to radix and alignment
+    ///
+    /// - Parameter value: the value to convert to digits
+    /// - Returns: the array of digits
+    private func digitsForRepresentedValue(_ value: RepresentedValue) -> [Digit]
     {
-        // convert a the register value to an array of digits
+        // convert a the value to an array of digits
         var digits: [Digit] = [Digit](repeating: .blank, count: digitsView.countViews)
         
-        switch representation 
+        switch value.alignment 
         {
-        case .integer(let value):
+        /*case .integer(let value):
             
             // convert integer to digit array
             var digitValue: Int = abs(value)
@@ -105,11 +124,12 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
             }
             
             digitsView.value = [.minus, .d0, .d1, .minus]
-
-        case .stringRightAligned(let str):
+*/
+        // generate the digit array right aligned. 
+        case .right:    
             
             // filter for error values NaN and inf
-            if str == "nan" || str == "inf" || str == "-inf"
+            if value.content == "nan" || value.content == "inf" || value.content == "-inf"
             {
                 digits[0] = .dE
                 digits[1] = .dE
@@ -120,7 +140,7 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
                 
                 // iterate thru each character of the string from right to left
                 // display the string right-aligned
-                for (index, character) in str.characters.reversed().enumerated()
+                for (index, character) in value.content.characters.reversed().enumerated()
                 {
                     switch character 
                     {
@@ -134,7 +154,7 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
                     default:
                         // convert character to digit
                         let s = String(character)
-                        let v = Int(s, radix: radix)
+                        let v = Int(s, radix: value.radix.value)
                         
                         if let d: Digit = Digit(rawValue: v!)
                         {
@@ -150,10 +170,11 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
             
             
             
-        case .stringLeftAligned(let str):
+        //case .stringLeftAligned(let str):
+        case .left:
             // iterate thru each character of the string from left to right
             // display the string left-aligned
-            for (index, character) in str.characters.enumerated()
+            for (index, character) in value.content.characters.enumerated()
             {
                 switch character 
                 {
@@ -169,7 +190,7 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
 
                     // convert character to digit
                     let s = String(character)
-                    let v = Int(s, radix: radix)
+                    let v = Int(s, radix: value.radix.value)
                 
                     if let d: Digit = Digit(rawValue: v!)
                     {
@@ -195,40 +216,41 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
         guard acceptsValueChangesByUI == true else { return false }
 
         // get the current value of the register as string
-        var newValue: String = ""
-        
-        switch representedValue 
+        var newValueStr: String = ""
+
+        switch representedValue.alignment
         {
-        case .stringRightAligned(let str):
-            
+        case .right:
             for i in (0..<digitsView.countViews)
             {
                 if i == index
                 {
-                    let c: String = String(toDigitValue, radix: radix)
-                    newValue = c.appending(newValue)
+                    let c: String = String(toDigitValue, radix: representedValue.radix.value)
+                    newValueStr = c.appending(newValueStr)
                 }
-                else if i < str.characters.count
+                else if i < representedValue.content.characters.count
                 {
-                    let c: String = String(Array(str.characters)[str.characters.count - i - 1])
-                    newValue = c.appending(newValue)
+                    let c: String = String(Array(representedValue.content.characters)[representedValue.content.characters.count - i - 1])
+                    newValueStr = c.appending(newValueStr)
                 }
                 else
                 {
-                    newValue = (" ").appending(newValue)
+                    newValueStr = (" ").appending(newValueStr)
                 }
             }
             
         default:
-            //TODO: implement changes of right-aligned string values
+            //TODO: implement changes of left-aligned string values
             break
         }
         
-        newValue = newValue.trimmingCharacters(in: CharacterSet.whitespaces)
+        newValueStr = newValueStr.trimmingCharacters(in: CharacterSet.whitespaces)
         
-        if delegate.userWillTweakValue(newValue, inRegister: self) == true
+        let newValue: RepresentedValue = RepresentedValue(content: newValueStr, radix: representedValue.radix, alignment: .right)
+        
+        if delegate.userWillTweakRepresentedValue(newValue, inRegister: self) == true
         {
-            delegate.userDidTweakValue(newValue, inRegister: self)
+            delegate.userDidTweakRepresentedValue(newValue, inRegister: self)
             
             //print(newRegisterContent)
             return true

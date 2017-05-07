@@ -298,7 +298,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     }
     
     // MARK: - Helper functiona
-    private func operandValue(fromString: String) -> OperandValue?
+    private func operandValue(fromString: String, radix: Int) -> OperandValue?
     {
         switch operandType 
         {
@@ -310,7 +310,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             }
         case .integer:
             // test and convert to operant type .integer
-            if let i: Int = Int(fromString)
+            if let i: Int = Int(fromString, radix: radix)
             {
                  return OperandValue.integer(i)
             }
@@ -748,23 +748,23 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     }
 
 
-    // MARK: - Keypad controller delegate: user input
-    func userUpdatedStackTopValue(_ updatedValue: String, radix: Int)
-    {
-        if let _/*updatedInt*/: Int = Int(updatedValue, radix: radix)
-        {
-            if stack.isEmpty
-            {
-                //stack.append(updatedInt)
-            }
-            else
-            {
-                //stack[stack.count - 1] = updatedInt
-            }
-            
-            updateUI()
-        }
-    }
+//    // MARK: - Keypad controller delegate: user input
+//    func userUpdatedStackTopValue(_ updatedValue: String, radix: Int)
+//    {
+//        if let _/*updatedInt*/: Int = Int(updatedValue, radix: radix)
+//        {
+//            if stack.isEmpty
+//            {
+//                //stack.append(updatedInt)
+//            }
+//            else
+//            {
+//                //stack[stack.count - 1] = updatedInt
+//            }
+//            
+//            updateUI()
+//        }
+//    }
     
     func userInputOperandType(_ type: Int, storeInUndoBuffer: Bool) 
     {
@@ -855,7 +855,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         
         //print("\(self)\n| \(#function): adding '\(value)' to top of stack")
         stack.append(value)
-        //print(stackDescription)
+        print(stackDescription)
 
         updateUI()
     }
@@ -916,28 +916,34 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     }
     
     
-    func registerValueWillChange(newValue: String, forRegisterNumber: Int) -> Bool
+    func registerValueWillChange(newValue: String, radix: Int, forRegisterNumber: Int) -> Bool
     {
         // is registerNumber valid (are that many values on the stack)
         if hasValueForRegister(registerNumber: forRegisterNumber) == false 
         {
+            print("Engine refused to change register \(forRegisterNumber) because the register is empty")
             return false
         }
         
+        
         // Can valueStr be represented as a numerical Value? If yes, return true, otherwise, false
-        return operandValue(fromString: newValue) != nil
+        return operandValue(fromString: newValue, radix: radix) != nil
     }
     
     
-    func registerValueDidChange(newValue: String, forRegisterNumber: Int)
+    func registerValueDidChange(newValue: String, radix: Int, forRegisterNumber: Int)
     {
         // is registerNumber valid (are that many values on the stack)
         if hasValueForRegister(registerNumber: forRegisterNumber) == true
         {
             // convert valueStr to a numerical value and enter into the specified register
-            if let v: OperandValue = operandValue(fromString: newValue)
+            if let v: OperandValue = operandValue(fromString: newValue, radix: radix)
             {
-                updateStackAtIndex(forRegisterNumber, withValue: v)
+                let index = stack.count - forRegisterNumber - 1
+                updateStackAtIndex(index, withValue: v)
+                
+                // store the current stack for potential undo-operation
+                addToRedoBuffer(item: .stack(stack))
                 
                 print(stackDescription)
                 
@@ -950,17 +956,17 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     }
 
     
-    func registerValueChanged(newValue: Int, forRegisterNumber: Int) 
-    {
-        if stack.isEmpty
-        {
-            //stack.append(newValue)
-        }
-        else
-        {
-            //stack[stack.count - forRegisterNumber - 1] = newValue            
-        }
-    }
+//    func registerValueChanged(newValue: Int, forRegisterNumber: Int) 
+//    {
+//        if stack.isEmpty
+//        {
+//            //stack.append(newValue)
+//        }
+//        else
+//        {
+//            //stack[stack.count - forRegisterNumber - 1] = newValue            
+//        }
+//    }
     
     private var stackDescription: String
     {

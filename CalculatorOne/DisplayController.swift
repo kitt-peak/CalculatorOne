@@ -13,8 +13,8 @@ import Cocoa
     func numberOfRegistersWithContent() -> Int
     func hasValueForRegister(registerNumber: Int) -> Bool
     func registerValue(registerNumber: Int, radix: Int) -> String
-    func registerValueWillChange(newValue: String, forRegisterNumber: Int) -> Bool
-    func registerValueDidChange(newValue: String, forRegisterNumber: Int)
+    func registerValueWillChange(newValue: String, radix: Int, forRegisterNumber: Int) -> Bool
+    func registerValueDidChange(newValue: String, radix: Int, forRegisterNumber: Int)
 }
 
 enum DataSource
@@ -32,10 +32,10 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     @IBOutlet weak var displayView: DisplayView!
     @IBOutlet weak var keypadController: KeypadController!
     
-    @IBOutlet weak var registerViewController3: RegisterViewController!
-    @IBOutlet weak var registerViewController2: RegisterViewController!
-    @IBOutlet weak var registerViewController1: RegisterViewController!
-    @IBOutlet weak var registerViewController0: RegisterViewController!
+    @IBOutlet weak var registerViewControllerFourth: RegisterViewController!
+    @IBOutlet weak var registerViewControllerThird:  RegisterViewController!
+    @IBOutlet weak var registerViewControllerSecond: RegisterViewController!
+    @IBOutlet weak var registerViewControllerTop:    RegisterViewController!  /* Top of stack is index 0 */
 
     @IBOutlet weak var dataSource: DisplayDataSource!/*AnyObject!*/
 
@@ -45,8 +45,9 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     {
         super.awakeFromNib()
         
-        registerViewControllers = [registerViewController0, registerViewController1, 
-                                   registerViewController2, registerViewController3]
+        // put all controllers into a container for easy access. The top of stack controller has the index 0.
+        registerViewControllers = [registerViewControllerTop, registerViewControllerSecond, 
+                                   registerViewControllerThird, registerViewControllerFourth]
         
         for reg in registerViewControllers
         {
@@ -78,7 +79,7 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
             
             let radix = self.keypadController.radix
             // updates from the engine could involve all register displays
-            self.updateRegisterDisplay(source: DataSource.engine, radix: radix)
+            self.updateRegisterDisplay(fromSource: DataSource.engine, radix: radix)
         }
         
         NotificationCenter.default.addObserver(forName: GlobalNotification.newKeypadEntry.name, object: nil, queue: nil) 
@@ -86,12 +87,12 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
             
             guard notification.object as? Document == self.document else { return }
             
-            if let stringValue: String = notification.userInfo?["StringValue"] as? String
+            if let stringValue: String = notification.userInfo?[GlobalKey.numbericString.name] as? String
             {
                 let radix = self.keypadController.radix
 
                 // updates from the keypad are displayed in register 0.
-                self.updateRegisterDisplay(source: DataSource.keypad(stringValue), radix: radix)
+                self.updateRegisterDisplay(fromSource: DataSource.keypad(stringValue), radix: radix)
             }
             
         }
@@ -110,62 +111,79 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     
     /// Causes the register views to update themselves
     ///
-    /// - Parameter source: Datasource. When .engine, the register views ask take data from the engine data source for updating themselves. When .keypad(value: String), the top register copies "value" left-aligned into the top register. All other registers are updated from the engine data source (since the top register contains "value", register 1 will contain top engine stack, register 2: engine stack top + 1 etc.
-    func updateRegisterDisplay(source: DataSource, radix: Radix)
+    /// - Parameter source: Datasource. When .engine, all register views are displayed right-aligned. The data to update is taken from the controllers datasource.
+    ///   When .keypad, the top register is taken from the associated value of the method argument and is displayed left-aligned.
+    ///   All other register values are taken from the datasource and are displayed right-aligned at one register view position higher. That is, register 0
+    ///   from the data source (the top of stack) is displayed in register view 1, data source reg. 1 in register view 2 etc.
+    //    The register view controllers asks their data source for updating themselves. When .keypad(value: String), the top register copies "value" left-aligned into the top register. All other registers are updated from the engine data source (since the top register contains "value", register 1 will contain top engine stack, register 2: engine stack top + 1 etc.
+    func updateRegisterDisplay(fromSource: DataSource, radix: Radix)
     {
-        switch source 
+        guard registerViewControllers != nil else { return }
+        
+        var registerViewControllersToShowRightAligned : [RegisterViewController] = registerViewControllers!
+    
+        switch fromSource 
         {
         case .engine:
+            break
             
-            // update all registers taking data from the engine stack. Iterate over all register views and ask if the data source has content for it
-            for (index, controller) in registerViewControllers.enumerated()
-            {
-                controller.representedValue = dataSource.hasValueForRegister(registerNumber: index) 
-                    ?   .stringRightAligned(dataSource.registerValue(registerNumber: index, radix: radix.value))
-                    :   .stringRightAligned("")
-            }
-            
-        case .keypad(let value): 
-
-            // The value from the keypad will be displayed in the top register, left aligned
-            // update registers excluding the top register by taking data from the engine stack. Iterate over these register views and ask if the data source has content for it
-            for (index, controller) in registerViewControllers.dropFirst().enumerated()
-            {
-                controller.representedValue = dataSource.hasValueForRegister(registerNumber: index) 
-                    ?   .stringRightAligned(dataSource.registerValue(registerNumber: index, radix: radix.value)) 
-                    :   .stringRightAligned("")                    
-            }
-
+        case .keypad(let str):
+            registerViewControllersToShowRightAligned.removeFirst()
+                        
             // then, update the top of stack register with the supplied value.
-            registerViewController0.representedValue = .stringLeftAligned(value)        
-        }        
+            registerViewControllerTop.representedValue = RegisterViewController.RepresentedValue(
+                content: str, 
+                radix: radix, 
+                alignment: .left)
+        }
+        
+        // update all registers taking data from the engine stack. Iterate over all register views and ask if the data source has content for it
+        for (index, controller) in registerViewControllersToShowRightAligned.enumerated()
+        {
+            if dataSource.hasValueForRegister(registerNumber: index) == true
+            {
+                let v = RegisterViewController.RepresentedValue(content: dataSource.registerValue(registerNumber: index, radix: radix.value), 
+                                                                            radix: radix, 
+                                                                            alignment: RegisterViewController.Alignment.right)
+                controller.representedValue = v
+            }
+            else
+            {
+                controller.representedValue = RegisterViewController.RepresentedValue(content: "", radix: .decimal, alignment: .right)
+            }                
+        }
+
     }
     
     
     func changeRadix(_ radix: Radix)
     {
-        for controller in registerViewControllers
-        { controller.radix = radix.value }
-                
-        updateRegisterDisplay(source: .engine, radix: radix)
+        // the update will set the new radix
+        updateRegisterDisplay(fromSource: .engine, radix: radix)
     }
     
 
     
     
-    func userShouldChangeValue(_ value: Int, inRegister: RegisterViewController) -> Bool 
-    {
-
-        for (_/*index*/, register) in registerViewControllers.enumerated()
-        {
-            if register == inRegister
-            {
-                //dataSource.registerValueChanged(newValue: value, forRegisterNumber: index)
-            }
-        }
-        return false
-    }
+//    func userShouldChangeValue(_ value: Int, inRegister: RegisterViewController) -> Bool 
+//    {
+//
+//        for (_/*index*/, register) in registerViewControllers.enumerated()
+//        {
+//            if register == inRegister
+//            {
+//                //dataSource.registerValueChanged(newValue: value, forRegisterNumber: index)
+//            }
+//        }
+//        return false
+//    }
     
+
+    /// Converts a register view controller to a register number. This number can be used in the engine to query or change register values.
+    /// The top of the stack is always in register 0. In the user interface, the top of stack (register 0) may be the bottom view in the display
+    ///
+    /// - Parameter viewController: the view controller to convert to a register number
+    /// - Returns: the register number (index) that the engine understands
     private func registerNumberForController(_ viewController: RegisterViewController) -> Int?
     {
         for (index, vC) in registerViewControllers.enumerated()
@@ -178,32 +196,42 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     
     
     //MARK: - RegisterViewController protocoll
-    func userWillTweakValue(_ valueStr: String, inRegister: RegisterViewController) -> Bool
+    
+    /// Tests for acceptance of changing a register to the specified value
+    ///
+    /// The method will ask its datasource (engine) if the value hosted by the register view controller can be changed
+    /// - Parameters:
+    ///   - valueStr: the new value to be tested, as String
+    ///   - inRegister: the register view controller hosting the value to be changed
+    /// - Returns: true if a change is permitted, otherwise false.
+    func userWillTweakRepresentedValue(_ value: RegisterViewController.RepresentedValue, inRegister: RegisterViewController) -> Bool
     {
+        // try to convert the register view controller to a register number (number 0 is the top of stack view controller)  
         if let registerNumber = registerNumberForController(inRegister)
         {
             // Can valueStr be represented as a numerical Value? If yes, return true, otherwise, false
-            if dataSource.registerValueWillChange(newValue: valueStr, forRegisterNumber: registerNumber) == true
-            {
-                return true
-            }
-            
+            return dataSource.registerValueWillChange(newValue: value.content, radix: value.radix.value, forRegisterNumber: registerNumber)
         }
 
         return false
     }
     
-    func userDidTweakValue(_ valueStr: String, inRegister: RegisterViewController)
+    
+    /// Changes a register to the specified value. Call userWillTweakValue(_ valueStr: String, inRegister: RegisterViewController) first
+    /// to test for acceptance of changing a register value
+    ///
+    /// The method will ask its datasource (engine) to change the value hosted by the register view controller
+    /// - Parameters:
+    ///   - valueStr: the new value as String
+    ///   - inRegister: the register view controller hosting the value to be changed
+    func userDidTweakRepresentedValue(_ value: RegisterViewController.RepresentedValue, inRegister: RegisterViewController)
     {
-        // convert valueStr to a numerical value and enter into the specified register
+        // try to convert the register view controller to a register number (number 0 is the top of stack view controller)  
         if let registerNumber = registerNumberForController(inRegister)
         {
-            dataSource.registerValueDidChange(newValue: valueStr, forRegisterNumber: registerNumber)
+            dataSource.registerValueDidChange(newValue: value.content, radix: value.radix.value, forRegisterNumber: registerNumber)
             
-            //updateRegisterDisplay(source: DataSource.engine, radix: keypadController.radix)
-            inRegister.representedValue = RegisterValueRepresentation.stringRightAligned(valueStr)
-            
-            //dataSource.registerValue(registerNumber: registerNumber, radix: keypadController.radix.value)
+            inRegister.representedValue = value
         }        
     }
 
