@@ -23,7 +23,7 @@ class TestEngineFloatOperations: XCTestCase
         engineDUT = Engine()
         XCTAssertNotNil(engineDUT)
         
-        engineDUT.userInputOperandType(OperandType.float.rawValue, storeInUndoBuffer: false)        
+        engineDUT.userInputOperandType(Engine.OperandType.float.rawValue, storeInUndoBuffer: false)        
     }
     
     override func tearDown()

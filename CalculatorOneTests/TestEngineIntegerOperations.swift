@@ -21,7 +21,7 @@ class TestEngineIntegerOperations: XCTestCase {
         engineDUT = Engine()
         XCTAssertNotNil(engineDUT)
         
-        engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)        
+        engineDUT.userInputOperandType(Engine.OperandType.integer.rawValue, storeInUndoBuffer: false)        
     }
     
     override func tearDown() {

@@ -210,6 +210,31 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             deleteAllDigitsButton.isEnabled = (!digitsComposing.isEmpty) && digitsComposing.characters.count > 1
             
             updateOperationKeyStatus()
+            
+            // set a flag is digits are being composed. This flag will supress is sent to other controllers in order to
+            // to supress that the UI does changes to the digits, e.g. by scrolling
+            // the flag is reset when the user pressed enter (this will set digitsComposing to ""
+            userIsBusyComposingANewValue = !(digitsComposing.characters.count == 0)
+        }
+    }
+    
+    private var userIsBusyComposingANewValue : Bool = false
+    { didSet 
+        {
+            // propagate down the info that the user composes a new value or finished composing it
+            // if the composing a value is finished, delay that info to allow the rotating digits to settle its animation first
+            if userIsBusyComposingANewValue == false
+            {
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) 
+                { 
+                    self.displayController.acceptValueChangesByUI = !self.userIsBusyComposingANewValue
+                }                
+            }
+            else
+            {
+                displayController.acceptValueChangesByUI = !userIsBusyComposingANewValue                
+            }
+            
         }
     }
     
@@ -223,7 +248,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     { return Radix(rawValue: radixSelector.selectedSegment)! } 
 
     // read the operand type directly from the UI control
-    var operandType: OperandType
+    var operandType: Engine.OperandType
     { return typeSelector.selectedSegment == 1 ? .float : .integer }
     
     var operationModifier: OperationModifier = .takeStackAsArgument
@@ -245,7 +270,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         // forces button enable/disable 
         digitsComposing = ""
         
-        typeSelector.setSelected(true, forSegment: OperandType.float.rawValue)
+        typeSelector.setSelected(true, forSegment: Engine.OperandType.float.rawValue)
         radixSelector.setSelected(true, forSegment: Radix.decimal.rawValue)
         
         extraOperationsView.documentView = extraOperationsInnerView
@@ -267,7 +292,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             
             if let userInfo = note.userInfo
             {
-                if let opType = userInfo["OperandTypeKey"] as? OperandType
+                if let opType = userInfo["OperandTypeKey"] as? Engine.OperandType
                 {
                     self.typeSelector.setSelected(true, forSegment: opType.rawValue)
                 }
@@ -364,6 +389,18 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     /// - Parameter newRadix: the radix can be .binary, .octal, .decimal or .hex
     private func changeRadix(newRadix: Radix)
     {
+
+        displayController.acceptValueChangesByUI = false
+        
+        radixSelector.isEnabled = false
+        typeSelector.isEnabled  = false
+
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.6) 
+        { 
+            self.displayController.acceptValueChangesByUI = true
+            self.updateOperationKeyStatus()
+        }                        
+        
         // complete any ongoing user input
         self.userPressedEnterKey(sender: enterButton)
         
@@ -373,6 +410,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         }
         
         radixSelector.setSelected(true, forSegment: newRadix.rawValue)
+        
+        
         displayController.changeRadix(newRadix)            
         
         document.currentSaveDataSet[Document.ConfigurationKey.radix.rawValue] = newRadix.rawValue
@@ -382,9 +421,17 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     /// This function will update the engine and the enable/disable status of the keys
     ///
     /// - Parameter newType: the new operand type
-    private func changeOperandType(_ newType: OperandType)
+    private func changeOperandType(_ newType: Engine.OperandType)
     {
         print("\(self) \(#function): sending new operation type'\(newType)' to engine")
+        
+        displayController.acceptValueChangesByUI = false
+                
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.8) 
+        { 
+            self.displayController.acceptValueChangesByUI = true
+        }                        
+
         
         if newType == .float
         {
@@ -540,7 +587,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         // complete any ongoing user input
         self.userPressedEnterKey(sender: enterButton)
 
-        var newOperandType: OperandType = .integer
+        var newOperandType: Engine.OperandType = .integer
         
         switch sender.selectedSegment 
         {
@@ -752,7 +799,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
 
             // display the string 
             let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.name, object: document, 
-                                                          userInfo: ["StringValue" : digitsComposing])
+                                                          userInfo: [GlobalKey.numbericString.name : digitsComposing])
             NotificationCenter.default.post(updateUINote)
         }
     }
@@ -769,7 +816,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             
             // display the string 
             let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.name, object: document, 
-                                                          userInfo: ["StringValue" : digitsComposing])
+                                                          userInfo: [GlobalKey.numbericString.name : digitsComposing])
             NotificationCenter.default.post(updateUINote)
         }
     }

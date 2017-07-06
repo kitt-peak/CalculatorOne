@@ -14,34 +14,6 @@ func sign<T: Integer>(_ x: T) -> Int
 }
 
 
-enum OperandType: Int
-{
-    case integer, float
-}
-
-enum OperandValue: CustomStringConvertible
-{
-    case integer(Int)
-    case float(Double)
-    
-    var stringValue: String
-    {
-        switch self 
-        {
-        case .integer(let i): return String(describing: i)
-        case .float(let f):   return String(describing: f)
-        }
-    }
-    
-    var description: String
-    {
-        switch self 
-        {
-        case .integer( _): return "integer " + stringValue
-        case .float( _):   return "float " + stringValue
-        }        
-    }
-}
 
 
 enum Radix: Int
@@ -60,16 +32,49 @@ enum Radix: Int
     }
 }
 
-enum UndoItem 
-{
-    case stack([OperandValue])
-    case operandType(OperandType)
-    case radix(Radix)
-}
 
 
 class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  DisplayDataSource, KeypadDataSource
 {
+    enum OperandType: Int
+    {
+        case integer, float
+    }
+    
+    enum OperandValue: CustomStringConvertible
+    {
+        case integer(Int)
+        case float(Double)
+        
+        var stringValue: String
+        {
+            switch self 
+            {
+            case .integer(let i): return String(describing: i)
+            case .float(let f):   return String(describing: f)
+            }
+        }
+        
+        var description: String
+        {
+            switch self 
+            {
+            case .integer( _): return "integer " + stringValue
+            case .float( _):   return "float " + stringValue
+            }        
+        }
+    }
+    
+
+    
+    enum UndoItem 
+    {
+        case stack([OperandValue])
+        case operandType(OperandType)
+        case radix(Radix)
+    }
+
+
 //    
 //    class func valueWithDigitCleared(value: Int, digitIndex: Int, radix: Int) -> Int
 //    {
@@ -102,6 +107,8 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     private var undoBuffer: [UndoItem] = [UndoItem]()
     
     private var operandType: OperandType = .integer
+    
+    private let engineProcessQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated)
     
     @IBOutlet weak var document: Document!
     
@@ -842,36 +849,44 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     {   
         guard numericalValue.characters.count > 0 else { return }
         
-        var value: OperandValue!
-        
-        switch operandType 
+        engineProcessQueue.sync
         {
-        case .integer: value = OperandValue.integer(Int(numericalValue, radix: radix)!)
-        case .float:   value = OperandValue.float(Double(numericalValue)!)
+            var value: OperandValue!
+            
+            switch operandType 
+            {
+            case .integer: value = OperandValue.integer(Int(numericalValue, radix: radix)!)
+            case .float:   value = OperandValue.float(Double(numericalValue)!)
+            }
+            
+            // store the current stack for potential undo-operation
+            addToRedoBuffer(item: .stack(stack))
+            
+            //print("\(self)\n| \(#function): adding '\(value)' to top of stack")
+            stack.append(value)
+            print(stackDescription)
+            
+            DispatchQueue.main.async
+            {
+                self.updateUI()
+            }
+            
         }
         
-        // store the current stack for potential undo-operation
-        addToRedoBuffer(item: .stack(stack))
-        
-        //print("\(self)\n| \(#function): adding '\(value)' to top of stack")
-        stack.append(value)
-        print(stackDescription)
-
-        updateUI()
     }
     
     func userInputOperation(symbol: String)
     {
-        DispatchQueue.global(qos: .userInitiated).sync 
+        engineProcessQueue.sync
         {
-            self.processOperation(symbol: symbol)
+            processOperation(symbol: symbol)
             
-            DispatchQueue.main.async 
+            DispatchQueue.main.async
             {
                 self.updateUI()
             }
         }
-        
+
     }
     
     func undo() 
@@ -901,25 +916,46 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     //MARK: - Display data source protocoll
     func hasValueForRegister(registerNumber: Int) -> Bool 
     {
-        return stack.count > registerNumber
+        var result: Bool = false
+        
+        engineProcessQueue.sync
+        {
+            result = stack.count > registerNumber
+        }
+        
+        return result
     }
     
     func registerValue(registerNumber: Int, radix: Int) -> String
     {
-        let value: OperandValue = stack.reversed()[registerNumber]
+        var result: String = ""
         
-        switch value 
+        engineProcessQueue.sync
         {
-        case .integer(let i): return String(i, radix: radix, uppercase: true)
-        case .float(let f):   return String(describing: f)
+            let value: OperandValue = stack.reversed()[registerNumber]
+            
+            switch value 
+            {
+            case .integer(let i): result = String(i, radix: radix, uppercase: true)
+            case .float(let f):   result = String(describing: f)
+            }
         }
+        
+        return result
     }
     
     
     func registerValueWillChange(newValue: String, radix: Int, forRegisterNumber: Int) -> Bool
     {
+        var result: Bool = false
+        
+        engineProcessQueue.sync
+        {
+            result = hasValueForRegister(registerNumber: forRegisterNumber)
+        }
+
         // is registerNumber valid (are that many values on the stack)
-        if hasValueForRegister(registerNumber: forRegisterNumber) == false 
+        if  result == false 
         {
             print("Engine refused to change register \(forRegisterNumber) because the register is empty")
             return false
@@ -933,26 +969,26 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     
     func registerValueDidChange(newValue: String, radix: Int, forRegisterNumber: Int)
     {
-        // is registerNumber valid (are that many values on the stack)
-        if hasValueForRegister(registerNumber: forRegisterNumber) == true
+        engineProcessQueue.sync
         {
-            // convert valueStr to a numerical value and enter into the specified register
-            if let v: OperandValue = operandValue(fromString: newValue, radix: radix)
+            // is registerNumber valid (are that many values on the stack)
+            if hasValueForRegister(registerNumber: forRegisterNumber) == true
             {
-                let index = stack.count - forRegisterNumber - 1
-                updateStackAtIndex(index, withValue: v)
+                // convert valueStr to a numerical value and enter into the specified register
+                if let v: OperandValue = operandValue(fromString: newValue, radix: radix)
+                {
+                    let index = stack.count - forRegisterNumber - 1
+                    updateStackAtIndex(index, withValue: v)
                 
-                // store the current stack for potential undo-operation
-                addToRedoBuffer(item: .stack(stack))
-                
-                print(stackDescription)
-                
-                return
+                    // store the current stack for potential undo-operation
+                    addToRedoBuffer(item: .stack(stack))
+                    
+                    print(stackDescription)
+                }
             } 
+            
+            return
         }
-        
-        print("! engine does not accepts <\(newValue)> as value in register #\(forRegisterNumber)")
-        
     }
 
     

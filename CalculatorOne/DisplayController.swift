@@ -40,6 +40,18 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     @IBOutlet weak var dataSource: DisplayDataSource!/*AnyObject!*/
 
     private var registerViewControllers: [RegisterViewController]!
+    
+    var acceptValueChangesByUI : Bool = true
+    { didSet 
+        {
+            guard registerViewControllers != nil else { return }
+            
+            for controller in registerViewControllers
+            {
+                controller.acceptsValueChangesByUI = acceptValueChangesByUI
+            }
+        }
+    }
         
     override func awakeFromNib()
     {
@@ -206,6 +218,8 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     /// - Returns: true if a change is permitted, otherwise false.
     func userWillTweakRepresentedValue(_ value: RegisterViewController.RepresentedValue, inRegister: RegisterViewController) -> Bool
     {
+        guard acceptValueChangesByUI == true else { return false }
+        
         // try to convert the register view controller to a register number (number 0 is the top of stack view controller)  
         if let registerNumber = registerNumberForController(inRegister)
         {
@@ -226,6 +240,8 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
     ///   - inRegister: the register view controller hosting the value to be changed
     func userDidTweakRepresentedValue(_ value: RegisterViewController.RepresentedValue, inRegister: RegisterViewController)
     {
+        guard acceptValueChangesByUI == true else { return }
+
         // try to convert the register view controller to a register number (number 0 is the top of stack view controller)  
         if let registerNumber = registerNumberForController(inRegister)
         {

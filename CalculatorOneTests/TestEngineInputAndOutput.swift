@@ -21,7 +21,7 @@ class TestEngineInputAndOutput: XCTestCase
         engineDUT = Engine()
         XCTAssertNotNil(engineDUT)
         
-        engineDUT.userInputOperandType(OperandType.float.rawValue, storeInUndoBuffer: false)        
+        engineDUT.userInputOperandType(Engine.OperandType.float.rawValue, storeInUndoBuffer: false)        
     }
     
     override func tearDown() 
@@ -34,7 +34,7 @@ class TestEngineInputAndOutput: XCTestCase
     
     func testThatTheMethodUserWillInputEnterCorrectlyValidatesDecimalIntegerArguments()
     {
-        engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)
+        engineDUT.userInputOperandType(Engine.OperandType.integer.rawValue, storeInUndoBuffer: false)
         
         // test that string values describing integers can be correctly converted to integer values
         var testValues = 
@@ -70,7 +70,7 @@ class TestEngineInputAndOutput: XCTestCase
     
     func testThatTheMethodUserWillInputEnterCorrectlyValidatesHexadecimalIntegerArguments()
     {
-        engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)
+        engineDUT.userInputOperandType(Engine.OperandType.integer.rawValue, storeInUndoBuffer: false)
         
         // test that string values describing integers can be correctly converted to integer values
         var testValues = 
@@ -104,7 +104,7 @@ class TestEngineInputAndOutput: XCTestCase
 
     func testThatTheMethodUserWillInputEnterCorrectlyValidatesBinaryIntegerArguments()
     {
-        engineDUT.userInputOperandType(OperandType.integer.rawValue, storeInUndoBuffer: false)
+        engineDUT.userInputOperandType(Engine.OperandType.integer.rawValue, storeInUndoBuffer: false)
         
         // test that string values describing integers can be correctly converted to integer values
         var testValues = 
@@ -140,7 +140,7 @@ class TestEngineInputAndOutput: XCTestCase
     
     func testThatTheMethodUserWillInputEnterCorrectlyValidatesFloatArguments()
     {
-        engineDUT.userInputOperandType(OperandType.float.rawValue, storeInUndoBuffer: false)
+        engineDUT.userInputOperandType(Engine.OperandType.float.rawValue, storeInUndoBuffer: false)
         
         // test that string values describing floats can be correctly converted to float values
         var testValues = 

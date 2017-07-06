@@ -11,7 +11,7 @@ import Cocoa
 protocol MultiDigitViewDelegate
 {
     //func userEventShouldSetValue(_ value: Int) -> Bool
-    func userWillChangeDigitWithIndex(_ index: Int, toDigitValue: Int) -> Bool
+    func userWillReplaceDigitWithIndex(_ index: Int, byDigitValue: Int) -> Bool
 }
 
 /// Displays multiple digits (0 to F, point, minus) in a vertical scroll view, allows the user to change the digit by scrolling
@@ -20,6 +20,8 @@ class MultiDigitsView: BaseView, DigitViewDelegate
     @IBOutlet weak var widthConstraint: NSLayoutConstraint!
     
     private var digitViews: [DigitView]!
+    
+    private var digitViewsMomentarilyScrolling: Int = 0
 
     // Appearance
     @IBInspectable var countViews: Int = 20
@@ -36,7 +38,7 @@ class MultiDigitsView: BaseView, DigitViewDelegate
     // represents the digit shown in the view
     var value: [Digit] = [Digit]()
     { didSet 
-        { 
+        {
             updateViews(digits: value)
         }
     }
@@ -121,7 +123,7 @@ class MultiDigitsView: BaseView, DigitViewDelegate
     }
     
     func updateViews(digits: [Digit]) 
-    {
+    {        
         if digits.count == 0
         {
             // blank all digits
@@ -171,7 +173,7 @@ class MultiDigitsView: BaseView, DigitViewDelegate
         if let tweakedDigitIndex: Int = digitViews.index(of: fromView)
         {
             // ask the controller if a digit tweak is permissible
-            return delegate?.userWillChangeDigitWithIndex(tweakedDigitIndex, toDigitValue: digit.rawValue) ?? false
+            return delegate?.userWillReplaceDigitWithIndex(tweakedDigitIndex, byDigitValue: digit.rawValue) ?? false
         }
         else
         {
@@ -180,5 +182,26 @@ class MultiDigitsView: BaseView, DigitViewDelegate
         
         return false
     }
+    
+    func scrollEventStarted()
+    {
+        if digitViewsMomentarilyScrolling == 0
+        {
+            Swift.print("\(self) started to scroll")
+        }
+        
+        digitViewsMomentarilyScrolling += 1        
+    }
+    
+    func scrollEventStopped()
+    {
+        digitViewsMomentarilyScrolling -= 1        
+        
+        if digitViewsMomentarilyScrolling == 0
+        {
+            Swift.print("\(self) stopped to scroll")
+        }
+    }
+    
 
 }

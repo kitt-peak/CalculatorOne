@@ -9,6 +9,22 @@
 
 import Cocoa
 
+extension String 
+{
+    func trimLeftCharacter(_ character: String) -> String 
+    {
+        var str = self
+
+        while str.hasPrefix(character) 
+        {
+            str.remove(at: str.startIndex)
+        }
+        
+        return str
+    }
+}
+
+
 protocol RegisterViewControllerDelegate 
 {
     func userWillTweakRepresentedValue(_: RegisterViewController.RepresentedValue, inRegister: RegisterViewController) -> Bool
@@ -36,7 +52,7 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
         case right          // last digit at the right hand side. This is the normal alignment of values in a multi digit view
     }
     
-    // the value that the controller represents and shows thru its multi digit view
+    // defines the value that the controller shows thru its multi digit view
     struct RepresentedValue 
     {
         var content: String           // the content, as string
@@ -44,21 +60,23 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
         var alignment: Alignment      // left or right
     }
     
-    // one digit view is managed by this class. For this purpose, this class becomes the delegate if the multi digit view
+    // one digit view is managed by this class. This class becomes the delegate of the view for reporting changes on the view by the user
     @IBOutlet var digitsView: MultiDigitsView!
     { didSet { digitsView.delegate = self } }
     
     // for reporting digits changes coming from the multi digit view
     var delegate: RegisterViewControllerDelegate!
     
-    // blocking digit changes in the UI. This state is passed down to the multi digits view
+    // blocking digit changes by the UI (user scrolls a digit). This state is passed down to the multi digits view
     var acceptsValueChangesByUI: Bool = false
     { didSet { digitsView.acceptsValueChangesByUI = acceptsValueChangesByUI } }
 
     // the value that the multi digit view shows. The value is a string, either left or right aligned in its digits view
+    // value changes are pushed down to the view 
     var representedValue: RepresentedValue = RepresentedValue(content: "", radix: Radix.decimal, alignment: .right)
     { didSet 
-        {   digitsView.radix = representedValue.radix.value
+        {   
+            digitsView.radix = representedValue.radix.value
             digitsView.value = digitsForRepresentedValue(representedValue) 
         } 
     }
@@ -92,50 +110,28 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
         
         switch value.alignment 
         {
-        /*case .integer(let value):
-            
-            // convert integer to digit array
-            var digitValue: Int = abs(value)
-            var index: Int = 0
-            
-            if digitValue == 0
-            {
-                digits[0] = .d0
-                
-                index += 1
-            }
-            
-            while digitValue > 0 
-            {
-                digits[index] = Digit(rawValue: digitValue % radix)!                 
-                digitValue = digitValue / radix  
-                index += 1
-            }
-            
-            if value < 0
-            {
-                digits[index] = .minus
-                index += 1
-            }
-            
-            for i in index ..< digitsView.countViews
-            {
-                digits[i] = .blank                    
-            }
-            
-            digitsView.value = [.minus, .d0, .d1, .minus]
-*/
-        // generate the digit array right aligned. 
+        // generates right aligned digit arrays. 
         case .right:    
             
             // filter for error values NaN and inf
-            if value.content == "nan" || value.content == "inf" || value.content == "-inf"
+            if value.content == "inf"
             {
-                digits[0] = .dE
-                digits[1] = .dE
-                digits[2] = .dE
+                digits[0] = .inf
+                digits[1] = .plus
             }
-            else
+            else if value.content == "-inf"
+            {
+                digits[0] = .inf
+                digits[1] = .plus                
+            }
+            // TODO: find better symbols for NAN  
+            else if value.content == "nan"
+            {
+                digits[0] = .dot
+                digits[1] = .dot               
+                digits[2] = .dot                
+            }
+            else 
             {
                 
                 // iterate thru each character of the string from right to left
@@ -148,7 +144,8 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
                         digits[index] = .dot
                     case "-":
                         digits[index] = .minus
-                    case "+": break
+                    case "+":
+                        digits[index] = .plus
                     case "e", "E": 
                         digits[index] = .dE
                     default:
@@ -211,50 +208,85 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
     
     //MARK: - MultiDigitViewDelegate
     
-    func userWillChangeDigitWithIndex(_ index: Int, toDigitValue: Int) -> Bool
+    /// Asks the delegate if the digit with the specified digit index can be replace by a new digit value
+    ///
+    /// - Parameters:
+    ///   - index: the index of the digit being replaced.
+    ///   - byDigitValue: the new digit by value such as 0...16
+    /// - Returns: true if the delegate agrees with the replacement, otherwise false
+    func userWillReplaceDigitWithIndex(_ index: Int, byDigitValue: Int) -> Bool
     {
         guard acceptsValueChangesByUI == true else { return false }
 
-        // get the current value of the register as string
-        var newValueStr: String = ""
+        // build the new value of the register, starting from a "0000000000" string
+        let leadingZeros: String = String(repeating: "0", count: digitsView.countViews - representedValue.content.characters.count)
+        
+        // the start value has leading zeros and contains the original value, the number of digits equals the max. count of digits in a register
+        var buildingNewValue: String = leadingZeros + representedValue.content
+        
+        // replacing strings in Swift is more complicated than it should be        
+        let newDigit = String(byDigitValue, radix: representedValue.radix.value)
+                
+        let from: String.Index = buildingNewValue.index(buildingNewValue.startIndex, offsetBy: buildingNewValue.characters.count - index - 1)
+        let range: ClosedRange<String.Index> = from...from
 
-        switch representedValue.alignment
+        buildingNewValue.replaceSubrange(range, with: newDigit)
+//        
+//        
+//        switch representedValue.alignment
+//        {
+//        case .right:
+//            for i in (0..<digitsView.countViews)
+//            {
+//                if i == index
+//                {
+//                    let c: String = String(byDigitValue, radix: representedValue.radix.value)
+//                    newValueStr = c.appending(newValueStr)
+//                }
+//                else if i < representedValue.content.characters.count
+//                {
+//                    let c: String = String(Array(representedValue.content.characters)[representedValue.content.characters.count - i - 1])
+//                    newValueStr = c.appending(newValueStr)
+//                }
+//                else
+//                {
+//                    newValueStr = (" ").appending(newValueStr)
+//                }
+//            }
+//            
+//        default:
+//            //TODO: implement changes of left-aligned string values
+//            break
+//        }
+        
+        buildingNewValue = buildingNewValue.trimLeftCharacter("0")
+
+        // overtrimmed? Happens if "000...0" was trimmed to "". For the conversion to a numeric value,
+        // the string is set to "0" which will accurately convert to 0
+        if buildingNewValue == ""
         {
-        case .right:
-            for i in (0..<digitsView.countViews)
-            {
-                if i == index
-                {
-                    let c: String = String(toDigitValue, radix: representedValue.radix.value)
-                    newValueStr = c.appending(newValueStr)
-                }
-                else if i < representedValue.content.characters.count
-                {
-                    let c: String = String(Array(representedValue.content.characters)[representedValue.content.characters.count - i - 1])
-                    newValueStr = c.appending(newValueStr)
-                }
-                else
-                {
-                    newValueStr = (" ").appending(newValueStr)
-                }
-            }
+            buildingNewValue = "0"
             
-        default:
-            //TODO: implement changes of left-aligned string values
-            break
+        // another overtrim? 
+        } 
+        else if buildingNewValue.hasPrefix(".") == true
+        {
+            buildingNewValue = "0" + buildingNewValue
         }
         
-        newValueStr = newValueStr.trimmingCharacters(in: CharacterSet.whitespaces)
         
-        let newValue: RepresentedValue = RepresentedValue(content: newValueStr, radix: representedValue.radix, alignment: .right)
         
-        if delegate.userWillTweakRepresentedValue(newValue, inRegister: self) == true
+        let value: RepresentedValue = RepresentedValue(content: buildingNewValue, radix: representedValue.radix, alignment: .right)
+        
+        if delegate.userWillTweakRepresentedValue(value, inRegister: self) == true
         {
-            delegate.userDidTweakRepresentedValue(newValue, inRegister: self)
+            delegate.userDidTweakRepresentedValue(value, inRegister: self)
             
             //print(newRegisterContent)
             return true
         }
+        
+        print("\(self): delegate refused to accept <\(buildingNewValue)>")
         
         return false
     }

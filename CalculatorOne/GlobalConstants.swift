@@ -8,12 +8,70 @@
 
 import Cocoa
 
+/// Represents a digit shown in a digit view. Range from d0 (0x0) to dF (0xF) and digits for the decimal point and the minus sign
+/// The strip image in the view should show the digits in the same order: "." at the bottom of the view, followed by 0, 1, 2 etc going up (positive y)
+enum Digit: Int
+{
+    case blank = -2, dot = -1
+    case d0 = 0, d1 = 1, d2 = 2,  d3 = 3,  d4 = 4,  d5 = 5,  d6 = 6,  d7 = 7
+    case d8 = 8, d9 = 9, dA = 10, dB = 11, dC = 12, dD = 13, dE = 14, dF = 15
+    case minus = 16, plus = 17, inf = 18
+
+    // number of cases and digits. 
+    static var count: Int { return sortedDigits.count }
+    
+    static var sortedDigits: [Digit] = [.blank, .dot,
+                                        .d0, .d1, .d2, .d3, .d4, .d5, .d6, .d7, 
+                                        .d8, .d9, .dA, .dB, .dC, .dD, .dE, .dF,
+                                        .minus,   .plus,    .inf]
+    
+    // computer drawn digit strip image: the are digits described as glyph codes in the font courier
+    func glyphCode() -> UInt
+    {        
+        switch self 
+        {
+        case .blank:  return 1
+        case .dot:    return 17
+        case .d0:     return 19
+        case .d1:     return 20
+        case .d2:     return 21
+        case .d3:     return 22
+        case .d4:     return 23
+        case .d5:     return 24
+        case .d6:     return 25
+        case .d7:     return 26
+        case .d8:     return 27
+        case .d9:     return 28
+        case .dA:     return 36
+        case .dB:     return 37
+        case .dC:     return 38
+        case .dD:     return 39
+        case .dE:     return 40
+        case .dF:     return 41
+        case .minus:  return 16
+        case .plus:   return 14
+        case .inf:    return 1318
+        }
+    }
+    
+//    private let glyphCodes: [UInt] = 
+//        [ 1/*   */, 17/* . */, 
+//            19/* 0 */, 20/* 1 */, 21/* 2 */, 22/* 3 */, 23/* 4 */, 24/* 5 */, 25/* 6 */, 26/* 7 */, 
+//            27/* 8 */, 28/* 9 */, 36/* A */, 37/* B */, 38/* C */, 39/* D */, 40/* E */, 41/* F */,
+//            16/* - */, 14/* + */, 1318 /* ∞ */]
+
+}
+
 class GlobalConstants
 {
     // make this a singleton
     static let shared: GlobalConstants = GlobalConstants()
 
-    private init() { }
+    private init() 
+    { 
+        digitStrip = DigitStrip()
+        digitStrip.setImageForKind(digitKind)
+    }
     
     /// View Appearance
     struct ViewAppearanceParameter 
@@ -28,97 +86,93 @@ class GlobalConstants
     var digitKind = DigitView.Kind.courierStyleWithColor(NSColor(calibratedRed: 0.0, green: 1.0, blue: 0.2, alpha: 1.0))
     var digitViewBackgroundColor = NSColor(calibratedRed: 0.0, green: 0.1, blue: 0.0, alpha: 1.0)
     
-    // MARK: Digit parameters.
-    let digitImageSizeInPoints = CGSize(width: 20.0, height: 28.0)      // corresponds to the size of a digit view
     let digitSize              = CGSize(width: 20.0, height: 28.0)      // corresponds to the size of a digit view
     
     // specifies the number of digits the digit image strip holds (0 to F, ".", "-"). This variable must match the 
     // number of glyph codes in the computer drawn strip image and also match the number of digits in the asset image
     // "Courier19DigitStrip"
-    let countDigitsInImageStrip: Int = 19                               
+    // var countDigitsInImageStrip: Int { return Digit.count/*glyphCodes.count*/ }
     
-    var digitStripImage: NSImage!
+    var digitStrip: DigitStrip!
     
-    // computer drawn digit strip image: the are digits described as glyph codes in the font courier
-    private let glyphCodes: [UInt] = 
-        [ 1/*   */, 17/* . */, 
-         19/* 0 */, 20/* 1 */, 21/* 2 */, 22/* 3 */, 23/* 4 */, 24/* 5 */, 25/* 6 */, 26/* 7 */, 
-         27/* 8 */, 28/* 9 */, 36/* A */, 37/* B */, 38/* C */, 39/* D */, 40/* E */, 41/* F */,
-         16/* - */]
-    
-    func digitStripImageForKind(_ kind: DigitView.Kind) -> NSImage
+    struct DigitStrip
     {
+        // MARK: Digit parameters.
+        let imageSizeInPoints = CGSize(width: 20.0, height: 28.0)      // corresponds to the size of a digit view
+
         var image: NSImage!
-        switch kind 
+        
+        var indexOfDigitZeroInImageStrip: Int = 2
+
+        
+        // specifies the number of digits the digit image strip holds (0 to F, ".", "-"). This variable must match the 
+        // number of glyph codes in the computer drawn strip image and also match the number of digits in the asset image
+        // "Courier19DigitStrip"
+        var countDigits: Int { return Digit.count/*glyphCodes.count*/ }
+        
+        mutating func setImageForKind(_ kind: DigitView.Kind)
         {
-        case .courierStyleMetallic: image = NSImage(named: "Courier19DigitStrip")
-        case .undefined:            image = NSImage(named: "Courier19DigitStrip")
-        case .courierStyleWithColor(let color): 
-            if digitStripImage == nil
+            switch kind 
             {
-                digitStripImage = computedDigitStripImageWithColor(color)   
+            case .courierStyleMetallic: image = NSImage(named: "Courier19DigitStrip")
+            case .undefined:            image = NSImage(named: "Courier19DigitStrip")
+            case .courierStyleWithColor(let color): 
+                if image == nil
+                {
+                    image = computedDigitStripImageWithColor(color)   
+                }
+            }
+
+            guard image != nil else { abort() }
+        }
+    
+        private func computedDigitStripImageWithColor(_ color: NSColor) -> NSImage
+        {
+            // create image to draw a strip of digits into. This strip image has the size of one digit image,
+            // multiplied by the number of digits so that it forms a vertical band 
+            let size = CGSize(width: imageSizeInPoints.width, height: imageSizeInPoints.height * CGFloat(countDigits))
+            
+            let digitStripImage = NSImage(size: size)
+            
+            // start drawing by locking to draw focus to it.
+            digitStripImage.lockFocus()
+            
+            // make a transparent background
+            NSColor.clear.setFill()
+            NSRectFill(NSRect(origin: NSPoint.zero, size: size))
+            
+            // the digits drawn shape and body in this color. 
+            // NSColor.green.setStroke()
+            color.setFill()
+            
+            // our strokes are landing in this path
+            let digitsPath: NSBezierPath = NSBezierPath()
+            
+            // setting the font for the digits
+            let font = NSFont(name: "Courier", size: imageSizeInPoints.height)
+            
+            // iterate over all digits (by glyph code for each digit) and add their bezierpaths into the drawing
+            //for digitIndex: Int in 0 ..< Digit.count/*glyphCodes.count*/
+            for (digitIndex, digit) in Digit.sortedDigits.enumerated()
+            {
+                /* x = 2.0 is an offset to center the digit horizontally */
+                /* y = 9.0 is an offset to center the digit vertically */            
+                let digitStart = NSPoint(x: 2.0, y: 9.0 + CGFloat(digitIndex) * imageSizeInPoints.height)
+                digitsPath.move(to: digitStart)
+                
+                digitsPath.appendGlyph(NSGlyph(digit.glyphCode()/*glyphCodes[digitIndex]*/), in: font!)
             }
             
-            image = digitStripImage
-        }
-        
-        guard image != nil else { abort() }
-        
-        return image!
-    }
-    
-    private func computedDigitStripImageWithColor(_ color: NSColor) -> NSImage
-    {
-        // create image to draw a strip of digits into. This strip image has the size of one digit image,
-        // multiplied by the number of digits so that it forms a vertical band 
-        let size = CGSize(width: digitImageSizeInPoints.width, height: digitImageSizeInPoints.height * CGFloat(countDigitsInImageStrip))
-
-        let digitStripImage = NSImage(size: size)
-
-        // start drawing by locking to draw focus to it.
-        digitStripImage.lockFocus()
-        
-        // make a transparent background
-        NSColor.clear.setFill()
-        NSRectFill(NSRect(origin: NSPoint.zero, size: size))
-        
-        // the digits drawn shape and body in this color. 
-        // NSColor.green.setStroke()
-        color.setFill()
-        
-        // our strokes are landing in this path
-        let digitsPath: NSBezierPath = NSBezierPath()
-        
-        // setting the font for the digits
-        let font = NSFont(name: "Courier", size: digitImageSizeInPoints.height)
-        
-        // our digits descriped as glyph codes in the font courier
-        /*
-        let glyphCodes: [UInt] = [1/*   */, 17/* . */, 
-                                  19/* 0 */, 20/* 1 */, 21/* 2 */, 22/* 3 */, 23/* 4 */, 24/* 5 */, 25/* 6 */, 26/* 7 */, 
-         ∝                        27/* 8 */, 28/* 9 */, 36/* A */, 37/* B */, 38/* C */, 39/* D */, 40/* E */, 41/* F */,
-                                  16/* - */]
-        */
-        // iterate over all digits (by glyph code for each digit) and add their bezierpaths into the drawing
-        for digitIndex: Int in 0 ..< glyphCodes.count
-        {
-            /* x = 2.0 is an offset to center the digit horizontally */
-            /* y = 9.0 is an offset to center the digit vertically */            
-            let digitStart = NSPoint(x: 2.0, y: 9.0 + CGFloat(digitIndex) * digitImageSizeInPoints.height)
-            digitsPath.move(to: digitStart)
+            digitsPath.fill()
+            //digitsPath.stroke()
             
-            digitsPath.appendGlyph(NSGlyph(glyphCodes[digitIndex]), in: font!)
+            // finish drawing by unlocking the focus        
+            digitStripImage.unlockFocus()
+            
+            return digitStripImage
         }
-
-        digitsPath.fill()
-        //digitsPath.stroke()
-                
-        // finish drawing by unlocking the focus        
-        digitStripImage.unlockFocus()
-        
-        return digitStripImage
-    }
     
+    }
 }
 
 
