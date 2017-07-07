@@ -334,6 +334,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     {
         case dropAll, nDrop, depth
         case copyStackToA, copyStackToB, copyAToStack, copyBToStack
+        case nPick
         
         case unary2array(   (OperandValue) -> [(OperandValue)] )
         case binary2array(  (OperandValue, OperandValue) -> [(OperandValue)] )
@@ -362,6 +363,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
       Symbols.depth.rawValue     : .depth,
         
       Symbols.swap.rawValue      : .binary2array ({ (a: OperandValue, b: OperandValue) -> ([OperandValue]) in return [a, b] }), /*swap*/
+      Symbols.nPick.rawValue     : .nPick,
         
       Symbols.rotateDown.rawValue: .ternary2array ( { (a: OperandValue, b: OperandValue, c: OperandValue) -> ([OperandValue]) in return [a, c, b] }),
       Symbols.rotateUp.rawValue  : .ternary2array ( { (a: OperandValue, b: OperandValue, c: OperandValue) -> ([OperandValue]) in return [b, a, c] }),
@@ -450,6 +452,11 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     Symbols.conv22bB.rawValue : .floatBinary2array({ (a: Double, b: Double) -> [OperandValue] in return [.float(20.0 * log10(a / b)) ]}),
 
     Symbols.random.rawValue : .floatNone2array( { () -> ([OperandValue]) in return [OperandValue.float(Engine.randomNumber())] }),
+    
+    Symbols.rect2polar.rawValue : .floatBinary2array({ (a: Double, b: Double) -> [OperandValue] in return [.float(Engine.absoluteValueOfVector2(x: a, y: b)), .float(Engine.angleOfVector2(x: a, y: b))] }),
+        
+    Symbols.polar2rect.rawValue : .floatBinary2array({ (a: Double, b: Double) -> [OperandValue] in return [.float(b * Engine.sinus(a)), .float(b * Engine.cosinus(a))] })
+
     
     ]
     
@@ -555,6 +562,25 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             case .copyStackToB:
                 memoryB.removeAll()                
                 memoryB.append(contentsOf: stack)
+                
+            case .nPick:                            /* copy the n-th element of the stack to the stack */
+                                                    /* the 0th element is the top of stack value */
+                let n: OperandValue = pop()
+                var ni: Int = 0
+                var x: OperandValue!
+                
+                switch n 
+                {
+                case .float(let f): 
+                    ni = Int(f)
+                case .integer (let i):                    
+                    ni = i
+                }
+
+                /* picking the 0th element? return the top of stack, which is value N itself */
+                x = ni > 0 ? stack[stack.count - ni] : n
+                
+                stack.append(contentsOf: [x])
                 
             default:
                 typelessOperationCompleted = false

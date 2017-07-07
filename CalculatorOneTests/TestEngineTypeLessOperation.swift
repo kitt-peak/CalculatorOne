@@ -229,4 +229,100 @@ class TestEngineTypeLessOperation: XCTestCase
         }
     }
     
+    func testThatOperationNPICKCorrectlyReturnsTheCorrectStackElement_IntegerOperation()
+    {
+        engineDUT.userInputOperandType(Engine.OperandType.integer.rawValue, storeInUndoBuffer: false)
+
+        engineDUT.userInputEnter(numericalValue: "21", radix: Radix.decimal.value)
+        engineDUT.userInputEnter(numericalValue: "42", radix: Radix.decimal.value)
+        engineDUT.userInputEnter(numericalValue: "84", radix: Radix.decimal.value)
+        engineDUT.userInputEnter(numericalValue: "168", radix: Radix.decimal.value)
+        engineDUT.userInputEnter(numericalValue: "336", radix: Radix.decimal.value)
+        
+        /* pick the 0st element (the "0" itself) */
+        engineDUT.userInputEnter(numericalValue: "0", radix: Radix.decimal.value)
+        engineDUT.userInputOperation(symbol: Symbols.nPick.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "0")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+
+        /* pick the 1th element */
+        engineDUT.userInputEnter(numericalValue: "1", radix: Radix.decimal.value)
+        engineDUT.userInputOperation(symbol: Symbols.nPick.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "336")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        
+        /* pick the 2th element */
+        engineDUT.userInputEnter(numericalValue: "2", radix: Radix.decimal.value)
+        engineDUT.userInputOperation(symbol: Symbols.nPick.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "168")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+
+        /* pick the 3rd element */
+        engineDUT.userInputEnter(numericalValue: "3", radix: Radix.decimal.value)
+        engineDUT.userInputOperation(symbol: Symbols.nPick.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "84")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        
+        /* pick the 4th element */
+        engineDUT.userInputEnter(numericalValue: "4", radix: Radix.decimal.value)
+        engineDUT.userInputOperation(symbol: Symbols.nPick.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "42")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        
+        /* pick the 5th element */
+        engineDUT.userInputEnter(numericalValue: "5", radix: Radix.decimal.value)
+        engineDUT.userInputOperation(symbol: Symbols.nPick.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "21")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        
+    }    
+    
+    func testThatOperationNPICKCorrectlyReturnsTheCorrectStackElement_FloatOperation()
+    {
+        engineDUT.userInputOperandType(Engine.OperandType.float.rawValue, storeInUndoBuffer: false)
+        
+        engineDUT.userInputEnter(numericalValue: "21.21", radix: Radix.decimal.value)
+        engineDUT.userInputEnter(numericalValue: "42.42", radix: Radix.decimal.value)
+        engineDUT.userInputEnter(numericalValue: "84.84", radix: Radix.decimal.value)
+        engineDUT.userInputEnter(numericalValue: "168.168", radix: Radix.decimal.value)
+        engineDUT.userInputEnter(numericalValue: "336.336", radix: Radix.decimal.value)
+        
+        /* pick the 0st element (the "0" itself) */
+        engineDUT.userInputEnter(numericalValue: "0", radix: Radix.decimal.value)
+        engineDUT.userInputOperation(symbol: Symbols.nPick.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "0.0")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        
+        /* pick the 1th element */
+        engineDUT.userInputEnter(numericalValue: "1", radix: Radix.decimal.value)
+        engineDUT.userInputOperation(symbol: Symbols.nPick.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "336.336")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        
+        /* pick the 2th element */
+        engineDUT.userInputEnter(numericalValue: "2", radix: Radix.decimal.value)
+        engineDUT.userInputOperation(symbol: Symbols.nPick.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "168.168")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        
+        /* pick the 3rd element */
+        engineDUT.userInputEnter(numericalValue: "3", radix: Radix.decimal.value)
+        engineDUT.userInputOperation(symbol: Symbols.nPick.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "84.84")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        
+        /* pick the 4th element */
+        engineDUT.userInputEnter(numericalValue: "4", radix: Radix.decimal.value)
+        engineDUT.userInputOperation(symbol: Symbols.nPick.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "42.42")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        
+        /* pick the 5th element */
+        engineDUT.userInputEnter(numericalValue: "5", radix: Radix.decimal.value)
+        engineDUT.userInputOperation(symbol: Symbols.nPick.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), "21.21")
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        
+    }    
+
 }

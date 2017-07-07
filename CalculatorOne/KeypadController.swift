@@ -181,8 +181,10 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var operationCopyMemoryAToStack: NSButton!
     @IBOutlet weak var operationCopyStackToRegisterB: NSButton!
     @IBOutlet weak var operationCopyMemoryBToStack: NSButton!
-
     
+    @IBOutlet weak var operationCardesian2polar: NSButton!
+    @IBOutlet weak var operationPolar2cardesian: NSButton!
+        
     @IBOutlet weak var rotUpButton: NSButton!
     @IBOutlet weak var rotDownButton: NSButton!
     @IBOutlet weak var dupButton: NSButton!
@@ -191,6 +193,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var dropButton: NSButton!
     @IBOutlet weak var dropAllButton: NSButton!
     @IBOutlet weak var depthButton: NSButton!
+    @IBOutlet weak var operationNPickButton: NSButton!
     
     @IBOutlet weak var undoButton: NSButton!
     @IBOutlet weak var redoButton: NSButton!
@@ -501,6 +504,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         swapButton.title                    = Symbols.swap.rawValue
         rotUpButton.title                   = Symbols.rotateUp.rawValue
         rotDownButton.title                 = Symbols.rotateDown.rawValue
+        operationNPickButton.title          = Symbols.nPick.rawValue
         
         dropButton.title                    = Symbols.drop.rawValue
         dropAllButton.title                 = Symbols.dropAll.rawValue
@@ -566,8 +570,15 @@ class KeypadController: NSObject, DependendObjectLifeCycle
 
         operationSignChangeButton.title     = Symbols.invertSign.rawValue
         
+        operationCardesian2polar.title      = Symbols.rect2polar.rawValue
+        operationPolar2cardesian.title      = Symbols.polar2rect.rawValue
+        
         undoButton.title                    = Symbols.undo.rawValue
         redoButton.title                    = Symbols.redo.rawValue
+        
+        exponentPlusButton.title            = Symbols.posExp.rawValue
+        exponentMinusButton.title           = Symbols.negExp.rawValue
+        enterButton.title                   = Symbols.enter.rawValue
         
         updateOperationKeyStatus()
     }
@@ -720,13 +731,17 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
         operationNthRootButton.isEnabled   = enableBinaryFloatOperations        
         operationModuloNButton.isEnabled    = enableBinaryIntegerOperations
+        
+        operationCardesian2polar.isEnabled  = enableBinaryFloatOperations
+        operationPolar2cardesian.isEnabled  = enableBinaryFloatOperations
                 
         operationLogicXorButton.isEnabled   = enableBinaryIntegerOperations
         operationLogicOrButton.isEnabled    = enableBinaryIntegerOperations
         operationLogicAndButton.isEnabled   = enableBinaryIntegerOperations
         
         dup2Button.isEnabled                = enableBinaryTypeLessOperation
-        
+        operationNPickButton.isEnabled      = enableUnaryTypeLessOperation
+
         operationπButton.isEnabled          = operandType == .float
         operationeButton.isEnabled          = operandType == .float
         operationhButton.isEnabled          = operandType == .float
@@ -871,6 +886,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         {
             delegate.undo()
         }
+        
+        //TODO: implement a redo function.
         
         print("| \(#function): user pressed <'\(sender.title)'> button, sending to engine")
     }

@@ -169,6 +169,16 @@ extension Engine
     }
 
 
+    @nonobjc class func absoluteValueOfVector2(x: Double, y: Double) -> Double
+    {
+        return squareRoot(of: square(of: x) + square(of: y))
+    }
+    
+    @nonobjc class func angleOfVector2(x: Double, y: Double) -> Double
+    {
+        return atan2(y, x)
+    }
+
     
     @nonobjc class func sum(of a: [Double]) -> Double 
     { 

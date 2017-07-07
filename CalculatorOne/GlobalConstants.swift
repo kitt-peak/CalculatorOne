@@ -198,16 +198,17 @@ enum Symbols: String
     case moduloN = "%",         and   = "&",            or        = "||",       xor        = "⊕"
     case nShiftLeft = "N ≪",    nShiftRight = "N ≫",    shiftLeft = "≪",       shiftRight  = "≫"
     case gcd = "gcd",           lcm = "lcm"
-    case sum = "∑",             nSum = "N ∑"
+    case sum = "∑",             nSum = "n ∑"
     
     case swap = "2↑↓",          rotateUp  = "3R↑",        rotateDown = "3R↓"
-    case drop = "Drop",         dropAll   = "Drop All"
+    case drop = "drop",         dropAll   = "drop All"
     case dup  = "dup",          dup2      = "dup2",       depth      = "depth"
     case avg  = "∅",            product   = "∏",          geoMean    = "∏ ᴺ√"
-    case nAvg = "N ∅",          nProduct  = "N ∏",        nGeoMean   = "N ∏ ᴺ√"
+    case nAvg = "n ∅",          nProduct  = "N ∏",        nGeoMean   = "n ∏ ᴺ√"
+    case nPick = "n pick"
     
     case factorial = "n!",      primes    = "PF"
-    case yExpX     = "Yˣ",      logYX     = "logY X"
+    case yExpX     = "Yˣ",      logYX     = "logY x"
     case eExpX     = "eˣ",      tenExpX   = "10ˣ",         twoExpX    = "2ˣ"
     case logE      = "ln",      log10     = "log",         log2       = "lb"
     case root      = "√",       thridRoot = "∛",           nRoot      = "ᴺ√"
@@ -218,8 +219,8 @@ enum Symbols: String
     case asinus = "asin",       acosinus  = "acos",         atangens  = "atan",     acotangens = "acot"
     
     case conv22bB = "2→dB"
-    case sigma     = "σ",       nSigma    = "N σ"
-    case variance  = "var",     nVariance = "N var"
+    case sigma     = "σ",       nSigma    = "n σ"
+    case variance  = "var",     nVariance = "n var"
     
     case π = "π", e = "e"
     case epsilon0 = "ε₀", µ0 = "μ₀", c0 = "c₀",  e0 = "e₀", G = "G", g = "g", h = "h", k = "k"
@@ -240,6 +241,10 @@ enum Symbols: String
     case multiply66divide64 = "66 × 64 ÷",                      multiply64divide66 = "64 × 66 ÷"
     case undo = "↩︎",  redo = "↪︎"
 
+    case posExp = "+exp",           negExp = "-exp"
+    case enter  = "enter"
+    
+    case rect2polar = "2 c→p",      polar2rect = "2 p→c"
     //case Λ = "Λ", k0 = "k₀"
 }
 
