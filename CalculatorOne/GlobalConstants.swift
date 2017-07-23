@@ -181,6 +181,7 @@ enum GlobalNotification: String
     case newEngineResult     = "newEngineResult"
     case newKeypadEntry      = "newKeypadEntry"
     case newOperandType      = "newOperandType"
+    case newError            = "newError"
 
     var name: Notification.Name { return Notification.Name(self.rawValue) }
 }
@@ -201,11 +202,11 @@ enum Symbols: String
     case sum = "∑",             nSum = "n ∑"
     
     case swap = "2↑↓",          rotateUp  = "3R↑",        rotateDown = "3R↓"
-    case drop = "drop",         dropAll   = "drop All"
+    case drop = "drop",         dropAll   = "䷀ drop",     nDrop      = "n drop"
     case dup  = "dup",          dup2      = "dup2",       depth      = "depth"
     case avg  = "∅",            product   = "∏",          geoMean    = "∏ ᴺ√"
     case nAvg = "n ∅",          nProduct  = "N ∏",        nGeoMean   = "n ∏ ᴺ√"
-    case nPick = "n pick"
+    case nPick = "n pick",      over      = "over"
     
     case factorial = "n!",      primes    = "PF"
     case yExpX     = "Yˣ",      logYX     = "logY x"

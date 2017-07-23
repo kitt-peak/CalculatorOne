@@ -155,8 +155,8 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
             if dataSource.hasValueForRegister(registerNumber: index) == true
             {
                 let v = RegisterViewController.RepresentedValue(content: dataSource.registerValue(registerNumber: index, radix: radix.value), 
-                                                                            radix: radix, 
-                                                                            alignment: RegisterViewController.Alignment.right)
+                                                                radix: radix, 
+                                                                alignment: RegisterViewController.Alignment.right)
                 controller.representedValue = v
             }
             else

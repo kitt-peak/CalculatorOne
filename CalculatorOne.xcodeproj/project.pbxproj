@@ -55,7 +55,7 @@
 
 /* Begin PBXFileReference section */
 		F41CF60D1E16E3F000224E86 /* DisplayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayController.swift; sourceTree = "<group>"; };
-		F41CF60F1E16E40500224E86 /* KeypadController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeypadController.swift; sourceTree = "<group>"; };
+		F41CF60F1E16E40500224E86 /* KeypadController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = KeypadController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		F43899441E73F330003B13B4 /* TestEngineInputAndOutput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEngineInputAndOutput.swift; sourceTree = "<group>"; };
 		F43899461E742C56003B13B4 /* TestEngineFloatOperations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEngineFloatOperations.swift; sourceTree = "<group>"; };
 		F43C571B1E17AA34008A2D7E /* BaseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };

@@ -190,8 +190,9 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var dupButton: NSButton!
     @IBOutlet weak var dup2Button: NSButton!
     @IBOutlet weak var swapButton: NSButton!
-    @IBOutlet weak var dropButton: NSButton!
-    @IBOutlet weak var dropAllButton: NSButton!
+    @IBOutlet weak var operationDropButton: NSButton!
+    @IBOutlet weak var operationDropNButton: NSButton!
+    @IBOutlet weak var operationOverButton: NSButton!
     @IBOutlet weak var depthButton: NSButton!
     @IBOutlet weak var operationNPickButton: NSButton!
     
@@ -258,6 +259,10 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         { didSet { stackButton.state = (operationModifier == .topOfStackContainsArgumentCount ? NSOnState : NSOffState)
                    assignButtonTitlesForOperationModifier(operationModifier) } }
     
+    // an label to indicate an error condition. It is initially not visible
+    @IBOutlet weak var errorIndicator: NSTextField!
+        { didSet { errorIndicator.textColor = NSColor.clear }}
+    
     //MARK: - Lifecycle
     override func awakeFromNib()
     {
@@ -305,7 +310,34 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         }
         
 
-                
+        /// Receive error notifications
+        NotificationCenter.default.addObserver(forName: GlobalNotification.newError.name, object: nil, queue: nil) 
+        { (note) in
+            guard self.document != nil else { return }
+            guard note.object as? Document == self.document else { return }
+            
+            if let userInfo = note.userInfo
+            {
+                if let errorState: Bool =       userInfo["errorState"] as? Bool,
+                   let errorMessage: String =  userInfo["errorMessage"] as? String
+                {
+                    if errorState == true
+                    {
+                        self.errorIndicator.toolTip = errorMessage
+                        self.errorIndicator.textColor = NSColor.white
+                    }
+                    else
+                    {
+                        self.errorIndicator.toolTip = ""
+                        self.errorIndicator.textColor = NSColor.clear                        
+                    }
+                }
+            }
+            
+            
+        }
+        
+        
         // Make sure the watched view is sending bounds changed
         // notifications (which is probably does anyway, but calling this again won't hurt).                
         // register for those notifications on the synchronized content view        
@@ -472,15 +504,18 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             operationGeoMeanButton.title    = Symbols.geoMean.rawValue
             operationSigmaButton.title      = Symbols.sigma.rawValue
             operationVarianceButton.title   = Symbols.variance.rawValue
+            operationDropNButton.title      = Symbols.dropAll.rawValue
+                        
         }
         else if modifier == .topOfStackContainsArgumentCount
         {
-            operationSumButton.title        = "N " + Symbols.sum.rawValue
-            operationAverageButton.title    = "N " + Symbols.avg.rawValue
-            operationProductButton.title    = "N " + Symbols.product.rawValue
-            operationGeoMeanButton.title    = "N " + Symbols.geoMean.rawValue
-            operationSigmaButton.title      = "N " + Symbols.sigma.rawValue
-            operationVarianceButton.title   = "N " + Symbols.variance.rawValue
+            operationSumButton.title        = "n " + Symbols.sum.rawValue
+            operationAverageButton.title    = "n " + Symbols.avg.rawValue
+            operationProductButton.title    = "n " + Symbols.product.rawValue
+            operationGeoMeanButton.title    = "n " + Symbols.geoMean.rawValue
+            operationSigmaButton.title      = "n " + Symbols.sigma.rawValue
+            operationVarianceButton.title   = "n " + Symbols.variance.rawValue
+            operationDropNButton.title      = "n " + Symbols.drop.rawValue
         }
 
         operationPlusButton.title           = Symbols.plus.rawValue
@@ -506,8 +541,6 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         rotDownButton.title                 = Symbols.rotateDown.rawValue
         operationNPickButton.title          = Symbols.nPick.rawValue
         
-        dropButton.title                    = Symbols.drop.rawValue
-        dropAllButton.title                 = Symbols.dropAll.rawValue
         dupButton.title                     = Symbols.dup.rawValue
         dup2Button.title                    = Symbols.dup2.rawValue
         depthButton.title                   = Symbols.depth.rawValue
@@ -569,6 +602,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operation156M25Button.title         = Symbols.const156M25.rawValue
 
         operationSignChangeButton.title     = Symbols.invertSign.rawValue
+        operationDropButton.title           = Symbols.drop.rawValue
+        operationOverButton.title           = Symbols.over.rawValue
         
         operationCardesian2polar.title      = Symbols.rect2polar.rawValue
         operationPolar2cardesian.title      = Symbols.polar2rect.rawValue
@@ -682,9 +717,10 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationSquareButton.isEnabled     = enableUnaryIntegerOperations || enableUnaryFloatOperations
         operationSquareRootButton.isEnabled = enableUnaryFloatOperations
         dupButton.isEnabled                 = enableUnaryTypeLessOperation
-        dropButton.isEnabled                = enableUnaryTypeLessOperation
-        dropAllButton.isEnabled             = enableUnaryTypeLessOperation
+        operationDropButton.isEnabled       = enableUnaryTypeLessOperation
+        operationDropNButton.isEnabled      = enableUnaryTypeLessOperation
         swapButton.isEnabled                = enableBinaryTypeLessOperation
+        operationOverButton.isEnabled       = enableBinaryTypeLessOperation
         
         operationBitwiseLogicNot.isEnabled   = enableUnaryIntegerOperations
         operationPrimeFactorsButton.isEnabled = enableUnaryIntegerOperations
@@ -787,8 +823,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
 
         switch newDigit 
         {
-        case "+EXP": newDigit = "e"
-        case "-EXP": newDigit = "e-"
+        case Symbols.posExp.rawValue: newDigit = "e"
+        case Symbols.negExp.rawValue: newDigit = "e-"
         default: break
         }
                 

@@ -65,8 +65,6 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         }
     }
     
-
-    
     enum UndoItem 
     {
         case stack([OperandValue])
@@ -74,6 +72,10 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         case radix(Radix)
     }
 
+    enum engineError: Error 
+    {
+        case popOperandFromEmptyStack
+    }
 
 //    
 //    class func valueWithDigitCleared(value: Int, digitIndex: Int, radix: Int) -> Int
@@ -250,7 +252,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     }
     
     //MARK: - Stack operations    
-    private func pop() -> OperandValue
+    private func pop() throws -> OperandValue
     {
         if let last: OperandValue = stack.popLast()
         {
@@ -258,15 +260,15 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         }
         else
         {
-            assertionFailure("! Abort due to empty engine stack")
-            abort()
+            throw engineError.popOperandFromEmptyStack
+            
         }
     }
 
 
-    private func popInteger() -> Int
+    private func popInteger() throws -> Int
     {
-        let value: OperandValue = pop()
+        let value: OperandValue = try pop()
         
         if case .integer(let integerValue) = value
         {
@@ -278,9 +280,9 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         
     }
 
-    private func popFloat() -> Double
+    private func popFloat() throws -> Double
     {
-        let value: OperandValue = pop()
+        let value: OperandValue = try pop()
         
         if case .float(let floatValue) = value
         {
@@ -360,7 +362,9 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         
       Symbols.drop.rawValue      : .unary2array(  { (a: OperandValue) -> [OperandValue] in return []}),
       Symbols.dropAll.rawValue   : .dropAll,
+      Symbols.nDrop.rawValue     : .nDrop,
       Symbols.depth.rawValue     : .depth,
+      Symbols.over.rawValue      : .binary2array({ (a: OperandValue, b: OperandValue) -> [OperandValue] in return [b, a, b] }),
         
       Symbols.swap.rawValue      : .binary2array ({ (a: OperandValue, b: OperandValue) -> ([OperandValue]) in return [a, b] }), /*swap*/
       Symbols.nPick.rawValue     : .nPick,
@@ -457,13 +461,10 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         
     Symbols.polar2rect.rawValue : .floatBinary2array({ (a: Double, b: Double) -> [OperandValue] in return [.float(b * Engine.sinus(a)), .float(b * Engine.cosinus(a))] })
 
-    
     ]
     
     private var integerOperations: OperationsTable =  [
            
-      "N DROP" : .nDrop,
-      
       Symbols.plus.rawValue     : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b + a)] }),
       Symbols.minus.rawValue    : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b - a)] }),
       Symbols.multiply.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(b * a)] }),
@@ -479,7 +480,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
       Symbols.gcd.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(Engine.gcd(of: a, b) )] }),
       Symbols.lcm.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [OperandValue] in return [.integer(Engine.lcm(of: a, b) )] }),
 
-        "+⇔-" : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(-a)]  }),
+      Symbols.invertSign.rawValue : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(-a)]  }),
            "~" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return [.integer(~a)]  }),
            
       Symbols.square.rawValue : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a*a)]   }),
@@ -501,7 +502,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         
     ]
     
-    private func processOperation(symbol: String) 
+    private func processOperation(symbol: String) throws
     {
         var typelessOperationCompleted: Bool = true
         var integerOperationCompleted: Bool = true
@@ -520,6 +521,28 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             case .dropAll:
                 stack.removeAll()
                 
+            case .nDrop:
+                
+                let n: OperandValue = try pop()
+                
+                switch n 
+                {
+                case .integer(let i):
+                    //                    stack.removeLast(i)
+                    for _ in 0..<i
+                    {
+                        _ = try pop()
+                    }
+                case .float(let f):
+                    
+                    // stack.removeLast(Int(f))
+                    for _ in 0..<Int(f)
+                    {
+                        _ = try pop()
+                    }
+                }
+
+                
             case .depth:
                 let a: Int = stack.count 
                 
@@ -530,20 +553,20 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 }
                 
             case .unary2array(let u2aFunction):
-                let a: OperandValue = pop()
+                let a: OperandValue = try pop()
                 
                 stack.append(contentsOf: u2aFunction(a))
                 
             case .binary2array(let b2aFunction):
-                let a: OperandValue = pop()
-                let b: OperandValue = pop()
+                let a: OperandValue = try pop()
+                let b: OperandValue = try pop()
                 
                 stack.append(contentsOf: b2aFunction(a, b))
                 
             case .ternary2array(let t2aFunction):
-                let a: OperandValue = pop()
-                let b: OperandValue = pop()
-                let c: OperandValue = pop()
+                let a: OperandValue = try pop()
+                let b: OperandValue = try pop()
+                let c: OperandValue = try pop()
                 
                 stack.append(contentsOf: t2aFunction(a, b, c))
                 
@@ -565,7 +588,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 
             case .nPick:                            /* copy the n-th element of the stack to the stack */
                                                     /* the 0th element is the top of stack value */
-                let n: OperandValue = pop()
+                let n: OperandValue = try pop()
                 var ni: Int = 0
                 var x: OperandValue!
                 
@@ -606,15 +629,15 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 switch currentOperation 
                 {
                 case .integerUnary2array(let int2arrayFunction):
-                    let a: Int = popInteger()
+                    let a: Int = try popInteger()
                     
                     let r: [OperandValue] = int2arrayFunction(a)
                     
                     stack.append(contentsOf: r)
                     
                 case .integerBinary2array(let int2arrayFunction):
-                    let a: Int = popInteger()
-                    let b: Int = popInteger()
+                    let a: Int = try popInteger()
+                    let b: Int = try popInteger()
                     
                     let r: [OperandValue] = int2arrayFunction(a, b)
                     
@@ -635,25 +658,17 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                     /*take N arguments from the stack */
                 case .integerNArray2array(let arrayFunction):
                     
-                    let n: Int   = popInteger()    // specifies the number of arguments to pop from the stack
+                    let n: Int   = try popInteger()    // specifies the number of arguments to pop from the stack
                     var s: [Int] = [Int]()         // the array of elements popped from the stack
                     
                     for _ : Int in 0 ..< n          // pop the specified number of arguments from the stack and put into array
                     {
-                        s.append(popInteger())
+                        s.append(try popInteger())
                     }
                     
                     let r: [OperandValue] = arrayFunction(s)
                     stack.append(contentsOf: r)
-                    
-                case .nDrop:
-                    let a: Int = popInteger()
-                    
-                    for _ in 0..<a
-                    {
-                        _ = stack.popLast()
-                    }
-                    
+                                        
                 default:
                     integerOperationCompleted = false
                 }
@@ -681,15 +696,15 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                     stack.append(contentsOf: s)
                     
                 case .floatUnary2array(let unaryFunction):
-                    let a: Double = popFloat()
+                    let a: Double = try popFloat()
                     
                     let s: [OperandValue] = unaryFunction(a)
                     
                     stack.append(contentsOf: s)
                     
                 case .floatBinary2array(let binaryFunction):
-                    let a: Double = popFloat()
-                    let b: Double = popFloat()
+                    let a: Double = try popFloat()
+                    let b: Double = try popFloat()
                     
                     let s: [OperandValue] = binaryFunction(a, b)
                     
@@ -712,12 +727,12 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                     /*take N arguments from the stack */
                 case .floatNArray2array(let arrayFunction):
                     
-                    let n: Double   = popFloat()    // specifies the number of arguments to pop from the stack
+                    let n: Double   = try popFloat()    // specifies the number of arguments to pop from the stack
                     var s: [Double] = [Double]()    // the array of elements popped from the stack
                     
                     for _ : Int in 0 ..< Int(n)          // pop the specified number of arguments from the stack and put into array
                     {
-                        s.append(popFloat())
+                        s.append(try popFloat())
                     }
                     
                     let r: [OperandValue] = arrayFunction(s)
@@ -778,6 +793,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     {
         let updateUINote: Notification = Notification(name: GlobalNotification.newEngineResult.name, object: document, userInfo: ["OperandTypeKey": operandType])
         NotificationCenter.default.post(updateUINote)
+        
     }
 
 
@@ -905,12 +921,36 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     {
         engineProcessQueue.sync
         {
-            processOperation(symbol: symbol)
+            do
+            {
+                // clear an error indication, if exist
+                let clearErrorNote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: 
+                    ["errorState"   : false,
+                     "errorMessage" : ""
+                    ])
+                NotificationCenter.default.post(clearErrorNote)
+                
+                try processOperation(symbol: symbol)
+                                
+            }
+            catch
+            {
+                
+                let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: 
+                    ["errorState"   : true,
+                     "errorMessage" : "Stack error"
+                    ])
+                NotificationCenter.default.post(updateUINote)
+                
+                undoLastItem()
+            }
             
             DispatchQueue.main.async
             {
-                self.updateUI()
+                    self.updateUI()
             }
+
+            
         }
 
     }
