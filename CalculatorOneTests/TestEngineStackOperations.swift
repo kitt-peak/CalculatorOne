@@ -40,7 +40,7 @@ class TestEngineStackOperations: XCTestCase
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 1) == false)
 
         XCTAssert(engineDUT.numberOfRegistersWithContent() == 1)
-        XCTAssert(engineDUT.registerValue(registerNumber: 0, radix: 10) == testValue)
+        XCTAssert(engineDUT.registerValue(inRegisterNumber: 0, radix: 10) == testValue)
         
         engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
         
@@ -64,14 +64,14 @@ class TestEngineStackOperations: XCTestCase
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 2) == false)
         
         XCTAssert(engineDUT.numberOfRegistersWithContent() == 2)
-        XCTAssert(engineDUT.registerValue(registerNumber: 0, radix: 10) == testValue1)
-        XCTAssert(engineDUT.registerValue(registerNumber: 1, radix: 10) == testValue0)
+        XCTAssert(engineDUT.registerValue(inRegisterNumber: 0, radix: 10) == testValue1)
+        XCTAssert(engineDUT.registerValue(inRegisterNumber: 1, radix: 10) == testValue0)
         
         engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
         
         XCTAssert(engineDUT.hasValueForRegister(registerNumber: 0) == true)
         XCTAssert(engineDUT.numberOfRegistersWithContent() == 1)
-        XCTAssert(engineDUT.registerValue(registerNumber: 0, radix: 10) == testValue0)
+        XCTAssert(engineDUT.registerValue(inRegisterNumber: 0, radix: 10) == testValue0)
 
         engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
         
@@ -86,8 +86,8 @@ class TestEngineStackOperations: XCTestCase
         engineDUT.userInputEnter(numericalValue: "55", radix: 10)
         engineDUT.userInputOperation(symbol: Symbols.swap.rawValue)
         
-        XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: 10), "42")
-        XCTAssertEqual(engineDUT.registerValue(registerNumber: 1, radix: 10), "55")
+        XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: 10), "42")
+        XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 1, radix: 10), "55")
     }
     
     

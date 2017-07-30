@@ -22,7 +22,6 @@ class TestEngineOperandDisplayFormat: XCTestCase {
         engineDUT = Engine()
         XCTAssertNotNil(engineDUT)   
         
-        engineDUT.userInputOperandType(Engine.OperandType.integer.rawValue, storeInUndoBuffer: false)
     }
     
     override func tearDown() {
@@ -36,13 +35,12 @@ class TestEngineOperandDisplayFormat: XCTestCase {
         let testSets = [
             
             // Decimal,     Binary,         Octal,      Hexadecimal
-            ("0",               "0",            "0",        "0"),
-            ("1",               "1",            "1",        "1"),
-            ("-1",              "-1",           "-1",       "-1"),
-            ("255",             "11111111",     "377",      "FF"),
-            ("267242409",       "1111111011011100101110101001",     "1773345651",      "FEDCBA9"),
-            ("9223372036854775807",   "111111111111111111111111111111111111111111111111111111111111111",
-                                                "777777777777777777777","7FFFFFFFFFFFFFFF")
+            ("0",                   "0",            "0",        "0"),
+            ("1",                   "1",            "1",        "1"),
+            ("-1",                  "-1",           "-1",       "-1"),
+            ("255",                 "11111111",     "377",      "FF"),
+            ("267242409",           "1111111011011100101110101001",     "1773345651",      "FEDCBA9"),
+            ("72057594037927",      "10000011000100100110111010010111100011010100111",     "2030446722743247",  "4189374BC6A7")
             
         ]
         
@@ -50,17 +48,17 @@ class TestEngineOperandDisplayFormat: XCTestCase {
         {
             engineDUT.userInputEnter(numericalValue: testSet.0, radix: 10)
             
-            XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.binary.value), testSet.1)
-            XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.octal.value), testSet.2)
-            XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), testSet.0)
-            XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.hex.value), testSet.3)
+            XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.binary.value), testSet.1)
+            XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.octal.value), testSet.2)
+            XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), testSet.0)
+            XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.hex.value), testSet.3)
             
             engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
         }
     }
 
     
-    func testThatBinOctHexNumbersAreConvertedCorrectlyToDecimalDisplayFormat()
+/*    func testThatBinOctHexNumbersAreConvertedCorrectlyToDecimalDisplayFormat()
     {
         let testSets = [
             
@@ -82,18 +80,19 @@ class TestEngineOperandDisplayFormat: XCTestCase {
         {
             // input binary, test decimal
             engineDUT.userInputEnter(numericalValue: testSet.1, radix: Radix.binary.value)
-            XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), testSet.0)
+            XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), testSet.0)
 
             // input octal, test decimal
             engineDUT.userInputEnter(numericalValue: testSet.2, radix: Radix.octal.value)
-            XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), testSet.0)
+            XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), testSet.0)
 
             // input octal, test decimal
             engineDUT.userInputEnter(numericalValue: testSet.3, radix: Radix.hex.value)
-            XCTAssertEqual(engineDUT.registerValue(registerNumber: 0, radix: Radix.decimal.value), testSet.0)
+            XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), testSet.0)
 
             engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
         }
     }
+ */
 
 }

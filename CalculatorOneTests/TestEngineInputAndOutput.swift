@@ -21,7 +21,6 @@ class TestEngineInputAndOutput: XCTestCase
         engineDUT = Engine()
         XCTAssertNotNil(engineDUT)
         
-        engineDUT.userInputOperandType(Engine.OperandType.float.rawValue, storeInUndoBuffer: false)        
     }
     
     override func tearDown() 
@@ -34,7 +33,6 @@ class TestEngineInputAndOutput: XCTestCase
     
     func testThatTheMethodUserWillInputEnterCorrectlyValidatesDecimalIntegerArguments()
     {
-        engineDUT.userInputOperandType(Engine.OperandType.integer.rawValue, storeInUndoBuffer: false)
         
         // test that string values describing integers can be correctly converted to integer values
         var testValues = 
@@ -52,9 +50,9 @@ class TestEngineInputAndOutput: XCTestCase
             [   "-",            // not a number
                 ".",            // not a number
                 "-.",           // not a number
-                "1.1",          // is a float
-                "-0.1",         // is a float
-                ".1",           // is a float
+                //"1.1",          // is a float
+                //"-0.1",         // is a float
+                //".1",           // is a float
                 "A",            // is a hexadecimal value
                 "122121E"       // is a hexadecimal value
         ]
@@ -70,7 +68,6 @@ class TestEngineInputAndOutput: XCTestCase
     
     func testThatTheMethodUserWillInputEnterCorrectlyValidatesHexadecimalIntegerArguments()
     {
-        engineDUT.userInputOperandType(Engine.OperandType.integer.rawValue, storeInUndoBuffer: false)
         
         // test that string values describing integers can be correctly converted to integer values
         var testValues = 
@@ -104,7 +101,6 @@ class TestEngineInputAndOutput: XCTestCase
 
     func testThatTheMethodUserWillInputEnterCorrectlyValidatesBinaryIntegerArguments()
     {
-        engineDUT.userInputOperandType(Engine.OperandType.integer.rawValue, storeInUndoBuffer: false)
         
         // test that string values describing integers can be correctly converted to integer values
         var testValues = 
@@ -140,7 +136,6 @@ class TestEngineInputAndOutput: XCTestCase
     
     func testThatTheMethodUserWillInputEnterCorrectlyValidatesFloatArguments()
     {
-        engineDUT.userInputOperandType(Engine.OperandType.float.rawValue, storeInUndoBuffer: false)
         
         // test that string values describing floats can be correctly converted to float values
         var testValues = 

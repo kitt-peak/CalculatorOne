@@ -12,7 +12,7 @@ import Cocoa
 {
     func numberOfRegistersWithContent() -> Int
     func hasValueForRegister(registerNumber: Int) -> Bool
-    func registerValue(registerNumber: Int, radix: Int) -> String
+    func registerValue(inRegisterNumber: Int, radix: Int) -> String
     func registerValueWillChange(newValue: String, radix: Int, forRegisterNumber: Int) -> Bool
     func registerValueDidChange(newValue: String, radix: Int, forRegisterNumber: Int)
 }
@@ -154,7 +154,7 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
         {
             if dataSource.hasValueForRegister(registerNumber: index) == true
             {
-                let v = RegisterViewController.RepresentedValue(content: dataSource.registerValue(registerNumber: index, radix: radix.value), 
+                let v = RegisterViewController.RepresentedValue(content: dataSource.registerValue(inRegisterNumber: index, radix: radix.value), 
                                                                 radix: radix, 
                                                                 alignment: RegisterViewController.Alignment.right)
                 controller.representedValue = v

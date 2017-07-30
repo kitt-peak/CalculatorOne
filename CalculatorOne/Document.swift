@@ -109,17 +109,21 @@ class Document: NSDocument, DocumentLifeCycle
     
 
     // MARK: - Read/Write file data
+    // load/save operation uses the dictionary[String : Any] as the container for load/save data
+    // ConfigurationKey holds the available keys for this dictionary
     enum ConfigurationKey: String
     {
-        case operandType = "kOperandType"
+        //case operandType = "kOperandType"  // eliminated 23.7.2017
         case radix = "kRadix"
         case stackValues = "kStackValues", memoryAValues = "kMemoryAValues", memoryBValues = "kMemoryBValues"
         case extraOperationsViewYPosition = "kExtraOperationsViewYPosition"
     }
 
     // this configuration is used on a new file
-    private let defaultConfiguration: [String : Any] = [
-        ConfigurationKey.operandType.rawValue : 1,              /* .float */
+    private let defaultConfiguration: [String : Any] = 
+        [
+        // Eliminated operand type on 23.7.2017
+        // ConfigurationKey.operandType.rawValue : 1,              /* .float */
         ConfigurationKey.radix.rawValue       : 2,              /* .decimal */
         ConfigurationKey.extraOperationsViewYPosition.rawValue : 0.0,  
         ConfigurationKey.stackValues.rawValue   : [],             /* emtpy array of [OperandType] */
@@ -128,6 +132,7 @@ class Document: NSDocument, DocumentLifeCycle
     ]
 
     // holds the entire set of configuration data as dictionary. Any change will make the document dirty
+    // other classes directly read from/write to the currentSaveDataSet container
     var currentSaveDataSet: [String : Any] = [:]
     { didSet { updateChangeCount(.changeDone) }  }
         
@@ -181,7 +186,7 @@ class Document: NSDocument, DocumentLifeCycle
             
             if menuItem.title == "Copy Top Stack"
             {
-                let valueToCopy = engine.registerValue(registerNumber: 0, radix: 10)
+                let valueToCopy = engine.registerValue(inRegisterNumber: 0, radix: 10)
                 let pasteBoard = NSPasteboard.general()
                 pasteBoard.clearContents()
                 pasteBoard.writeObjects([valueToCopy as NSPasteboardWriting])
@@ -192,7 +197,7 @@ class Document: NSDocument, DocumentLifeCycle
                 var valuesToCopy: [String] = [String]()
                 for reg in (0..<countStackItems).reversed()
                 {
-                    let valueStr: String = engine.registerValue(registerNumber: reg, radix: 10)
+                    let valueStr: String = engine.registerValue(inRegisterNumber: reg, radix: 10)
                     valuesToCopy.append(valueStr)
                 }
 

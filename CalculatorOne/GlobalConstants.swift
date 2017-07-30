@@ -307,17 +307,17 @@ enum Symbols: String
 /*
  
 
- "+⇔-" : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(-a)]  }),
- "~" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return [.integer(~a)]  }),
+ "+⇔-" : .integerUnary2array( { (a: Int)   -> [Operand] in return [.integer(-a)]  }),
+ "~" : .integerUnary2array( { (a: Int)  -> [Operand] in return [.integer(~a)]  }),
  
- "X²" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a*a)]   }),
- "2ˣ" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(Engine.twoExpN(of: a))] }),
- "1 +" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a + 1)] }),
- "1 -" : .integerUnary2array( { (a: Int)  -> [OperandValue] in return  [.integer(a - 1)] }),
+ "X²" : .integerUnary2array( { (a: Int)  -> [Operand] in return  [.integer(a*a)]   }),
+ "2ˣ" : .integerUnary2array( { (a: Int)  -> [Operand] in return  [.integer(Engine.twoExpN(of: a))] }),
+ "1 +" : .integerUnary2array( { (a: Int)  -> [Operand] in return  [.integer(a + 1)] }),
+ "1 -" : .integerUnary2array( { (a: Int)  -> [Operand] in return  [.integer(a - 1)] }),
  
- "∑" : .integerArray2array( { (s: [Int]) -> [OperandValue] in return [.integer( s.reduce(0) { (x, y) -> Int in return x + y })]}),
+ "∑" : .integerArray2array( { (s: [Int]) -> [Operand] in return [.integer( s.reduce(0) { (x, y) -> Int in return x + y })]}),
  
- "N!" : .integerUnary2array( { (a: Int)   -> [OperandValue] in return [.integer(Engine.factorial(of: a) )] })
+ "N!" : .integerUnary2array( { (a: Int)   -> [Operand] in return [.integer(Engine.factorial(of: a) )] })
 
  
  */
