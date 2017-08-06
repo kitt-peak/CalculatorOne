@@ -39,82 +39,141 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     
     struct Operand : CustomStringConvertible
     {
-        // by default, an operand is stored as floating point number
-        var fValue: Double = 0.0
-        { didSet 
-            { 
-                convertToInteger()
-            } 
-        }
         
-        // if possilbe, fValue has an integer presentation: iValue. iValue is not nil if fValue and iValue are the exact same values 
-        var iValue: Int? = nil
-                
-        // Initializer from a floating point value
-        init(floatingPointValue: Double) 
+        private static func convertToInteger(stringRepresentation: String, radix: Int) -> Int?
         {
-            fValue = floatingPointValue
-            convertToInteger()
+            return Int(stringRepresentation, radix: radix)
         }
-        
-        // Initializer from a String (failable)
-        init?(string: String, radix: Int)
+
+        private static func convertToFloatingPoint(stringRepresentation: String, radix: Int) -> Double?
         {
-            // if Radix is not Decimal, try to construct the Operand from an Int string
-            if radix != 10
+            // handle radix of 10 first by trying to directly convert to floating point
+            switch radix 
             {
-                if let i: Int = Int(string, radix: radix)
+            case 10:  return Double(stringRepresentation)
+                
+            case 2, 8, 16:    
+                 
+                // try to convert to an integer first using the specified radix, then convert to floating point
+                if let integerValue: Int = convertToInteger(stringRepresentation: stringRepresentation, radix: radix)
                 {
-                    fValue = Double(i)
-                    iValue = Int(exactly: fValue)
+                    return Double(exactly: integerValue)
+                }
+                
+            default:
+                return nil
+            }
+            
+            return nil
+        }
+        
+        
+        // by default, an operand is stored as floating point number and as integer number. Because some numbers
+        // do not allow storage as integer and floating point, both variables are optional tpyes
+        private var _fValue: Double? = nil
+        private var _iValue: Int? = nil
+        //private var _isIntegerConvertible:       Bool = false
+        //private var _isFloatingPointConvertible: Bool = false
+        
+        var isIntegerPresentable:       Bool { return _iValue != nil /*&& _isIntegerConvertible == true*/}
+        var isFloatingPointPresentable: Bool { return _fValue != nil /*&& _isFloatingPointConvertible == true*/}
+        
+        var fValue: Double? { return _fValue }
+        var iValue: Int?    { return _iValue }
+            
+        // Initializer from a floating point value
+        init(floatingPointValue: Double)
+        {
+            _fValue = floatingPointValue
+
+            // can the floating point value be trule converted to a integer value? Fractional digits prevent conversion
+            _iValue = Int(exactly: floatingPointValue)
+        }
+        
+        // Initializer from an integer value
+        init(integerValue: Int)
+        {
+            _iValue = integerValue
+            //_isIntegerConvertible = true
+            
+            _fValue = Double(exactly: integerValue)
+        }
+        
+        // Initializer from a String representing a number (failable)
+        init?(stringRepresentation: String, radix: Int)
+        {
+            // conversion to integer is first priority
+            if let integerValue = Operand.convertToInteger(stringRepresentation: stringRepresentation, radix: radix)
+            {
+                _iValue = integerValue  
+                //_isIntegerConvertible = true
+                
+                if let convertedToFloatingPoint = Double(exactly: integerValue)
+                {
+                    _fValue = convertedToFloatingPoint
+                    //_isFloatingPointConvertible = true
                 }
                 else
                 {
-                    return nil // init has failed 
+                    _fValue = nil
+                    //_isFloatingPointConvertible = false
                 }
             }
-            else // Radix is Decimal, convert to double
+            else if let floatingPointValue = Operand.convertToFloatingPoint(stringRepresentation: stringRepresentation, radix: radix)
             {
-                if let f = Double(string)
-                {
-                    fValue = f
-                    convertToInteger()
-                }
-                else
-                {
-                    return nil
-                }
-            }            
-        }
+                // accept as floating point, but not as integer value
+                _fValue = floatingPointValue
+                _iValue = nil
+                
+                return
+            }
+            
+            // initializer was not successful in creating the Operand struct: both integer and floating point failed
+            return nil
+        }        
         
-        private mutating func convertToInteger()
-        {
-            iValue = Int(exactly: fValue) 
-        }
-        
-        var isIntegerPresentable: Bool { return iValue != nil }
 
         var stringValue: String 
         {
-            var convertedValue = String(describing: fValue)
-            
-            // The String(describing: fValue) initializer returns a String ending ".0" in case of an integer value.
-            // trim the trailing ".0" suffix, if it exists
-            if convertedValue.hasSuffix(".0")
+            // the type Operand can always be converted to a human readable string.
+            // either the integer or the floating point representation will work
+
+            if isIntegerPresentable == true
             {
-                let c = convertedValue.characters
-                convertedValue = String(c.prefix(c.count - 2))
+                return String(describing: _iValue!)
             }
-   
-            return convertedValue
+            else
+            {
+                if _fValue == nil { abort() }
+                var sValue = String(describing: _fValue!)
+                
+                // The String(describing: fValue) initializer returns a String ending ".0" for _fValues without fraction
+                // trim the trailing ".0" suffix, if it exists
+                if sValue.hasSuffix(".0")
+                {
+                    let c = sValue.characters
+                    sValue = String(c.prefix(c.count - 2))
+                }
+                
+                return sValue
+                
+            }
         }
         
         func stringValueWithRadix(radix: Int) -> String?
         {
-            return isIntegerPresentable == true ? String(iValue!, radix: radix, uppercase: true) : nil
+            // works only for integer
+            return isIntegerPresentable == true ? String(_iValue!, radix: radix, uppercase: true) : nil
         }
         
-        var description: String { return fValue.description }
+        var description: String 
+        { 
+            let iResult: String = isIntegerPresentable       ? "iValue=" + stringValue + " ": ""
+            let fResult: String = isFloatingPointPresentable ? "fValue=" + stringValue : ""
+            
+            return iResult + fResult
+        
+        }
     }
  
     private func operandArray(fromDoubleArray: [Double]) -> [Operand] 
@@ -122,9 +181,18 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         return fromDoubleArray.map({ (v: Double) -> Operand in return Operand(floatingPointValue: v) })
     }
 
-    private func doubleArray(fromOperandArray: [Operand]) -> [Double] 
+    private func doubleArray(fromOperandArray: [Operand]) -> [Double]? 
     {
-        return fromOperandArray.map({ (v: Operand) -> Double in return v.fValue })
+        // are all elements of the 'fromOperandArray' convertable to Double? If not, return nil
+        let isConvertible: Bool = fromOperandArray.reduce(true, { (last: Bool, operand: Operand) -> Bool in
+            return last && operand.isFloatingPointPresentable
+        })
+        
+        guard isConvertible == true else { return nil }
+        
+        return fromOperandArray.map({ (operand: Operand) -> Double in
+            return operand.fValue!
+        })        
     }
     
     
@@ -201,7 +269,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         // TODO: save and load any values as String to avoid loss of precision.
         let savedStack: NSMutableArray = NSMutableArray()
     
-        savedStack.addObjects(from: doubleArray(fromOperandArray: stack))
+        savedStack.addObjects(from: doubleArray(fromOperandArray: stack)!)
         
         document.currentSaveDataSet[Document.ConfigurationKey.stackValues.rawValue] = savedStack        
         
@@ -210,14 +278,14 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         // TODO: save and load any values as String to avoid loss of precision.
         let savedMemoryA: NSMutableArray = NSMutableArray()
         
-        savedMemoryA.addObjects(from: doubleArray(fromOperandArray: memoryA))
+        savedMemoryA.addObjects(from: doubleArray(fromOperandArray: memoryA)!)
         
         document.currentSaveDataSet[Document.ConfigurationKey.memoryAValues.rawValue] = savedMemoryA        
 
         // save memory B to the configuration data in the document        
         let savedMemoryB: NSMutableArray = NSMutableArray()
         
-        savedMemoryB.addObjects(from: doubleArray(fromOperandArray: memoryB))
+        savedMemoryB.addObjects(from: doubleArray(fromOperandArray: memoryB)!)
         
         document.currentSaveDataSet[Document.ConfigurationKey.memoryBValues.rawValue] = savedMemoryB        
 
@@ -632,7 +700,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             case .unary2array(let u2aFunction):
                 
                 // get the argument from the stack, as Double value
-                let argument: Double = try pop().fValue
+                let argument: Double = try pop().fValue!
                 
                 // apply a function to the argument and get a result back as double array 
                 let fResult: [Double] = u2aFunction(argument)
@@ -643,8 +711,8 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             case .binary2array(let b2aFunction):
                 
                 // get both arguments from the stack, as Double values
-                let argumentA: Double = try pop().fValue
-                let argumentB: Double = try pop().fValue
+                let argumentA: Double = try pop().fValue!
+                let argumentB: Double = try pop().fValue!
                 
                 // apply a function to the arguments and get a result back as double array 
                 let fResult: [Double] = b2aFunction(argumentA, argumentB)
@@ -655,9 +723,9 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             case .ternary2array(let t2aFunction):
                 
                 // get the three arguments from the stack, as Double values
-                let argumentA: Double = try pop().fValue
-                let argumentB: Double = try pop().fValue
-                let argumentC: Double = try pop().fValue
+                let argumentA: Double = try pop().fValue!
+                let argumentB: Double = try pop().fValue!
+                let argumentC: Double = try pop().fValue!
                 
                 // apply a function to the arguments and get a result back as double array 
                 let fResult: [Double] = t2aFunction(argumentA, argumentB, argumentC)
@@ -683,7 +751,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 
             case .nPick:                            /* copy the n-th element of the stack to the stack */
                                                     /* the 0th element is the top of stack value */
-                let n: Double = try pop().fValue
+                let n: Double = try pop().fValue!
 
                 let ni: Int = Int(n)
                 
@@ -824,7 +892,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
 //                        return -1.0 /*should never be executed*/
 //                    })
                     
-                    let stackCopy: [Double] = doubleArray(fromOperandArray: stack) 
+                    let stackCopy: [Double] = doubleArray(fromOperandArray: stack)! 
                         //                        stack.map({ (e: Operand) -> Double in return e.fValue })
 
                     stack.removeAll()
@@ -843,13 +911,13 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 case .nArray2array(let arrayFunction):
 
                     // take the first argument from the stack. This argument specifies the number of further argument to take from the stack
-                    let countArguments: Double   = try pop().fValue    // specifies the number of arguments to pop from the stack
+                    let countArguments: Double   = try pop().fValue!    // specifies the number of arguments to pop from the stack
                     var arguments: [Double]      = [Double]()    // the array of elements to pop from the stack
                     
                     // TODO: error handling for non-valid countArgument values
                     for _ : Int in 0 ..< Int(countArguments)          // pop the specified number of arguments from the stack and put into array
                     {
-                        arguments.append(try pop().fValue)
+                        arguments.append(try pop().fValue!)
                     }
                     
                     let results: [Double] = arrayFunction(arguments)
@@ -995,13 +1063,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     /// - Returns: true if the engine numerical value is valid for the engine, otherwise false
     func userWillInputEnter(numericalValue: String, radix: Int) -> Bool
     {
-        // first, try to convert from a floating point description. This test is done only
-        // if the radix is 10 (not binary or hox or octal
-        if let _ = Double(numericalValue), radix == 10 { return true }
-        
-        if let _ = Int(numericalValue, radix: radix) { return true }
-
-        return false
+        return nil != Operand(stringRepresentation: numericalValue, radix: radix)        
     }
     
     
@@ -1011,24 +1073,9 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         
         engineProcessQueue.sync
         {
-            var value: Operand!
-            
-            switch radix
-            {
-            case 2, 3, 4: value = Operand(string: numericalValue, radix: radix)
-            case 10:
-                // first, try to convert from a integer point description. This test is done only
-                if let v = Operand(string: numericalValue, radix: 10)
-                {
-                    value = v
-                }
-                else
-                {
-                    value = Operand(floatingPointValue: Double(numericalValue)!)
-                }
-            default: break
-            }
-                        
+            //TODO: replace forced unwrap by error handling
+            let value: Operand = Operand(stringRepresentation: numericalValue, radix: radix)!
+                                    
             // store the current stack for potential undo-operation
             addToRedoBuffer(item: .stack(stack))
             
@@ -1140,14 +1187,23 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             {
                 let value: Operand = stack.reversed()[inRegisterNumber]
 
-                if value.isIntegerPresentable
+                if let r = value.stringValueWithRadix(radix: radix)
                 {
-                    result = value.stringValueWithRadix(radix: radix)!
+                    result = r
                 }
                 else
                 {
                     result = value.stringValue
                 }
+//
+//                if value.isIntegerPresentable
+//                {
+//                    result = value.stringValueWithRadix(radix: radix)!
+//                }
+//                else
+//                {
+//                    result = value.stringValue
+//                }
             }
         }
         
@@ -1173,7 +1229,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         
         
         // Can valueStr be represented as a numerical Value? If yes, return true, otherwise, false
-        return Operand(string: newValue, radix: radix) != nil
+        return nil != Operand(stringRepresentation: newValue, radix: radix)
         //return Operand(fromString: newValue, radix: radix) != nil
     }
     
@@ -1186,7 +1242,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             if hasValueForRegister(registerNumber: forRegisterNumber) == true
             {
                 // convert valueStr to a numerical value and enter into the specified register
-                if let v: Operand = Operand(string: newValue, radix: radix)
+                if let v: Operand = Operand(stringRepresentation: newValue, radix: radix)
                 {
                     let index = stack.count - forRegisterNumber - 1
                     updateStackAtIndex(index, withValue: v)
