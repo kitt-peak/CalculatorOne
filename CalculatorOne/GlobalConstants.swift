@@ -199,6 +199,8 @@ enum Symbols: String
     case moduloN = "%",         and   = "&",            or        = "||",       xor        = "⊕"
     case nShiftLeft = "N ≪",    nShiftRight = "N ≫",    shiftLeft = "≪",       shiftRight  = "≫"
     case gcd = "gcd",           lcm = "lcm"
+    case increment = "1 +",     decrement = "1 -"
+    
     case sum = "∑",             nSum = "n ∑"
     
     case swap = "2↑↓",          rotateUp  = "3R↑",        rotateDown = "3R↓"
@@ -228,7 +230,7 @@ enum Symbols: String
     
     case copyStackToA = "䷀ → A", copyStackToB = "䷀ → B", copyAToStack = "䷀ ← A", copyBToStack = "䷀ ← B" 
     
-    case invertSign = "±"
+    case invertSign = "±",      invertBits = "~"
     case random = "rnd"
     
     case const7M68 = "7m68",        const30M72 = "30m72",       const122M88 = "122m88"

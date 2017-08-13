@@ -30,6 +30,100 @@ class TestEngineInputAndOutput: XCTestCase
     }
 
     
+    func testThatTheMethodUserWillEnterInputCorrectlyAcceptsLargeHexaDecimalIntegerArguments()
+    {
+        // values are regular hexadecimal numbers
+        let testArguments = [ "FFFF", "FFFFFFFF", 
+                              "+7FFFFFFFFFFFFFFF", /* largest acceptable positive hexadecimal number */
+                              "-8000000000000000", /* largest acceptable negative hexadecimal number */]
+        
+        for testArgument in testArguments
+        {
+            XCTAssertEqual(engineDUT.userWillInputEnter(numericalValue: testArgument, radix: Radix.hex.value), true)
+        }
+    }
+
+    func testThatTheMethodUserWillEnterInputCorrectlyRejectsHexaDecimalIntegerArgumentsThatAreTooLarge()
+    {
+        // values are regular hexadecimal numbers, but too long for the calculator to accept (these are longer than 64 bit)
+        let testArguments = [ "FFFFFFFFFFFFFFFF", /* too large positive hexadecimal number, >64 bit */
+                              "-FFFFFFFFFFFFFFFF", /* too large negative hexadecimal number, >64 bit */]
+        
+        for testArgument in testArguments
+        {
+            XCTAssertEqual(engineDUT.userWillInputEnter(numericalValue: testArgument, radix: Radix.hex.value), false)
+        }
+    }
+
+    func testThatALargeHexaDecimalNumberIsInternallyRepresentedAsIntegerAndAsFloatingPoint()
+    {
+        let testArguments = 
+        [   
+             // argument           isInteger    isFloatingPoint
+//             ("7FFFFFFFFFFFFFFF",  true,        false),  /* largest integer, has no exact representation as floating point */
+//             ("-8000000000000000", true,        true),   /* smallest integer, has a exact representation as floating point */
+             ("0",                 true,        true),
+             ("-10000",            true,        true),
+             ("123456789",         true,        true),
+             ("-123456789",        true,        true),
+             (String(Int32.max),   true,        true),
+             (String(Int32.min),   true,        true),
+             (String(Int64.max),   true,        false),
+             (String(Int64.min),   true,        true),
+        ]
+        
+        let radix: Int = Radix.decimal.value
+        
+        for testArgument in testArguments 
+        {
+            // argument must be acceptable by engine
+            XCTAssertEqual(engineDUT.userWillInputEnter(numericalValue: testArgument.0, radix: radix), true)
+            
+            // write argument into engine
+            engineDUT.userInputEnter(numericalValue: testArgument.0, radix: radix)
+            
+            // read back from engine
+            let engineRegisterContent: String = engineDUT.registerValue(inRegisterNumber: 0, radix: radix)
+            
+            // compare. If the engine stores the test argument as floating point, the read back value would not match the test argument
+            XCTAssertEqual(testArgument.0, engineRegisterContent)
+                        
+            engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)
+        }
+    }
+
+    
+    func testThatFractionalNumberIsInternallyRepresentedAsFloatingPointAndNotAsInteger()
+    {
+        // some numbers, for instanceINT.max, does not have an integer representation, which is tested here
+        // other numbers, for instance 3.45 have fractional therefore are no 
+        let testArguments = 
+            [   
+                // argument           isInteger    isFloatingPoint
+                ("0.1",               false,        true),  
+                ("-3.45",             false,        true),  
+                ("-1e-07",            false,        true),
+        ]
+        
+        for testArgument in testArguments 
+        {
+            // argument must be acceptable by engine
+            XCTAssertEqual(engineDUT.userWillInputEnter(numericalValue: testArgument.0, radix: Radix.decimal.value), true)
+            
+            // write argument into engine
+            engineDUT.userInputEnter(numericalValue: testArgument.0, radix: Radix.decimal.value)
+            
+            // read back from engine
+            let engineRegisterContent: String = engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value)
+            
+            // compare. If the engine stores the test argument as floating point, the read back value would not match the test argument
+            XCTAssertEqual(testArgument.0, engineRegisterContent)
+                        
+            engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)
+        }
+    }
+
+    
     
     func testThatTheMethodUserWillInputEnterCorrectlyValidatesDecimalIntegerArguments()
     {

@@ -249,11 +249,6 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     // read the radix directly from the UI control.
     var radix: Radix 
     { return Radix(rawValue: radixSelector.selectedSegment)! } 
-
-    // read the operand type directly from the UI control
-    // OprandType was eliminated on 23.7.2017
-//    var operandType: Engine.OperandType
-//    { return typeSelector.selectedSegment == 1 ? .float : .integer }
     
     var operationModifier: OperationModifier = .takeStackAsArgument
         { didSet { stackButton.state = (operationModifier == .topOfStackContainsArgumentCount ? NSOnState : NSOffState)
@@ -278,8 +273,6 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         // forces button enable/disable 
         digitsComposing = ""
         
-        // eliminated operand type .float on 23.7.2017
-        // typeSelector.setSelected(true, forSegment: Engine.OperandType.float.rawValue)
         radixSelector.setSelected(true, forSegment: Radix.decimal.rawValue)
         
         extraOperationsView.documentView = extraOperationsInnerView
@@ -353,19 +346,6 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             
         }
 
-        // eliminated operand type .float on 23.7.2017
-//        if let selectedOperandTypeSegment: Int = document.currentSaveDataSet[Document.ConfigurationKey.operandType.rawValue] as? Int
-//        {
-//            typeSelector.setSelected(true, forSegment: selectedOperandTypeSegment)            
-//        }
-        
-//        userChangedOperandType(sender: typeSelector)        
-//        
-//        if let selectedRadixSegment: Int = document.currentSaveDataSet[Document.ConfigurationKey.radix.rawValue] as? Int
-//        {   
-//            radixSelector.setSelected(true, forSegment: selectedRadixSegment)
-//        }
-
         userChangedRadix(sender: radixSelector)
 
         if let yPos = document.currentSaveDataSet[Document.ConfigurationKey.extraOperationsViewYPosition.rawValue] as? CGFloat
@@ -396,13 +376,6 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             return changedFlagsEvent
         }
         
-//        if let selectedExtraOperationsTabIndex: Int = document.currentSaveDataSet[Document.ConfigurationKey.extraOperationsTabIndex.rawValue] as? Int
-//        {
-//            extraOperationsSelector.setSelected(true, forSegment: selectedExtraOperationsTabIndex)
-//            ///extraOperationsTabView.selectTabViewItem(at: selectedExtraOperationsTabIndex)
-//        }
-
-        //userSelectedExtraOperations(sender: extraOperationsSelector)
         
         updateOperationKeyStatus()
     }
@@ -431,9 +404,6 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
         radixSelector.isEnabled = false
         
-        // eliminated operand type .float on 23.7.2017
-        // typeSelector.isEnabled  = false
-
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.6) 
         { 
             self.displayController.acceptValueChangesByUI = true
@@ -456,33 +426,6 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         document.currentSaveDataSet[Document.ConfigurationKey.radix.rawValue] = newRadix.rawValue
     }
     
-    /// Inner logic of changing the calculator's operand type. Available are .integer and .float.
-    /// This function will update the engine and the enable/disable status of the keys
-    ///
-    /// - Parameter newType: the new operand type
-    /// operandType was eliminated on 23.7.2017
-//    private func changeOperandType(_ newType: Engine.OperandType)
-//    {
-//        print("\(self) \(#function): sending new operation type'\(newType)' to engine")
-//        
-//        displayController.acceptValueChangesByUI = false
-//                
-//        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.8) 
-//        { 
-//            self.displayController.acceptValueChangesByUI = true
-//        }                        
-//
-//        
-//        if newType == .float
-//        {
-//            changeRadix(newRadix: .decimal)
-//        }
-//        
-//        delegate.userInputOperandType(newType.rawValue, storeInUndoBuffer: true)  
-//        document.currentSaveDataSet[Document.ConfigurationKey.operandType.rawValue] = newType.rawValue
-//        
-//        updateOperationKeyStatus()        
-//    }
     
     var canInputEnter: Bool 
     {
@@ -627,33 +570,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     }
 
     
-    // MARK: - Action methods
-    
-    /// Action method from a user to change the calculators operand type
-    /// Available operand types are 'Integer' and 'Float'. Causes the "enter" command to finish digit composition and will change the
-    /// the operation type of the engine.
-    ///
-    /// - Parameter sender: NSSegmentedControl with to segments, the first segment is labeled 'INTEGER', the second 'FLOAT'
-    /// eliminated operand type .float on 23.7.2017
-    @IBAction func userChangedOperandType(sender: NSSegmentedControl)
-    {
-//        guard sender == typeSelector else { return }
-//        
-//        // complete any ongoing user input
-//        self.userPressedEnterKey(sender: enterButton)
-//
-//        var newOperandType: Engine.OperandType = .integer
-//        
-//        switch sender.selectedSegment 
-//        {
-//        case 0:     newOperandType = .integer
-//        case 1:     newOperandType = .float
-//        default:    break
-//        }
-//                
-//        changeOperandType(newOperandType)
-    }
-    
+    // MARK: - Action methods    
     @IBAction func userChangedRadix(sender: NSSegmentedControl)
     {
         guard sender == radixSelector else { return }
@@ -676,27 +593,27 @@ class KeypadController: NSObject, DependendObjectLifeCycle
 
         let enableEnter: Bool = canInputEnter
         
+        let isIntegerDisplayEnabled: Bool       = displayController.dataSource.registerValuesAreIntegerPresentable()
+        let isFloatingPointDisplayEnabled: Bool = displayController.dataSource.registerValuesAreFloatingPointPresentable() && (radix == .decimal)
+        
         let enableUnaryTypeLessOperation:   Bool = availableOperandsCount > 0 || enableEnter
         let enableBinaryTypeLessOperation:  Bool = availableOperandsCount > 1 || (enableEnter && availableOperandsCount > 0)
         let enableTernaryTypeLessOperation: Bool = availableOperandsCount > 2 || (enableEnter && availableOperandsCount > 1)
 
         
-        let enableUnaryIntegerOperations:  Bool = /*operandType == .integer &&*/ ((availableOperandsCount > 0) || enableEnter)
-        let enableBinaryIntegerOperations: Bool = /*operandType == .integer &&*/ ((availableOperandsCount > 1) || (enableEnter && availableOperandsCount > 0))
+        let enableUnaryIntegerOperations:  Bool =  ((availableOperandsCount > 0) || enableEnter) && isIntegerDisplayEnabled
+        let enableBinaryIntegerOperations: Bool =  ((availableOperandsCount > 1) || (enableEnter && availableOperandsCount > 0))  && isIntegerDisplayEnabled
 
-        let enableUnaryFloatOperations:    Bool = /*operandType == .float && */ ((availableOperandsCount > 0) || enableEnter)
-        let enableBinaryFloatOperations:   Bool = /*operandType == .float && */ ((availableOperandsCount > 1) || (enableEnter && availableOperandsCount > 0))
-        let enableTernaryFloatOperations:  Bool = /*operandType == .float && */ ((availableOperandsCount > 2) || (enableEnter && availableOperandsCount > 1))
+        let enableUnaryFloatOperations:    Bool =  ((availableOperandsCount > 0) || enableEnter) && isFloatingPointDisplayEnabled
+        let enableBinaryFloatOperations:   Bool =  ((availableOperandsCount > 1) || (enableEnter && availableOperandsCount > 0)) && isFloatingPointDisplayEnabled 
+        let enableTernaryFloatOperations:  Bool =  ((availableOperandsCount > 2) || (enableEnter && availableOperandsCount > 1)) && isFloatingPointDisplayEnabled 
         
-        enterButton.isEnabled = enableEnter
-        periodButton.isEnabled = canInputPeriodCharacter
-        exponentPlusButton.isEnabled = canInputExponent
-        exponentMinusButton.isEnabled = canInputExponent
+        enterButton.isEnabled                   = enableEnter
+        periodButton.isEnabled                  = canInputPeriodCharacter
+        exponentPlusButton.isEnabled            = canInputExponent
+        exponentMinusButton.isEnabled           = canInputExponent
 
-        // eliminated type selector on 23.7.2017
-        // typeSelector.isEnabled  = true
-        // TODO: enable radix selector when appropriate
-        radixSelector.isEnabled = true /* operandType == .integer */
+        radixSelector.isEnabled = displayController.dataSource.registerValuesAreIntegerPresentable()
 
         if operationModifier == .takeStackAsArgument
         {
@@ -725,7 +642,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         redoButton.isEnabled = dataSource.canRedo()
         
         operationSignChangeButton.isEnabled = enableUnaryIntegerOperations || enableUnaryFloatOperations
-        operationSquareButton.isEnabled     = enableUnaryIntegerOperations || enableUnaryFloatOperations
+        operationSquareButton.isEnabled     = enableUnaryFloatOperations
         operationSquareRootButton.isEnabled = enableUnaryFloatOperations
         dupButton.isEnabled                 = enableUnaryTypeLessOperation
         operationDropButton.isEnabled       = enableUnaryTypeLessOperation
@@ -766,7 +683,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationACotangentButton.isEnabled = enableUnaryFloatOperations
         operationEPowerXButton.isEnabled   = enableUnaryFloatOperations
         operation10PowerXButton.isEnabled  = enableUnaryFloatOperations
-        operation2PowerXButton.isEnabled   = enableUnaryIntegerOperations || enableUnaryFloatOperations
+        operation2PowerXButton.isEnabled   = enableUnaryFloatOperations
         operationlogButton.isEnabled       = enableUnaryFloatOperations
         operationlog2Button.isEnabled      = enableUnaryFloatOperations
         operationlog10Button.isEnabled     = enableUnaryFloatOperations
@@ -776,7 +693,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationM66D64Button.isEnabled     = enableUnaryFloatOperations
         operationM64D66Button.isEnabled     = enableUnaryFloatOperations
         
-        operationNthRootButton.isEnabled   = enableBinaryFloatOperations        
+        operationNthRootButton.isEnabled    = enableBinaryFloatOperations        
         operationModuloNButton.isEnabled    = enableBinaryIntegerOperations
         
         operationCardesian2polar.isEnabled  = enableBinaryFloatOperations
@@ -789,32 +706,32 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         dup2Button.isEnabled                = enableBinaryTypeLessOperation
         operationNPickButton.isEnabled      = enableUnaryTypeLessOperation
 
-        operationπButton.isEnabled          = true /* operandType == .float*/
-        operationeButton.isEnabled          = true /* operandType == .float*/
-        operationhButton.isEnabled          = true /* operandType == .float*/
-        operationkButton.isEnabled          = true /* operandType == .float*/
-        operationµ0Button.isEnabled         = true /* operandType == .float*/
-        operatione0Button.isEnabled         = true /* operandType == .float*/
-        operationc0Button.isEnabled         = true /* operandType == .float*/
-        operationgButton.isEnabled          = true /* operandType == .float*/
-        operationGButton.isEnabled          = true /* operandType == .float*/
+        operationπButton.isEnabled          = isFloatingPointDisplayEnabled
+        operationeButton.isEnabled          = isFloatingPointDisplayEnabled
+        operationhButton.isEnabled          = isFloatingPointDisplayEnabled
+        operationkButton.isEnabled          = isFloatingPointDisplayEnabled
+        operationµ0Button.isEnabled         = isFloatingPointDisplayEnabled
+        operatione0Button.isEnabled         = isFloatingPointDisplayEnabled
+        operationc0Button.isEnabled         = isFloatingPointDisplayEnabled
+        operationgButton.isEnabled          = isFloatingPointDisplayEnabled
+        operationGButton.isEnabled          = isFloatingPointDisplayEnabled
         
-        operation7M68Button.isEnabled       = true /* operandType == .float*/
-        operation30M72Button.isEnabled       = true /* operandType == .float*/
-        operation122M88Button.isEnabled       = true /* operandType == .float*/
-        operation153M6Button.isEnabled       = true /* operandType == .float*/
-        operation245M76Button.isEnabled       = true /* operandType == .float*/
-        //operation368M64Button.isEnabled       = true /* operandType == .float*/
-        operation1966M08Button.isEnabled       = true /* operandType == .float*/
-        operation2457M6Button.isEnabled       = true /* operandType == .float*/
-        operation2949M12Button.isEnabled       = true /* operandType == .float*/
-        //operation3939M16Button.isEnabled       = true /* operandType == .float*/
-        operation4915M2Button.isEnabled       = true /* operandType == .float*/
-        operation5898M24Button.isEnabled       = true /* operandType == .float*/
-        operation25M0Button.isEnabled       = true /* operandType == .float*/
-        operation100M0Button.isEnabled       = true /* operandType == .float*/
-        operation125M0Button.isEnabled       = true /* operandType == .float*/
-        operation156M25Button.isEnabled       = true /* operandType == .float*/
+        operation7M68Button.isEnabled       = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
+        operation30M72Button.isEnabled      = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled 
+        operation122M88Button.isEnabled     = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled 
+        operation153M6Button.isEnabled      = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled 
+        operation245M76Button.isEnabled     = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
+        //operation368M64Button.isEnabled   = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled 
+        operation1966M08Button.isEnabled    = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
+        operation2457M6Button.isEnabled     = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
+        operation2949M12Button.isEnabled    = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
+        //operation3939M16Button.isEnabled  = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
+        operation4915M2Button.isEnabled     = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
+        operation5898M24Button.isEnabled    = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
+        operation25M0Button.isEnabled       = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
+        operation100M0Button.isEnabled      = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
+        operation125M0Button.isEnabled      = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
+        operation156M25Button.isEnabled     = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
 
         rotUpButton.isEnabled               = enableTernaryTypeLessOperation
         rotDownButton.isEnabled             = enableTernaryTypeLessOperation

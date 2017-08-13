@@ -29,6 +29,7 @@ protocol RegisterViewControllerDelegate
 {
     func userWillTweakRepresentedValue(_: RegisterViewController.RepresentedValue, inRegister: RegisterViewController) -> Bool
     func userDidTweakRepresentedValue(_ : RegisterViewController.RepresentedValue, inRegister: RegisterViewController)
+    func getDocument() -> Document
 }
 
 
@@ -138,65 +139,40 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
                 // display the string right-aligned
                 for (index, character) in value.content.characters.reversed().enumerated()
                 {
-                    switch character 
+                    if index < digits.count
                     {
-                    case ".":
-                        digits[index] = .dot
-                    case "-":
-                        digits[index] = .minus
-                    case "+":
-                        digits[index] = .plus
-                    case "e", "E": 
-                        digits[index] = .dE
-                    default:
-                        // convert character to digit
-                        let s = String(character)
-                        let v = Int(s, radix: value.radix.value)
-                        
-                        if let d: Digit = Digit(rawValue: v!)
-                        {
-                            digits[index] = d
-                        }
-                        else
-                        {
-                            digits[index] = .blank
-                        }
+                        digits[index] = digitForCharacter(character, radix: value.radix) ?? Digit.blank
+                    }
+                    else
+                    {
+                        // error: the value has too many digits to fit the view controller's number of digits
+                        let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: delegate.getDocument(), userInfo: 
+                            ["errorState"   : true,
+                             "errorMessage" : "Result is truncated"
+                            ])
+                        NotificationCenter.default.post(updateUINote)
+                        // error: the value has too many digits to fit the view controller's number of digits
                     }
                 }
             }
-            
-            
-            
-        //case .stringLeftAligned(let str):
+
         case .left:
             // iterate thru each character of the string from left to right
             // display the string left-aligned
             for (index, character) in value.content.characters.enumerated()
             {
-                switch character 
+                if index < digits.count
+                {                
+                    digits[digitsView.countViews - index - 1] = digitForCharacter(character, radix: value.radix) ?? Digit.blank
+                }
+                else
                 {
-                case ".":
-                    digits[digitsView.countViews - index - 1] = .dot
-                case "-":
-                    digits[digitsView.countViews - index - 1] = .minus
-                case "+": break
-                case "e", "E": 
-                    digits[digitsView.countViews - index - 1] = .dE
-
-                default:
-
-                    // convert character to digit
-                    let s = String(character)
-                    let v = Int(s, radix: value.radix.value)
-                
-                    if let d: Digit = Digit(rawValue: v!)
-                    {
-                        digits[digitsView.countViews - index - 1] = d
-                    }
-                    else
-                    {
-                        digits[digitsView.countViews - index - 1] = .blank
-                    }
+                    // error: the value has too many digits to fit the view controller's number of digits
+                    let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: delegate.getDocument(), userInfo: 
+                        ["errorState"   : true,
+                         "errorMessage" : "Result is truncated"
+                        ])
+                    NotificationCenter.default.post(updateUINote)
                 }
             }
         }
@@ -204,6 +180,29 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
         return digits
     }
     
+    private func digitForCharacter(_ c: Character, radix: Radix) -> Digit?
+    {
+        switch c 
+        {
+        case ".": return .dot
+        case "-": return .minus
+        case "+": return nil
+        case "e", "E": return .dE
+        default:
+            // convert character to digit
+            let v = Int(String(c), radix: radix.value)
+        
+            if let v = v,
+               let d = Digit(rawValue: v)
+            {
+                return d
+            }
+            else
+            {
+                return .blank
+            }
+        }
+    }
     
     
     //MARK: - MultiDigitViewDelegate
@@ -231,33 +230,6 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
         let range: ClosedRange<String.Index> = from...from
 
         buildingNewValue.replaceSubrange(range, with: newDigit)
-//        
-//        
-//        switch representedValue.alignment
-//        {
-//        case .right:
-//            for i in (0..<digitsView.countViews)
-//            {
-//                if i == index
-//                {
-//                    let c: String = String(byDigitValue, radix: representedValue.radix.value)
-//                    newValueStr = c.appending(newValueStr)
-//                }
-//                else if i < representedValue.content.characters.count
-//                {
-//                    let c: String = String(Array(representedValue.content.characters)[representedValue.content.characters.count - i - 1])
-//                    newValueStr = c.appending(newValueStr)
-//                }
-//                else
-//                {
-//                    newValueStr = (" ").appending(newValueStr)
-//                }
-//            }
-//            
-//        default:
-//            //TODO: implement changes of left-aligned string values
-//            break
-//        }
         
         buildingNewValue = buildingNewValue.trimLeftCharacter("0")
 

@@ -13,6 +13,8 @@ import Cocoa
     func numberOfRegistersWithContent() -> Int
     func hasValueForRegister(registerNumber: Int) -> Bool
     func registerValue(inRegisterNumber: Int, radix: Int) -> String
+    func registerValuesAreIntegerPresentable() -> Bool
+    func registerValuesAreFloatingPointPresentable() -> Bool
     func registerValueWillChange(newValue: String, radix: Int, forRegisterNumber: Int) -> Bool
     func registerValueDidChange(newValue: String, radix: Int, forRegisterNumber: Int)
 }
@@ -173,23 +175,7 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
         // the update will set the new radix
         updateRegisterDisplay(fromSource: .engine, radix: radix)
     }
-    
 
-    
-    
-//    func userShouldChangeValue(_ value: Int, inRegister: RegisterViewController) -> Bool 
-//    {
-//
-//        for (_/*index*/, register) in registerViewControllers.enumerated()
-//        {
-//            if register == inRegister
-//            {
-//                //dataSource.registerValueChanged(newValue: value, forRegisterNumber: index)
-//            }
-//        }
-//        return false
-//    }
-    
 
     /// Converts a register view controller to a register number. This number can be used in the engine to query or change register values.
     /// The top of the stack is always in register 0. In the user interface, the top of stack (register 0) may be the bottom view in the display
@@ -249,6 +235,11 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
             
             inRegister.representedValue = value
         }        
+    }
+    
+    func getDocument() -> Document
+    {
+        return document
     }
 
     
