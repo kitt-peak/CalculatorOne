@@ -295,8 +295,8 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         Symbols.logE.rawValue    : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.logBaseE(of: a)] }),
         
-        Symbols.log10.rawValue   : .unary2array( { (a: Double) -> [Double] 
-            in return [Engine.logBase10(of: a)] }),
+        Symbols.log10.rawValue   : .unary2array( { (a: Double) -> [Double] in return 
+            [Engine.logBase10(of: a)] }),
         
         Symbols.log2.rawValue    : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.logBase2(of: a)] }),
@@ -383,13 +383,13 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             [Engine.variance(of: s)]}),
         
         Symbols.multiply66divide64.rawValue : .unary2array( { (a: Double)         -> [Double] in return  
-            [a * 33.0 / 32.0] }),
+            [Engine.m33d32(of: a)] }),
         
         Symbols.multiply64divide66.rawValue : .unary2array( { (a: Double)         -> [Double] in return  
-            [a * 32.0 / 33.0] }),
+            [Engine.m32d33(of: a)] }),
     
         Symbols.conv22bB.rawValue : .binary2array({ (a: Double, b: Double) -> [Double] in return 
-            [20.0 * log10(a / b) ]}),
+            [Engine.convertRatioToDB(x: a, y: b) ]}),
 
         Symbols.random.rawValue : .none2array( { () -> ([Double]) in return 
             [Engine.randomNumber()] }),
@@ -399,25 +399,31 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         
         Symbols.polar2rect.rawValue : .binary2array({ (a: Double, b: Double) -> [Double] in return 
             [b * Engine.sinus(a), b * Engine.cosinus(a)]  }),
-    
+        
+        Symbols.rad2deg.rawValue : .unary2array({ (a: Double) -> [Double] in return 
+            [Engine.convertRad2Deg(rad: a)] }),
+        
+        Symbols.deg2rad.rawValue : .unary2array({ (a: Double) -> [Double] in return 
+            [Engine.convertDeg2Rad(deg: a)] }),
+
     // former integer Operations
         Symbols.moduloN.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
-            [b % a] }),
+            [Engine.integerModulo(x: b, y: a)] }),
     
         Symbols.and.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
-            [b & a] }),
+            [Engine.integerBinaryAnd(x: a, y: b)] }),
         
         Symbols.or.rawValue : .integerBinary2array({ (a: Int, b: Int) ->  [Int]  in return 
-            [b | a] }),
+            [Engine.integerBinaryOr(x: a, y: b)] }),
         
         Symbols.xor.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
-            [b ^ a] }),
+            [Engine.integerBinaryXor(x: a, y: b)] }),
        
         Symbols.nShiftLeft.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
-            [b << a] }),
+            [Engine.integerBinaryShiftLeft(x: b, numberOfBits: a)] }),
         
         Symbols.nShiftRight.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
-            [b >> a] }),
+            [Engine.integerBinaryShiftRight(x: b, numberOfBits: a)] }),
         
         Symbols.gcd.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
             [Engine.gcd(of: a, b) ] }),

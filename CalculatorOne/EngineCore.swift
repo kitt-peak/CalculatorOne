@@ -53,7 +53,14 @@ extension Engine
         if a < 1 { return 1 }
         return a * Engine.factorial(of: a-1)
     }
-    @nonobjc class func twoExpN(of n: Int) -> Int { return n < 0 ? 0 : n == 0 ? 1 : (2 << (n-1)) } 
+    @nonobjc class func twoExpN(of n: Int) -> Int 
+    { 
+        return n < 0 
+            ? 0 
+            : n == 0
+                ? 1 
+                : (2 << (n-1))
+    } 
     
     /* EUCLID algorithm for GCD */
     @nonobjc class func gcd(of a: Int, _ b: Int) -> Int 
@@ -278,6 +285,16 @@ extension Engine
         return 1.0 / square(of: x)
     }
 
+    @nonobjc class func convertRad2Deg(rad x: Double) -> Double
+    {
+        return x / Double.pi * 180.0
+    }
+    
+    @nonobjc class func convertDeg2Rad(deg x: Double) -> Double
+    {
+        return x / 180.0 * Double.pi
+    }
+
     @nonobjc class func invertSign(of x: Double) -> Double
     {
         return -x
@@ -296,7 +313,49 @@ extension Engine
         return r
     }
     
+    @nonobjc class func m33d32(of x: Double) -> Double
+    {
+        return divide(multiply(x, 33.0), 32.0)   
+    }
     
+    @nonobjc class func m32d33(of x: Double) -> Double
+    {
+        return divide(multiply(x, 32.0), 33.0)   
+    }
     
+    @nonobjc class func convertRatioToDB(x: Double, y: Double) -> Double
+    {
+        return multiply(20.0, logBase10(of : divide(x, y)))
+    }
+    
+    @nonobjc class func integerModulo(x: Int, y: Int) -> Int
+    {
+        return x % y
+    }
+
+    @nonobjc class func integerBinaryAnd(x: Int, y: Int) -> Int
+    {
+        return x & y
+    }
+
+    @nonobjc class func integerBinaryOr(x: Int, y: Int) -> Int
+    {
+        return x | y
+    }
+    @nonobjc class func integerBinaryXor(x: Int, y: Int) -> Int
+    {
+        return x ^ y
+    }
+    
+    @nonobjc class func integerBinaryShiftLeft(x: Int, numberOfBits: Int) -> Int
+    {
+        return x << numberOfBits
+    }
+
+    @nonobjc class func integerBinaryShiftRight(x: Int, numberOfBits: Int) -> Int
+    {
+        return x >> numberOfBits
+    }
+
     
  }

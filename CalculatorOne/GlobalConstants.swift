@@ -225,6 +225,8 @@ enum Symbols: String
     case sigma     = "σ",       nSigma    = "n σ"
     case variance  = "var",     nVariance = "n var"
     
+    case deg2rad = "→ rad",     rad2deg = "→ deg"
+    
     case π = "π", e = "e"
     case epsilon0 = "ε₀", µ0 = "μ₀", c0 = "c₀",  e0 = "e₀", G = "G", g = "g", h = "h", k = "k"
     

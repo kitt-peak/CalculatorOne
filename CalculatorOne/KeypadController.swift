@@ -183,7 +183,10 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     
     @IBOutlet weak var operationCardesian2polar: NSButton!
     @IBOutlet weak var operationPolar2cardesian: NSButton!
-        
+    
+    @IBOutlet weak var operationRad2DegButton: NSButton!
+    @IBOutlet weak var operationDeg2RadButton: NSButton!
+    
     @IBOutlet weak var rotUpButton: NSButton!
     @IBOutlet weak var rotDownButton: NSButton!
     @IBOutlet weak var dupButton: NSButton!
@@ -292,13 +295,9 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             
             guard note.object as? Document == self.document else { return }
             
-            if let userInfo = note.userInfo
+            if let _ = note.userInfo
             {
-                // eliminated operand type .float on 23.7.2017
-                //if let opType = userInfo["OperandTypeKey"] as? Engine.OperandType
-                //{
-                //    self.typeSelector.setSelected(true, forSegment: opType.rawValue)
-                //}
+
             }
             
             self.updateOperationKeyStatus()
@@ -559,6 +558,9 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationCardesian2polar.title      = Symbols.rect2polar.rawValue
         operationPolar2cardesian.title      = Symbols.polar2rect.rawValue
         
+        operationDeg2RadButton.title        = Symbols.deg2rad.rawValue
+        operationRad2DegButton.title        = Symbols.rad2deg.rawValue
+        
         undoButton.title                    = Symbols.undo.rawValue
         redoButton.title                    = Symbols.redo.rawValue
         
@@ -609,11 +611,11 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         let enableTernaryFloatOperations:  Bool =  ((availableOperandsCount > 2) || (enableEnter && availableOperandsCount > 1)) && isFloatingPointDisplayEnabled 
         
         enterButton.isEnabled                   = enableEnter
-        periodButton.isEnabled                  = canInputPeriodCharacter
-        exponentPlusButton.isEnabled            = canInputExponent
-        exponentMinusButton.isEnabled           = canInputExponent
+        periodButton.isEnabled                  = canInputPeriodCharacter && isFloatingPointDisplayEnabled
+        exponentPlusButton.isEnabled            = canInputExponent && isFloatingPointDisplayEnabled
+        exponentMinusButton.isEnabled           = canInputExponent && isFloatingPointDisplayEnabled
 
-        radixSelector.isEnabled = displayController.dataSource.registerValuesAreIntegerPresentable()
+        radixSelector.isEnabled = isIntegerDisplayEnabled
 
         if operationModifier == .takeStackAsArgument
         {
@@ -698,6 +700,9 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
         operationCardesian2polar.isEnabled  = enableBinaryFloatOperations
         operationPolar2cardesian.isEnabled  = enableBinaryFloatOperations
+        
+        operationRad2DegButton.isEnabled    = enableUnaryFloatOperations
+        operationDeg2RadButton.isEnabled    = enableUnaryFloatOperations
                 
         operationLogicXorButton.isEnabled   = enableBinaryIntegerOperations
         operationLogicOrButton.isEnabled    = enableBinaryIntegerOperations

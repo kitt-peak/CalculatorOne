@@ -33,7 +33,7 @@
                             <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="751" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BBZ-Vc-nf2">
                                 <rect key="frame" x="8" y="8" width="504" height="139"/>
                                 <subviews>
-                                    <stackView distribution="equalSpacing" orientation="horizontal" alignment="centerY" spacing="4" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y0T-4C-dIv">
+                                    <stackView distribution="equalCentering" orientation="horizontal" alignment="centerY" spacing="4" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y0T-4C-dIv">
                                         <rect key="frame" x="0.0" y="123" width="504" height="16"/>
                                         <subviews>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BNU-8f-vXY">
@@ -47,7 +47,7 @@
                                                 </connections>
                                             </button>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Ex-hG-91s">
-                                                <rect key="frame" x="179.5" y="0.0" width="51" height="16"/>
+                                                <rect key="frame" x="203" y="0.0" width="51" height="16"/>
                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="ERROR" usesSingleLineMode="YES" id="r3c-PY-WDO">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
@@ -1192,6 +1192,7 @@ DQ
                 <outlet property="operationCotangentButton" destination="7xr-og-lpU" id="1F7-a0-IPc"/>
                 <outlet property="operationCubicButton" destination="loc-L1-Nnu" id="Wkj-67-Nfv"/>
                 <outlet property="operationDecrementButton" destination="fJ8-ar-epl" id="MLd-Jf-OT3"/>
+                <outlet property="operationDeg2RadButton" destination="Ql2-uV-jbB" id="I35-Zv-WEJ"/>
                 <outlet property="operationDivisionButton" destination="BW2-Ro-eei" id="XxY-fX-uCT"/>
                 <outlet property="operationDropButton" destination="2FS-cC-fSg" id="4yQ-3R-zjH"/>
                 <outlet property="operationDropNButton" destination="RmB-m9-riF" id="Yuu-2O-NN8"/>
@@ -1219,6 +1220,7 @@ DQ
                 <outlet property="operationPolar2cardesian" destination="luq-eE-3fM" id="L8P-WS-tyd"/>
                 <outlet property="operationPrimeFactorsButton" destination="RUG-T0-O5O" id="6UC-aV-4Y1"/>
                 <outlet property="operationProductButton" destination="gC2-29-Suo" id="Beu-Hp-wNW"/>
+                <outlet property="operationRad2DegButton" destination="4ED-5N-EEM" id="DEp-VY-3cm"/>
                 <outlet property="operationReciprocalButton" destination="OzL-Lz-exz" id="ahD-EZ-zH4"/>
                 <outlet property="operationReciprocalSquareButton" destination="diD-hW-VS0" id="0No-EM-Lkg"/>
                 <outlet property="operationShiftLeftButton" destination="S2j-tL-hLp" id="I3Q-Ry-cTF"/>
@@ -1273,14 +1275,14 @@ DQ
             </connections>
         </customObject>
         <customView id="POc-wc-Mgs">
-            <rect key="frame" x="0.0" y="0.0" width="504" height="656"/>
+            <rect key="frame" x="0.0" y="0.0" width="504" height="685"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <stackView distribution="fillEqually" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GME-5F-UNJ">
-                    <rect key="frame" x="0.0" y="0.0" width="504" height="656"/>
+                    <rect key="frame" x="0.0" y="0.0" width="504" height="685"/>
                     <subviews>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8gW-h8-Xcv" userLabel="STACK">
-                            <rect key="frame" x="-2" y="645" width="34" height="11"/>
+                            <rect key="frame" x="-2" y="674" width="34" height="11"/>
                             <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="STACK" id="UsP-7G-0xh">
                                 <font key="font" metaFont="miniSystem"/>
                                 <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
@@ -1288,10 +1290,10 @@ DQ
                             </textFieldCell>
                         </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ldo-xx-73c">
-                            <rect key="frame" x="0.0" y="616" width="504" height="21"/>
+                            <rect key="frame" x="0.0" y="641.5" width="504" height="24.5"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ET2-Cs-C3v">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="-6" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="OaS-l8-E3G"/>
                                     </constraints>
@@ -1304,7 +1306,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uQM-5w-jnl">
-                                    <rect key="frame" x="58" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="58" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="Dhp-aD-LOm"/>
                                     </constraints>
@@ -1317,7 +1319,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="trR-25-mN7">
-                                    <rect key="frame" x="122" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="122" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="5vC-yh-br8"/>
                                     </constraints>
@@ -1330,7 +1332,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ipD-yN-6L6">
-                                    <rect key="frame" x="186" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="186" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="EmN-8a-Cvb"/>
                                     </constraints>
@@ -1343,7 +1345,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WZd-vm-qxi">
-                                    <rect key="frame" x="250" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="250" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="4xg-N9-DqI"/>
                                     </constraints>
@@ -1353,7 +1355,7 @@ DQ
                                     </buttonCell>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oq8-w0-Zpm">
-                                    <rect key="frame" x="314" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="314" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="qLy-TD-rdM"/>
                                     </constraints>
@@ -1363,7 +1365,7 @@ DQ
                                     </buttonCell>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X0j-V8-XTF">
-                                    <rect key="frame" x="378" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="378" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="Pcd-Jv-qba"/>
                                     </constraints>
@@ -1376,7 +1378,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="n64-EF-6uE">
-                                    <rect key="frame" x="442" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="442" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="gYK-hU-eKP"/>
                                     </constraints>
@@ -1411,10 +1413,10 @@ DQ
                             </customSpacing>
                         </stackView>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YDh-J4-HJ6">
-                            <rect key="frame" x="0.0" y="587" width="504" height="21"/>
+                            <rect key="frame" x="0.0" y="609" width="504" height="24.5"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4os-ky-f9s">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="-6" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="41y-W0-tdw"/>
                                     </constraints>
@@ -1427,7 +1429,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="M1P-xn-uKD">
-                                    <rect key="frame" x="58" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="58" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="yUq-vV-ijh"/>
                                     </constraints>
@@ -1440,7 +1442,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="R48-dj-qda">
-                                    <rect key="frame" x="122" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="122" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="Hnw-o1-E6R"/>
                                     </constraints>
@@ -1453,7 +1455,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RmB-m9-riF">
-                                    <rect key="frame" x="186" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="186" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="J41-ER-aLC"/>
                                     </constraints>
@@ -1466,7 +1468,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fBs-qI-anp">
-                                    <rect key="frame" x="250" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="250" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="ZOm-0Q-w9r"/>
                                     </constraints>
@@ -1476,7 +1478,7 @@ DQ
                                     </buttonCell>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ht5-PM-mGo">
-                                    <rect key="frame" x="314" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="314" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="KOf-PS-GlZ"/>
                                     </constraints>
@@ -1486,7 +1488,7 @@ DQ
                                     </buttonCell>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ide-vm-2Dj">
-                                    <rect key="frame" x="378" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="378" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="VcL-Of-dW9"/>
                                     </constraints>
@@ -1499,7 +1501,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Gym-Ir-z5v">
-                                    <rect key="frame" x="442" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="442" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="fF4-ka-6bN"/>
                                     </constraints>
@@ -1534,7 +1536,7 @@ DQ
                             </customSpacing>
                         </stackView>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qGl-DJ-Hf4">
-                            <rect key="frame" x="-2" y="568" width="84" height="11"/>
+                            <rect key="frame" x="-2" y="590" width="84" height="11"/>
                             <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="INTEGER &amp; LOGIC" id="8t3-OT-JAp">
                                 <font key="font" metaFont="miniSystem"/>
                                 <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
@@ -1542,10 +1544,10 @@ DQ
                             </textFieldCell>
                         </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Im4-aE-bVx">
-                            <rect key="frame" x="0.0" y="539" width="440" height="21"/>
+                            <rect key="frame" x="0.0" y="557" width="440" height="25"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DcS-tB-fAe">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="-6" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="8a7-OU-B3W"/>
                                     </constraints>
@@ -1558,7 +1560,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="u0S-ek-pbB">
-                                    <rect key="frame" x="58" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="58" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="p4I-0p-hD2"/>
                                     </constraints>
@@ -1571,7 +1573,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xlX-aV-o8r">
-                                    <rect key="frame" x="122" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="122" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="dzd-VE-wAW"/>
                                     </constraints>
@@ -1584,7 +1586,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="S2j-tL-hLp">
-                                    <rect key="frame" x="186" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="186" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="6Cz-Ge-Jpn"/>
                                     </constraints>
@@ -1597,7 +1599,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="g4e-AB-WBk">
-                                    <rect key="frame" x="250" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="250" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="WRc-fE-gKP"/>
                                     </constraints>
@@ -1610,7 +1612,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="meo-Q8-eZF">
-                                    <rect key="frame" x="314" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="314" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="zQW-oY-byD"/>
                                     </constraints>
@@ -1623,7 +1625,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xBd-6H-5A1">
-                                    <rect key="frame" x="378" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="378" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="BnV-2f-eXn"/>
                                     </constraints>
@@ -1656,10 +1658,10 @@ DQ
                             </customSpacing>
                         </stackView>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mpE-Lr-eaO">
-                            <rect key="frame" x="0.0" y="510" width="440" height="21"/>
+                            <rect key="frame" x="0.0" y="524.5" width="440" height="24.5"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RUG-T0-O5O">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="-6" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="OmL-J5-pc2"/>
                                     </constraints>
@@ -1672,7 +1674,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jKP-Ms-juA">
-                                    <rect key="frame" x="58" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="58" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="8jd-Lv-pue"/>
                                     </constraints>
@@ -1685,7 +1687,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fJ8-ar-epl">
-                                    <rect key="frame" x="122" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="122" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="aBF-qh-OI1"/>
                                     </constraints>
@@ -1698,7 +1700,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ypD-DM-kLI">
-                                    <rect key="frame" x="186" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="186" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="6FU-Ao-CIv"/>
                                     </constraints>
@@ -1711,7 +1713,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="t14-7J-kof">
-                                    <rect key="frame" x="250" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="250" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="AjX-EQ-5M6"/>
                                     </constraints>
@@ -1724,7 +1726,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DpN-kK-QSP">
-                                    <rect key="frame" x="314" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="314" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="ZCo-RY-Iqq"/>
                                     </constraints>
@@ -1737,7 +1739,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LDE-5h-otl">
-                                    <rect key="frame" x="378" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="378" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="6Jr-fm-ydr"/>
                                     </constraints>
@@ -1770,7 +1772,7 @@ DQ
                             </customSpacing>
                         </stackView>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4n-vz-PKm">
-                            <rect key="frame" x="-2" y="491" width="26" height="11"/>
+                            <rect key="frame" x="-2" y="505.5" width="26" height="11"/>
                             <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="CPRI" id="pJQ-I3-fEL">
                                 <font key="font" metaFont="miniSystem"/>
                                 <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
@@ -1778,10 +1780,10 @@ DQ
                             </textFieldCell>
                         </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QJK-5V-7hq">
-                            <rect key="frame" x="0.0" y="462" width="502" height="21"/>
+                            <rect key="frame" x="0.0" y="473" width="502" height="24.5"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QQ1-bK-7wJ">
-                                    <rect key="frame" x="-6" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="-6" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="ZXF-Me-BLW" userLabel="width = 84"/>
                                     </constraints>
@@ -1794,7 +1796,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vOz-IG-RLL">
-                                    <rect key="frame" x="96" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="96" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="U3X-Mw-sUL" userLabel="width = 84"/>
                                     </constraints>
@@ -1807,7 +1809,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="XjJ-uM-QwA">
-                                    <rect key="frame" x="198" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="198" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="QNX-R7-hcS" userLabel="width = 84"/>
                                     </constraints>
@@ -1820,7 +1822,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ngj-zU-dC2">
-                                    <rect key="frame" x="300" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="300" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="pYn-e0-o5F" userLabel="width = 84"/>
                                     </constraints>
@@ -1833,7 +1835,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YRA-Ar-uGc">
-                                    <rect key="frame" x="402" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="402" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="j3V-gX-bKg" userLabel="width = 84"/>
                                     </constraints>
@@ -1862,10 +1864,10 @@ DQ
                             </customSpacing>
                         </stackView>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LBm-OI-Bhk">
-                            <rect key="frame" x="0.0" y="433" width="502" height="21"/>
+                            <rect key="frame" x="0.0" y="440.5" width="502" height="24.5"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iOC-Ua-2FV">
-                                    <rect key="frame" x="-6" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="-6" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="EwW-E5-eFX" userLabel="width = 84"/>
                                     </constraints>
@@ -1878,7 +1880,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="r5o-wZ-rKk">
-                                    <rect key="frame" x="96" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="96" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="0KB-YA-85e" userLabel="width = 84"/>
                                     </constraints>
@@ -1891,7 +1893,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="b5n-Fk-vJK">
-                                    <rect key="frame" x="198" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="198" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="4RW-gr-e0j" userLabel="width = 84"/>
                                     </constraints>
@@ -1904,7 +1906,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bWP-Ca-MnS">
-                                    <rect key="frame" x="300" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="300" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="8Yv-gX-Hpo" userLabel="width = 84"/>
                                     </constraints>
@@ -1917,7 +1919,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZNV-eu-gTT">
-                                    <rect key="frame" x="402" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="402" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="wFO-hK-qXU" userLabel="width = 84"/>
                                     </constraints>
@@ -1946,7 +1948,7 @@ DQ
                             </customSpacing>
                         </stackView>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3cl-iQ-4aY">
-                            <rect key="frame" x="-2" y="414" width="23" height="11"/>
+                            <rect key="frame" x="-2" y="421.5" width="23" height="11"/>
                             <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="ETH" id="i0n-c5-fh0">
                                 <font key="font" metaFont="miniSystem"/>
                                 <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
@@ -1954,10 +1956,10 @@ DQ
                             </textFieldCell>
                         </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="M0w-fn-dTp">
-                            <rect key="frame" x="0.0" y="385" width="298" height="21"/>
+                            <rect key="frame" x="0.0" y="388.5" width="298" height="25"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VY7-uH-uJh">
-                                    <rect key="frame" x="-6" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="-6" y="-3" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="ZMt-RQ-Q6y" userLabel="width = 84"/>
                                     </constraints>
@@ -1970,7 +1972,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KJD-nK-n1o">
-                                    <rect key="frame" x="96" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="96" y="-3" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="MI7-h4-7Ls" userLabel="width = 84"/>
                                     </constraints>
@@ -1983,7 +1985,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZiF-S0-YMS">
-                                    <rect key="frame" x="198" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="198" y="-3" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="3s4-Mz-hEH" userLabel="width = 84"/>
                                     </constraints>
@@ -2008,10 +2010,10 @@ DQ
                             </customSpacing>
                         </stackView>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yeV-So-hk8">
-                            <rect key="frame" x="0.0" y="356" width="298" height="21"/>
+                            <rect key="frame" x="0.0" y="356" width="298" height="24.5"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="akd-SH-Nf2">
-                                    <rect key="frame" x="-6" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="-6" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="WfT-VE-vhK" userLabel="width = 84"/>
                                     </constraints>
@@ -2024,7 +2026,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IVs-av-P1R">
-                                    <rect key="frame" x="96" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="96" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="GKz-fz-AI7" userLabel="width = 84"/>
                                     </constraints>
@@ -2037,7 +2039,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zYC-xw-ypf">
-                                    <rect key="frame" x="198" y="-7" width="106" height="32"/>
+                                    <rect key="frame" x="198" y="-3.5" width="106" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="94" id="x0f-Lq-DKV" userLabel="width = 84"/>
                                     </constraints>
@@ -2062,18 +2064,18 @@ DQ
                             </customSpacing>
                         </stackView>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KlY-0C-DYM">
-                            <rect key="frame" x="-2" y="337" width="33" height="11"/>
-                            <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="FLOAT" id="P9d-f9-tzi">
+                            <rect key="frame" x="-2" y="337" width="35" height="11"/>
+                            <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="ANGLE" id="P9d-f9-tzi">
                                 <font key="font" metaFont="miniSystem"/>
                                 <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8vb-ss-uFO">
-                            <rect key="frame" x="0.0" y="308" width="248" height="21"/>
+                            <rect key="frame" x="0.0" y="304.5" width="376" height="24.5"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="adT-1e-ALz">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="-6" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="T1l-gj-Qic"/>
                                     </constraints>
@@ -2086,7 +2088,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="So6-gu-iWp">
-                                    <rect key="frame" x="58" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="58" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="1Sh-BS-7oC"/>
                                     </constraints>
@@ -2099,7 +2101,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Mm3-lt-VsP">
-                                    <rect key="frame" x="122" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="122" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="LcW-YL-0l0"/>
                                     </constraints>
@@ -2112,7 +2114,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dxc-ZN-JWa">
-                                    <rect key="frame" x="186" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="186" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="q5L-RH-aeJ"/>
                                     </constraints>
@@ -2124,8 +2126,33 @@ DQ
                                         <action selector="userPressedOperationKeyWithSender:" target="jjE-6B-5wI" id="R8L-RY-20T"/>
                                     </connections>
                                 </button>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DMP-eC-QsZ">
+                                    <rect key="frame" x="250" y="-3.5" width="68" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="56" id="R61-6P-n6I"/>
+                                    </constraints>
+                                    <buttonCell key="cell" type="push" bezelStyle="rounded" alignment="center" borderStyle="border" transparent="YES" imageScaling="proportionallyDown" inset="2" id="8Wq-S8-r4A">
+                                        <behavior key="behavior" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                </button>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ql2-uV-jbB">
+                                    <rect key="frame" x="314" y="-3.5" width="68" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="56" id="f35-Fb-Dmh"/>
+                                    </constraints>
+                                    <buttonCell key="cell" type="push" title="→ rad" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="9oU-jy-jof">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="userPressedOperationKeyWithSender:" target="jjE-6B-5wI" id="tT1-jB-LEZ"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <visibilityPriorities>
+                                <integer value="1000"/>
+                                <integer value="1000"/>
                                 <integer value="1000"/>
                                 <integer value="1000"/>
                                 <integer value="1000"/>
@@ -2136,13 +2163,15 @@ DQ
                                 <real value="3.4028234663852886e+38"/>
                                 <real value="3.4028234663852886e+38"/>
                                 <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
                             </customSpacing>
                         </stackView>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KCa-xz-Oih">
-                            <rect key="frame" x="0.0" y="279" width="312" height="21"/>
+                            <rect key="frame" x="0.0" y="272" width="376" height="24.5"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KQI-Ew-WHj">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="-6" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="XAx-a3-Evm"/>
                                     </constraints>
@@ -2155,7 +2184,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AXG-Eg-0S3">
-                                    <rect key="frame" x="58" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="58" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="Ef4-30-o7J"/>
                                     </constraints>
@@ -2168,7 +2197,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="48N-Bf-rd6">
-                                    <rect key="frame" x="122" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="122" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="gKV-LQ-OlT"/>
                                     </constraints>
@@ -2181,7 +2210,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7xr-og-lpU">
-                                    <rect key="frame" x="186" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="186" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="0TH-m2-UiX"/>
                                     </constraints>
@@ -2193,21 +2222,32 @@ DQ
                                         <action selector="userPressedOperationKeyWithSender:" target="jjE-6B-5wI" id="jUR-Ih-NU3"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UuC-Gl-J1Q">
-                                    <rect key="frame" x="250" y="-7" width="68" height="32"/>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mNO-Ra-Mb6">
+                                    <rect key="frame" x="250" y="-3.5" width="68" height="32"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="56" id="xLz-Y8-ao1"/>
+                                        <constraint firstAttribute="width" constant="56" id="Cnw-cA-wyh"/>
                                     </constraints>
-                                    <buttonCell key="cell" type="push" title="rnd" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="NG6-el-mIg">
+                                    <buttonCell key="cell" type="push" bezelStyle="rounded" alignment="center" borderStyle="border" transparent="YES" imageScaling="proportionallyDown" inset="2" id="Lhd-Li-VfF">
+                                        <behavior key="behavior" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                </button>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4ED-5N-EEM">
+                                    <rect key="frame" x="314" y="-3.5" width="68" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="56" id="Dly-to-lps"/>
+                                    </constraints>
+                                    <buttonCell key="cell" type="push" title="→ deg" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="knE-eQ-2jn">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <connections>
-                                        <action selector="userPressedOperationKeyWithSender:" target="jjE-6B-5wI" id="KFx-sd-awS"/>
+                                        <action selector="userPressedOperationKeyWithSender:" target="jjE-6B-5wI" id="JcX-EQ-FpW"/>
                                     </connections>
                                 </button>
                             </subviews>
                             <visibilityPriorities>
+                                <integer value="1000"/>
                                 <integer value="1000"/>
                                 <integer value="1000"/>
                                 <integer value="1000"/>
@@ -2220,10 +2260,11 @@ DQ
                                 <real value="3.4028234663852886e+38"/>
                                 <real value="3.4028234663852886e+38"/>
                                 <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
                             </customSpacing>
                         </stackView>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HtG-PN-JMj">
-                            <rect key="frame" x="-2" y="260" width="50" height="11"/>
+                            <rect key="frame" x="-2" y="253" width="50" height="11"/>
                             <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="VECTOR 2" id="NKc-3W-trh">
                                 <font key="font" metaFont="miniSystem"/>
                                 <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
@@ -2231,10 +2272,10 @@ DQ
                             </textFieldCell>
                         </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VCl-Mo-YWh">
-                            <rect key="frame" x="0.0" y="231" width="56" height="21"/>
+                            <rect key="frame" x="0.0" y="220" width="56" height="25"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FzK-0B-fkb">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="-6" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="c1T-Pa-aGI"/>
                                     </constraints>
@@ -2255,10 +2296,10 @@ DQ
                             </customSpacing>
                         </stackView>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nvN-VA-1Il">
-                            <rect key="frame" x="0.0" y="202" width="56" height="21"/>
+                            <rect key="frame" x="0.0" y="187.5" width="56" height="24.5"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="luq-eE-3fM">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="-6" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="vHh-B5-i9Q"/>
                                     </constraints>
@@ -2279,18 +2320,18 @@ DQ
                             </customSpacing>
                         </stackView>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UGg-8W-Q60">
-                            <rect key="frame" x="-2" y="183" width="56" height="11"/>
+                            <rect key="frame" x="-2" y="168.5" width="56" height="11"/>
                             <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="STATISTICS" id="e6F-Da-Akq">
                                 <font key="font" metaFont="miniSystem"/>
                                 <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ziL-Ae-VF0">
-                            <rect key="frame" x="0.0" y="154" width="56" height="21"/>
+                        <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kBQ-ya-74Y">
+                            <rect key="frame" x="0.0" y="136" width="504" height="24.5"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KXu-aC-JmO">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="-6" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="VO1-LB-D0S"/>
                                     </constraints>
@@ -2302,19 +2343,8 @@ DQ
                                         <action selector="userPressedOperationKeyWithSender:" target="jjE-6B-5wI" id="cqd-2T-LCt"/>
                                     </connections>
                                 </button>
-                            </subviews>
-                            <visibilityPriorities>
-                                <integer value="1000"/>
-                            </visibilityPriorities>
-                            <customSpacing>
-                                <real value="3.4028234663852886e+38"/>
-                            </customSpacing>
-                        </stackView>
-                        <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kBQ-ya-74Y">
-                            <rect key="frame" x="0.0" y="125" width="376" height="21"/>
-                            <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vpt-Dy-ln4">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="58" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="xE4-uc-Mjf"/>
                                     </constraints>
@@ -2327,7 +2357,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gC2-29-Suo">
-                                    <rect key="frame" x="58" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="122" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="nJK-RY-0fy"/>
                                     </constraints>
@@ -2340,7 +2370,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zoT-sn-UxN">
-                                    <rect key="frame" x="122" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="186" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="qvQ-uR-75n"/>
                                     </constraints>
@@ -2353,7 +2383,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yO1-bN-gf5">
-                                    <rect key="frame" x="186" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="250" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="B4H-K0-2Hl"/>
                                     </constraints>
@@ -2366,7 +2396,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7gR-XJ-r3X">
-                                    <rect key="frame" x="250" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="314" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="bHX-Mw-Weo"/>
                                     </constraints>
@@ -2379,7 +2409,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vdx-7G-mdz">
-                                    <rect key="frame" x="314" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="378" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="uXv-Lw-LKs"/>
                                     </constraints>
@@ -2391,8 +2421,23 @@ DQ
                                         <action selector="userPressedOperationKeyWithSender:" target="jjE-6B-5wI" id="wfQ-W6-eKM"/>
                                     </connections>
                                 </button>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UuC-Gl-J1Q">
+                                    <rect key="frame" x="442" y="-3.5" width="68" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="56" id="xLz-Y8-ao1"/>
+                                    </constraints>
+                                    <buttonCell key="cell" type="push" title="rnd" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="NG6-el-mIg">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="userPressedOperationKeyWithSender:" target="jjE-6B-5wI" id="KFx-sd-awS"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <visibilityPriorities>
+                                <integer value="1000"/>
+                                <integer value="1000"/>
                                 <integer value="1000"/>
                                 <integer value="1000"/>
                                 <integer value="1000"/>
@@ -2407,10 +2452,12 @@ DQ
                                 <real value="3.4028234663852886e+38"/>
                                 <real value="3.4028234663852886e+38"/>
                                 <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
                             </customSpacing>
                         </stackView>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yfa-aF-RcU">
-                            <rect key="frame" x="-2" y="106" width="61" height="11"/>
+                            <rect key="frame" x="-2" y="117" width="61" height="11"/>
                             <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="CONSTANTS" id="GQT-gN-9AS">
                                 <font key="font" metaFont="miniSystem"/>
                                 <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
@@ -2418,10 +2465,10 @@ DQ
                             </textFieldCell>
                         </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CXg-V2-ICi">
-                            <rect key="frame" x="0.0" y="77" width="120" height="21"/>
+                            <rect key="frame" x="0.0" y="84.5" width="120" height="24.5"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2og-XH-6wf">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="-6" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="8dm-z7-Qgt"/>
                                     </constraints>
@@ -2434,7 +2481,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="97R-g2-W4l">
-                                    <rect key="frame" x="58" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="58" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="iob-lv-zIy"/>
                                     </constraints>
@@ -2457,10 +2504,10 @@ DQ
                             </customSpacing>
                         </stackView>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hnr-EJ-IfE">
-                            <rect key="frame" x="0.0" y="48" width="440" height="21"/>
+                            <rect key="frame" x="0.0" y="51.5" width="440" height="25"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zni-H5-9ex">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="-6" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="F7o-cn-DqD"/>
                                     </constraints>
@@ -2473,7 +2520,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pls-yT-7K0">
-                                    <rect key="frame" x="58" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="58" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="URT-hw-Jf5"/>
                                     </constraints>
@@ -2486,7 +2533,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mcW-EX-xwS">
-                                    <rect key="frame" x="122" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="122" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="a8q-Sb-CuP"/>
                                     </constraints>
@@ -2499,7 +2546,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gLi-Mp-EqE">
-                                    <rect key="frame" x="186" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="186" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="2B4-cv-HDr"/>
                                     </constraints>
@@ -2512,7 +2559,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iSI-uu-vdZ">
-                                    <rect key="frame" x="250" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="250" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="kFf-eP-poV"/>
                                     </constraints>
@@ -2525,7 +2572,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cfT-82-uCL">
-                                    <rect key="frame" x="314" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="314" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="kVS-al-tum"/>
                                     </constraints>
@@ -2538,7 +2585,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Isn-hL-qxs">
-                                    <rect key="frame" x="378" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="378" y="-3" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="oKm-FC-bas"/>
                                     </constraints>
@@ -2571,7 +2618,7 @@ DQ
                             </customSpacing>
                         </stackView>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pqL-Uz-R89">
-                            <rect key="frame" x="-2" y="29" width="71" height="11"/>
+                            <rect key="frame" x="-2" y="32.5" width="71" height="11"/>
                             <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="CONVERSIONS" id="ElW-zs-cPf">
                                 <font key="font" metaFont="miniSystem"/>
                                 <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
@@ -2579,10 +2626,10 @@ DQ
                             </textFieldCell>
                         </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YOY-aC-8PV">
-                            <rect key="frame" x="0.0" y="0.0" width="120" height="21"/>
+                            <rect key="frame" x="0.0" y="0.0" width="120" height="24.5"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jqf-8c-h0U">
-                                    <rect key="frame" x="-6" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="-6" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="QTE-ci-zTf"/>
                                     </constraints>
@@ -2595,7 +2642,7 @@ DQ
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UpJ-FD-GPE">
-                                    <rect key="frame" x="58" y="-7" width="68" height="32"/>
+                                    <rect key="frame" x="58" y="-3.5" width="68" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="vk7-ff-lM9"/>
                                     </constraints>
@@ -2644,10 +2691,8 @@ DQ
                         <integer value="1000"/>
                         <integer value="1000"/>
                         <integer value="1000"/>
-                        <integer value="1000"/>
                     </visibilityPriorities>
                     <customSpacing>
-                        <real value="3.4028234663852886e+38"/>
                         <real value="3.4028234663852886e+38"/>
                         <real value="3.4028234663852886e+38"/>
                         <real value="3.4028234663852886e+38"/>

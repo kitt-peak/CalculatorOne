@@ -123,7 +123,7 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
             else if value.content == "-inf"
             {
                 digits[0] = .inf
-                digits[1] = .plus                
+                digits[1] = .minus                
             }
             // TODO: find better symbols for NAN  
             else if value.content == "nan"
@@ -179,6 +179,8 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
         
         return digits
     }
+    
+    
     
     private func digitForCharacter(_ c: Character, radix: Radix) -> Digit?
     {
