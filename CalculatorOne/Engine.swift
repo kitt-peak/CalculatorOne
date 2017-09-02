@@ -69,7 +69,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         case radix(Radix)
     }
 
-    enum engineError: Error 
+    enum EngineError: Error 
     {
         case popOperandFromEmptyStack
     }
@@ -77,7 +77,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     
     //MARK: - Private properties
     
-    private var stack: [Operand]   = [Operand]()
+    private var stack: OperandStack = OperandStack(operands: [])
     private var memoryA: [Operand] = [Operand]() 
     private var memoryB: [Operand] = [Operand]()
     
@@ -102,7 +102,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             // TODO: save and load any values as String to avoid loss of precision.
             for value in savedStack as! [Double]
             {
-                stack.append(Operand(floatingPointValue: value))
+                stack.push(operand: Operand(floatingPointValue: value))
             }
         }
 
@@ -136,8 +136,8 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         // TODO: save and load any values as String to avoid loss of precision.
         let savedStack: NSMutableArray = NSMutableArray()
     
-        savedStack.addObjects(from: doubleArray(fromOperandArray: stack)!)
-        
+        savedStack.addObjects(from: doubleArray(fromOperandArray: stack.allOperands())!)
+
         document.currentSaveDataSet[Document.ConfigurationKey.stackValues.rawValue] = savedStack        
         
         // save memory A and B to the configuration data in the document        
@@ -158,34 +158,8 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
 
     }
     
-    //MARK: - Stack operations    
-    private func pop() throws -> Operand
-    {
-        if let last: Operand = stack.popLast()
-        {
-            return last
-        }
-        else
-        {
-            throw engineError.popOperandFromEmptyStack            
-        }
-    }
 
 
-    
-    private func updateStackAtIndex(_ index: Int, withValue: Operand)
-    {
-        if index >= 0 && index <= stack.endIndex
-        {
-            stack[index] = withValue
-        }
-        else
-        {
-            assertionFailure("! Error stack update index <\(index)> out of range (allowed stack index range: \(stack.startIndex)..<\(stack.endIndex))")
-        }
-        
-    }
-    
     
     //MARK: - Core operations
     private typealias OperationsTable = [String : OperationClass]!
@@ -462,64 +436,63 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         if let currentOperation = operations[symbol]
         {
             // store the current stack for potential undo-operation
-            addToRedoBuffer(item: .stack(stack))
+            addToRedoBuffer(item: .stack(stack.allOperands()))
 
             switch currentOperation 
             {
                 
             case .dropAll:
-                stack.removeAll()
+                stack.clear()
                 
                 
             case .nPick:                            /* copy the n-th element of the stack to the stack */
                 /* the 0th element is the top of stack value */
-                if let n: Int = try pop().iValue
+                if let n: Int = try stack.pop().iValue
                 {
                     //TODO: Error handling for index not in stack
                     /* picking the 0th element? return the top of stack, which is value N itself */
                     let result: Operand = n > 0 
-                        ? stack[stack.count - n] 
+                        ? stack.operandAtIndex(stack.count - n)   //       stack[stack.count - n] 
                         : Operand(integerValue: n)
                     
-                    stack.append(contentsOf: [result])
-                    
+                    stack.push(operands: [result])
                 }
 
             case .nDrop:
                 
                 /* the 0th element is the top of stack value */
-                if let n: Int = try pop().iValue, n>0
+                if let n: Int = try stack.pop().iValue, n>0
                 {
                     for _ in 0 ..< n
                     {
-                        _ = try pop()
+                        _ = try stack.pop()
                     }
                 }                
                 
             case .depth:
                 let n: Operand = Operand(integerValue: stack.count)
-                stack.append(contentsOf: [n])
+                stack.push(operands: [n])
                                 
             case .unary2array(let u2aFunction):
                 
                 // get the argument from the stack, as Double value
-                let argument: Double = try pop().fValue!
+                let argument: Double = try stack.pop().fValue!
                 
                 // apply a function to the argument and get a result back as double array 
                 let fResult: [Double] = u2aFunction(argument)
                 
                 // convert the double array to a Operand array and store on the stack
-                stack.append(contentsOf: operandArray(fromDoubleArray: fResult))
+                stack.push(operands: operandArray(fromDoubleArray: fResult))
                 
             case .integerUnary2array(let intUnaryToArryFunction):
                 
                 // get one integer argument from the stack
-                if let intArgument: Int = try pop().iValue
+                if let intArgument: Int = try stack.pop().iValue
                 {
                     let intResult: [Int] = intUnaryToArryFunction(intArgument)
                     
                     // convert the integer array to a Operand array and store on the stack
-                    stack.append(contentsOf: operandArray(fromIntegerArray: intResult))
+                    stack.push(operands: operandArray(fromIntegerArray: intResult))
                 }
                 else
                 {
@@ -530,26 +503,26 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             case .binary2array(let b2aFunction):
                 
                 // get both arguments from the stack, as Double values
-                let argumentA: Double = try pop().fValue!
-                let argumentB: Double = try pop().fValue!
+                let argumentA: Double = try stack.pop().fValue!
+                let argumentB: Double = try stack.pop().fValue!
                 
                 // apply a function to the arguments and get a result back as double array 
                 let fResult: [Double] = b2aFunction(argumentA, argumentB)
                 
                 // convert the double array to a Operand array and store on the stack
-                stack.append(contentsOf: operandArray(fromDoubleArray: fResult))
+                stack.push(operands: operandArray(fromDoubleArray: fResult))
                 
                 
             case .integerBinary2array(let intBinaryToArrayFunction):
                 
                 // get integer arguments from the stack
-                if let intArgumentA: Int = try pop().iValue,
-                   let intArgumentB: Int = try pop().iValue
+                if let intArgumentA: Int = try stack.pop().iValue,
+                   let intArgumentB: Int = try stack.pop().iValue
                 {
                     let intResult: [Int] =  intBinaryToArrayFunction(intArgumentA, intArgumentB)
                     
                     // convert the integer array to a Operand array and store on the stack
-                    stack.append(contentsOf: operandArray(fromIntegerArray: intResult))                    
+                    stack.push(operands: operandArray(fromIntegerArray: intResult))                    
                 }
                 else
                 {
@@ -561,16 +534,16 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             case .ternary2array(let t2aFunction):
                 
                 // get the three arguments from the stack, as Double values
-                if let argumentA: Double = try pop().fValue,
-                   let argumentB: Double = try pop().fValue,
-                   let argumentC: Double = try pop().fValue
+                if let argumentA: Double = try stack.pop().fValue,
+                   let argumentB: Double = try stack.pop().fValue,
+                   let argumentC: Double = try stack.pop().fValue
                 {
                 
                     // apply a function to the arguments and get a result back as double array 
                     let fResult: [Double] = t2aFunction(argumentA, argumentB, argumentC)
                 
                     // convert the double array to a Operand array and store on the stack
-                    stack.append(contentsOf: operandArray(fromDoubleArray: fResult))
+                    stack.push(operands: operandArray(fromDoubleArray: fResult))
                 }
                 else
                 {
@@ -578,20 +551,20 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 }
                 
             case .copyAToStack:
-                stack.removeAll()
-                stack.append(contentsOf: memoryA)
+                stack.clear()
+                stack.push(operands: memoryA)
                 
             case .copyBToStack: 
-                stack.removeAll()
-                stack.append(contentsOf: memoryB)
+                stack.clear()
+                stack.push(operands: memoryB)
                 
             case .copyStackToA:
                 memoryA.removeAll()                
-                memoryA.append(contentsOf: stack)
+                memoryA.append(contentsOf: stack.allOperands())
                 
             case .copyStackToB:
                 memoryB.removeAll()                
-                memoryB.append(contentsOf: stack)
+                memoryB.append(contentsOf: stack.allOperands())
                 
 
             case .none2array(let n2aFunction):
@@ -600,15 +573,15 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                     let fResult: [Double] = n2aFunction()
                     
                     // convert the double array to a Operand array and store on the stack
-                    stack.append(contentsOf: operandArray(fromDoubleArray: fResult))
+                    stack.push(operands: operandArray(fromDoubleArray: fResult))
                     
 
             case .array2array(let arrayFunction):
                     
                     // copy the entire stack into the array stackCopy
                     
-                    let stackCopy: [Double] = doubleArray(fromOperandArray: stack)! 
-                    stack.removeAll()
+                    let stackCopy: [Double] = doubleArray(fromOperandArray: stack.allOperands())! 
+                    stack.clear()
                     
                     // TODO: replace if clause by error handling
                     if stackCopy.count > 0
@@ -616,24 +589,24 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                         //let r: [Operand] = arrayFunction(stackCopy)
                         let result: [Double] = arrayFunction(stackCopy)
                         
-                        stack.append(contentsOf: operandArray(fromDoubleArray: result)) 
+                        stack.push(operands: operandArray(fromDoubleArray: result)) 
                     }
                     
                     /*take N arguments from the stack */
                 case .nArray2array(let arrayFunction):
 
                     // take the first argument from the stack. This argument specifies the number of further argument to take from the stack
-                    let countArguments: Double   = try pop().fValue!    // specifies the number of arguments to pop from the stack
+                    let countArguments: Double   = try stack.pop().fValue!    // specifies the number of arguments to pop from the stack
                     var arguments: [Double]      = [Double]()    // the array of elements to pop from the stack
                     
                     // TODO: error handling for non-valid countArgument values
                     for _ : Int in 0 ..< Int(countArguments)          // pop the specified number of arguments from the stack and put into array
                     {
-                        arguments.append(try pop().fValue!)
+                        arguments.append(try stack.pop().fValue!)
                     }
                     
                     let results: [Double] = arrayFunction(arguments)
-                    stack.append(contentsOf: operandArray(fromDoubleArray: results))                    
+                    stack.push(operands: operandArray(fromDoubleArray: results))                    
                 }
             }
             else
@@ -655,7 +628,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             switch item
             {
             case .stack(let formerStack):
-                stack = formerStack
+                stack = OperandStack(operands: formerStack)//formerStack
                 updateUI()
                 
             case .radix(_/* let formerRadix*/):
@@ -697,10 +670,10 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             let value: Operand = Operand(stringRepresentation: numericalValue, radix: radix)!
                                     
             // store the current stack for potential undo-operation
-            addToRedoBuffer(item: .stack(stack))
+            addToRedoBuffer(item: .stack(stack.allOperands()))
             
             //print("\(self)\n| \(#function): adding '\(value)' to top of stack")
-            stack.append(value)
+            stack.push(operand: value)
             print(stackDescription)
             
             DispatchQueue.main.async
@@ -794,9 +767,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         
         engineProcessQueue.sync
         {   
-            result = stack.reduce(result, { (lastResult, operand) -> Bool in
-                return lastResult && operand.isIntegerPresentable
-            })            
+            result = stack.isIntegerPresentable     
         }
         
         return result
@@ -809,9 +780,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         
         engineProcessQueue.sync
         {   
-            result = stack.reduce(result, { (lastResult, operand) -> Bool in
-                return lastResult && operand.isFloatingPointPresentable
-            })            
+            result = stack.isFloatingPointPresentable     
         }
         
         return result
@@ -836,7 +805,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             // is registerNumber valid? 
             if hasValueForRegister(registerNumber: inRegisterNumber) == true
             {
-                let value: Operand = stack.reversed()[inRegisterNumber]
+                let value: Operand = stack.operandAtIndexFromTop(inRegisterNumber) //stack.reversed()[inRegisterNumber]
 
                 if let r = value.stringValueWithRadix(radix: radix)
                 {
@@ -887,10 +856,10 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 if let v: Operand = Operand(stringRepresentation: newValue, radix: radix)
                 {
                     let index = stack.count - forRegisterNumber - 1
-                    updateStackAtIndex(index, withValue: v)
+                    stack.updateAtIndex(index, withValue: v)
                 
                     // store the current stack for potential undo-operation
-                    addToRedoBuffer(item: .stack(stack))
+                    addToRedoBuffer(item: .stack(stack.allOperands()))
                     
                     print(stackDescription)
                 }

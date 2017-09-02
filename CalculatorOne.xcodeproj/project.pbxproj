@@ -29,7 +29,9 @@
 		F49DA06B1E212C0200B166F1 /* DisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DA06A1E212C0200B166F1 /* DisplayView.swift */; };
 		F4A6EE281E2579C300FEEB8D /* ConstraintScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A6EE271E2579C300FEEB8D /* ConstraintScrollView.swift */; };
 		F4BC49051E5A25C600ED245C /* TestEngineIntegerOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4BC49041E5A25C600ED245C /* TestEngineIntegerOperations.swift */; };
+		F4C927451F5B0CE500B317C0 /* OperandStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C927441F5B0CE500B317C0 /* OperandStack.swift */; };
 		F4CA3CA71E2BD5E000A24032 /* TestEngineStackOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CA3CA61E2BD5E000A24032 /* TestEngineStackOperations.swift */; };
+		F4CEDFAF1F5B0B3700D8D1DF /* TestOperandStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CEDFAE1F5B0B3700D8D1DF /* TestOperandStack.swift */; };
 		F4E396FF1E90DD8E00DF7FA8 /* EngineCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E396FE1E90DD8E00DF7FA8 /* EngineCore.swift */; };
 		F4E6AC6C1E6C16CB00EAE97E /* TestEngineOperandChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E6AC6B1E6C16CB00EAE97E /* TestEngineOperandChange.swift */; };
 		F4E6AC6E1E6C16E700EAE97E /* TestEngineOperandDisplayFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E6AC6D1E6C16E700EAE97E /* TestEngineOperandDisplayFormat.swift */; };
@@ -85,7 +87,9 @@
 		F49DA06A1E212C0200B166F1 /* DisplayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayView.swift; sourceTree = "<group>"; };
 		F4A6EE271E2579C300FEEB8D /* ConstraintScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintScrollView.swift; sourceTree = "<group>"; };
 		F4BC49041E5A25C600ED245C /* TestEngineIntegerOperations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEngineIntegerOperations.swift; sourceTree = "<group>"; };
+		F4C927441F5B0CE500B317C0 /* OperandStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperandStack.swift; sourceTree = "<group>"; };
 		F4CA3CA61E2BD5E000A24032 /* TestEngineStackOperations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEngineStackOperations.swift; sourceTree = "<group>"; };
+		F4CEDFAE1F5B0B3700D8D1DF /* TestOperandStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestOperandStack.swift; sourceTree = "<group>"; };
 		F4E396FE1E90DD8E00DF7FA8 /* EngineCore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineCore.swift; sourceTree = "<group>"; };
 		F4E6AC6B1E6C16CB00EAE97E /* TestEngineOperandChange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEngineOperandChange.swift; sourceTree = "<group>"; };
 		F4E6AC6D1E6C16E700EAE97E /* TestEngineOperandDisplayFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEngineOperandDisplayFormat.swift; sourceTree = "<group>"; };
@@ -137,6 +141,7 @@
 				F4E396FE1E90DD8E00DF7FA8 /* EngineCore.swift */,
 				F4FF6D751F3F449000AF9E81 /* Operand.swift */,
 				F4FF6D771F3F459100AF9E81 /* Converter.swift */,
+				F4C927441F5B0CE500B317C0 /* OperandStack.swift */,
 			);
 			name = Engine;
 			sourceTree = "<group>";
@@ -197,6 +202,7 @@
 		F473BC321E13F4D7002B78EE /* CalculatorOneTests */ = {
 			isa = PBXGroup;
 			children = (
+				F4CEDFAE1F5B0B3700D8D1DF /* TestOperandStack.swift */,
 				F448B8791F4335DB00496D5C /* TestEngineConverterOperations.swift */,
 				F4FF9AEE1EC756620016F672 /* TestDocument.swift */,
 				F43899461E742C56003B13B4 /* TestEngineFloatOperations.swift */,
@@ -383,6 +389,7 @@
 				F49DA06B1E212C0200B166F1 /* DisplayView.swift in Sources */,
 				F43C571E1E17AAB7008A2D7E /* GlobalConstants.swift in Sources */,
 				F4E396FF1E90DD8E00DF7FA8 /* EngineCore.swift in Sources */,
+				F4C927451F5B0CE500B317C0 /* OperandStack.swift in Sources */,
 				F41CF6101E16E40500224E86 /* KeypadController.swift in Sources */,
 				F4A6EE281E2579C300FEEB8D /* ConstraintScrollView.swift in Sources */,
 				F43C57221E17C9F9008A2D7E /* Engine.swift in Sources */,
@@ -394,6 +401,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4FF9AEF1EC756620016F672 /* TestDocument.swift in Sources */,
+				F4CEDFAF1F5B0B3700D8D1DF /* TestOperandStack.swift in Sources */,
 				F4BC49051E5A25C600ED245C /* TestEngineIntegerOperations.swift in Sources */,
 				F4E6AC6C1E6C16CB00EAE97E /* TestEngineOperandChange.swift in Sources */,
 				F4E6AC6E1E6C16E700EAE97E /* TestEngineOperandDisplayFormat.swift in Sources */,
