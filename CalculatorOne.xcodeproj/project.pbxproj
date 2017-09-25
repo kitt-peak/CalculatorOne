@@ -16,7 +16,6 @@
 		F43C57201E17B979008A2D7E /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43C571F1E17B979008A2D7E /* RegisterViewController.swift */; };
 		F43C57221E17C9F9008A2D7E /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43C57211E17C9F9008A2D7E /* Engine.swift */; };
 		F448B87A1F4335DB00496D5C /* TestEngineConverterOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = F448B8791F4335DB00496D5C /* TestEngineConverterOperations.swift */; };
-		F472DEDF1E252849007F2A91 /* TestEngineAlgorithms.swift in Sources */ = {isa = PBXBuildFile; fileRef = F472DEDE1E252849007F2A91 /* TestEngineAlgorithms.swift */; };
 		F473BC1F1E13F4D7002B78EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F473BC1E1E13F4D7002B78EE /* AppDelegate.swift */; };
 		F473BC211E13F4D7002B78EE /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = F473BC201E13F4D7002B78EE /* Document.swift */; };
 		F473BC241E13F4D7002B78EE /* Document.xib in Resources */ = {isa = PBXBuildFile; fileRef = F473BC221E13F4D7002B78EE /* Document.xib */; };
@@ -30,6 +29,7 @@
 		F4A6EE281E2579C300FEEB8D /* ConstraintScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A6EE271E2579C300FEEB8D /* ConstraintScrollView.swift */; };
 		F4BC49051E5A25C600ED245C /* TestEngineIntegerOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4BC49041E5A25C600ED245C /* TestEngineIntegerOperations.swift */; };
 		F4C927451F5B0CE500B317C0 /* OperandStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C927441F5B0CE500B317C0 /* OperandStack.swift */; };
+		F4C927471F5B13DE00B317C0 /* TestOperand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C927461F5B13DE00B317C0 /* TestOperand.swift */; };
 		F4CA3CA71E2BD5E000A24032 /* TestEngineStackOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CA3CA61E2BD5E000A24032 /* TestEngineStackOperations.swift */; };
 		F4CEDFAF1F5B0B3700D8D1DF /* TestOperandStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CEDFAE1F5B0B3700D8D1DF /* TestOperandStack.swift */; };
 		F4E396FF1E90DD8E00DF7FA8 /* EngineCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E396FE1E90DD8E00DF7FA8 /* EngineCore.swift */; };
@@ -68,7 +68,6 @@
 		F43C571F1E17B979008A2D7E /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		F43C57211E17C9F9008A2D7E /* Engine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Engine.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		F448B8791F4335DB00496D5C /* TestEngineConverterOperations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEngineConverterOperations.swift; sourceTree = "<group>"; };
-		F472DEDE1E252849007F2A91 /* TestEngineAlgorithms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEngineAlgorithms.swift; sourceTree = "<group>"; };
 		F473BC1B1E13F4D7002B78EE /* CalculatorOne.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalculatorOne.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F473BC1E1E13F4D7002B78EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F473BC201E13F4D7002B78EE /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
@@ -88,6 +87,7 @@
 		F4A6EE271E2579C300FEEB8D /* ConstraintScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintScrollView.swift; sourceTree = "<group>"; };
 		F4BC49041E5A25C600ED245C /* TestEngineIntegerOperations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEngineIntegerOperations.swift; sourceTree = "<group>"; };
 		F4C927441F5B0CE500B317C0 /* OperandStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperandStack.swift; sourceTree = "<group>"; };
+		F4C927461F5B13DE00B317C0 /* TestOperand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestOperand.swift; sourceTree = "<group>"; };
 		F4CA3CA61E2BD5E000A24032 /* TestEngineStackOperations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEngineStackOperations.swift; sourceTree = "<group>"; };
 		F4CEDFAE1F5B0B3700D8D1DF /* TestOperandStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestOperandStack.swift; sourceTree = "<group>"; };
 		F4E396FE1E90DD8E00DF7FA8 /* EngineCore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineCore.swift; sourceTree = "<group>"; };
@@ -202,6 +202,7 @@
 		F473BC321E13F4D7002B78EE /* CalculatorOneTests */ = {
 			isa = PBXGroup;
 			children = (
+				F4C927461F5B13DE00B317C0 /* TestOperand.swift */,
 				F4CEDFAE1F5B0B3700D8D1DF /* TestOperandStack.swift */,
 				F448B8791F4335DB00496D5C /* TestEngineConverterOperations.swift */,
 				F4FF9AEE1EC756620016F672 /* TestDocument.swift */,
@@ -213,7 +214,6 @@
 				F4F4192C1E62096B00E5A840 /* TestEngineTypeLessOperation.swift */,
 				F4BC49041E5A25C600ED245C /* TestEngineIntegerOperations.swift */,
 				F4CA3CA61E2BD5E000A24032 /* TestEngineStackOperations.swift */,
-				F472DEDE1E252849007F2A91 /* TestEngineAlgorithms.swift */,
 				F473BC331E13F4D7002B78EE /* CalculatorOneTests.swift */,
 				F473BC351E13F4D7002B78EE /* Info.plist */,
 			);
@@ -407,9 +407,9 @@
 				F4E6AC6E1E6C16E700EAE97E /* TestEngineOperandDisplayFormat.swift in Sources */,
 				F448B87A1F4335DB00496D5C /* TestEngineConverterOperations.swift in Sources */,
 				F473BC341E13F4D7002B78EE /* CalculatorOneTests.swift in Sources */,
+				F4C927471F5B13DE00B317C0 /* TestOperand.swift in Sources */,
 				F43899471E742C56003B13B4 /* TestEngineFloatOperations.swift in Sources */,
 				F4F4192D1E62096B00E5A840 /* TestEngineTypeLessOperation.swift in Sources */,
-				F472DEDF1E252849007F2A91 /* TestEngineAlgorithms.swift in Sources */,
 				F474A6A71E6C588E00ADA42C /* testEngineClassVariables.swift in Sources */,
 				F4CA3CA71E2BD5E000A24032 /* TestEngineStackOperations.swift in Sources */,
 				F43899451E73F330003B13B4 /* TestEngineInputAndOutput.swift in Sources */,

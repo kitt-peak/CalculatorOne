@@ -295,7 +295,7 @@ class TestEngineFloatOperations: XCTestCase
     
     func testThatOperationAddWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             ("1", "2", "3"),
             ("10", "20", "30"),        
             ("100", "200", "300"),
@@ -318,7 +318,7 @@ class TestEngineFloatOperations: XCTestCase
 
     func testThatOperationMultiplyWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             ("1", "2", "2"),
             ("10", "20", "200"),        
             ("100", "200", "20000"),
@@ -342,7 +342,7 @@ class TestEngineFloatOperations: XCTestCase
     
     func testThatOperationSubractWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value0   value1      value0 - value1
             ("1",     "2",      "-1"),
             ("10",      "20",       "-10"),        
@@ -366,7 +366,7 @@ class TestEngineFloatOperations: XCTestCase
     
     func testThatOperationDivistionWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value0   value1      value0 / value1
             ("1",     "2",      "0.5"),
             ("10",      "20",       "0.5"),        
@@ -390,7 +390,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< e^x >-------------------------------------------
     func testThatOperationEExpXWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String)] = [
             // value0   e^value0
             ("0",     "1"),
             ("1",     "2.71828182846"),
@@ -423,7 +423,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< y^x >-------------------------------------------
     func testThatOperationYExpXWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value0       value1          value0^value1
             ("0",         "1",          "0"),
             ("0",         "0",          "1"),
@@ -465,7 +465,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< y^x >-------------------------------------------
     func testThatOperationLogXYWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value1       value0          log value0, value1
             ("2",         "4",                  "2"),
             ("2",         "1",                  "0"),
@@ -504,7 +504,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< lb ln log >-------------------------------------------
     func testThatOperationsLogarithmWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String, String)] = [
             // value            lb(value)               ln(value)               log(value)
             ("1",             "0",                  "0",                  "0"),
             ("2",             "1",                  "0.69314718056",        "0.301029995664"),
@@ -581,7 +581,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< 1/x, 1/x*x >-------------------------------------------
     func testThatOperationsReciprocalWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value            1/value                  1/(value * Value)
             ("1",             "1",                   "1"),
             ("-1",            "-1",                  "1"),
@@ -638,7 +638,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< x*x, x*x*x >-------------------------------------------
     func testThatOperationsSquareAndCubicWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value            value * value            value * Value * value)
             ("0",             "0",                   "0"),
             ("1",             "1",                   "1"),
@@ -697,7 +697,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< Nth Root >-------------------------------------------
     func testThatOperationNRootWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value0       value1                  value0th-root of value1
             ("4",         "2",                  "2"),
             ("27",        "3",                  "3"),
@@ -732,7 +732,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< 10 exp x >-----------------------------------------
     func testThatOperationTenExpXWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String)] = [
             // value0               10^value0
             ("0",                  "1"),
             ("0.5",                  "3.16227766016838"),
@@ -775,7 +775,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< 2 exp x >-----------------------------------------
     func testThatOperationTwoExpXWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String)] = [
             // value0                2^value0
             ("0",                  "1"),
             ("0.5",                  "1.41421356237"),
@@ -820,7 +820,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< sin x, asin x>-----------------------------------------
     func testThatOperationSinusWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value0               sin value0              asin(sin(value0)
             ("0",                 "0",                  "0"),
             ("1.5707963267949",     "1",                  "1.5707963267949"),        // pi/2
@@ -872,7 +872,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< cos x, acos x>-----------------------------------------
     func testThatOperationCosinusWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value0               cos value0              acos(cos(value0))
             ("0",                 "1",                  "0"),
             ("1.5707963267949",     "0",                  "1.5707963267949"),         // pi/2
@@ -924,7 +924,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< tan x, atan x>-----------------------------------------
     func testThatOperationTangensWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value0               tan value0                  atan(tan(value0))
             ("0",                 "0",                      "0"),
             ("1",                 "1.5574077246549",          "1"),
@@ -978,7 +978,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< cot x, acotan x>-----------------------------------------
     func testThatOperationCotangensWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value0               cot value0                  acot(cot(value0))
             ("1",                 "0.642092615934331",        "1"),
             ("2",                 "-0.457657554360286",       "2"),
@@ -1033,7 +1033,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< sum stack >-----------------------------------------
     func testThatFloatSumOfStackOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [([String], String)] = [
             // values     // sum of values
             (["0"],         "0"),
             (["1", "1"],    "2"),
@@ -1075,7 +1075,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< sum stack >-----------------------------------------
     func testThatFloatAverageOfStackOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [([String], String)] = [
             // values     // average of values
             (["0"],         "0"),
             (["1", "1"],    "1"),
@@ -1103,7 +1103,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< product stack >-----------------------------------------
     func testThatFloatProductOfStackOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [([String], String)] = [
             // values     // product of values
             (["0"],         "0"),
             (["1", "1"],    "1"),
@@ -1133,7 +1133,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< square root >-----------------------------------------
     func testThatFloatSquareRootOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String)] = [
             // values           // root of value
             ("0",               "0"),
             ("1",               "1"),
@@ -1170,7 +1170,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< third root >-----------------------------------------
     func testThatFloatThirdRootOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String)] = [
             // values           // third root of value
             ("0",               "0"),
             ("1",               "1"),
@@ -1209,7 +1209,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< geometrical mean of stack >-----------------------------------------
     func testThatFloatGeometricalMeanOfStackOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [([String], String)] = [
             // values       // geometrical of values
             (["0"],         "0"),
             (["1", "1"],    "1"),
@@ -1248,7 +1248,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< variance of stack >-----------------------------------------
     func testThatFloatVarianceOfStackOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [([String], String)] = [
             // values                             // variance of values
             (["0", "0"],                      "0"),
             (["1", "1"],                      "0"),
@@ -1285,7 +1285,7 @@ class TestEngineFloatOperations: XCTestCase
     //--------< standard deviation of stack >-----------------------------------------
     func testThatFloatStandardDeviationOfStackOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [([String], String)] = [
             // values                             // variance of values
             (["0", "0"],                      "0"),
             (["1", "1"],                      "0"),
@@ -1366,7 +1366,194 @@ class TestEngineFloatOperations: XCTestCase
         }
     }
     
+    
+    func testThatRectToPolarOfVector2CalculatesCorrectly()
+    {
+        let testSets: [(String, String, String, String)] = 
+        [   // x            y       ->      absolute value          angle
+            ("12",         "5",             "13.0",                 "0.394791119699761"),
+            
+            ("3",          "4",             "5",                    "0.927295218001612"),
+            ("-3",         "4",             "5",                    "2.21429743558818"),
+            ("-3",         "-4",            "5",                   "-2.21429743558818"),
+            ("3",         "-4",             "5",                   "-0.927295218001612"),
+        ]
+        
+        for testSet in testSets
+        {
+            engineDUT.userInputEnter(numericalValue: testSet.0, radix: Radix.decimal.value)
+            engineDUT.userInputEnter(numericalValue: testSet.1, radix: Radix.decimal.value)
+            let expectedResultForAbsValue: Double = Double(testSet.2)!
+            let expectedResultForAngle: Double = Double(testSet.3)!
+            
+            // will produce two results: angle and absolute value
+            engineDUT.userInputOperation(symbol: Symbols.rect2polar.rawValue)
+            
+            if let engineResultForAbsValue = Double(engineDUT.registerValue(inRegisterNumber: 1, radix: 10)),
+               let engineResultForAngle =    Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
+            {
+                XCTAssertEqualWithAccuracy(engineResultForAngle, expectedResultForAngle, accuracy: accuracy)
+                XCTAssertEqualWithAccuracy(engineResultForAbsValue, expectedResultForAbsValue, accuracy: accuracy)
+            }
+            else
+            {
+                XCTFail("Test failure: could not convert string value to Double value")
+            }
+            
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            
+        }
+    }
+    
+    func testThatPolarToRectOfVector2CalculatesCorrectly()
+    {
+        let testSets: [(String, String, String, String)] = 
+            [   // absoluteValue            angle                  ->       x                  y      
+                ("13.0",                    "0.394791119699761",            "12.0",            "5.0"),
+                
+                ("5",                       "0.927295218001612",            "3",                "4"),
+                ("5",                       "2.21429743558818",             "-3",               "4"),
+                ("5",                       "-2.21429743558818",            "-3",               "-4"),
+                ("5",                       "-0.927295218001612",           "3",                "-4"),
+                ]
+        
+        for testSet in testSets
+        {
+            engineDUT.userInputEnter(numericalValue: testSet.0, radix: Radix.decimal.value)
+            engineDUT.userInputEnter(numericalValue: testSet.1, radix: Radix.decimal.value)
+            let expectedResultForX: Double = Double(testSet.2)!
+            let expectedResultForY: Double = Double(testSet.3)!
+            
+            // will produce two results: angle and absolute value
+            engineDUT.userInputOperation(symbol: Symbols.polar2rect.rawValue)
+            
+            if let engineResultForX = Double(engineDUT.registerValue(inRegisterNumber: 1, radix: 10)),
+               let engineResultForY = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
+                
+            {
+                XCTAssertEqualWithAccuracy(engineResultForX, expectedResultForX, accuracy: accuracy)
+                XCTAssertEqualWithAccuracy(engineResultForY, expectedResultForY, accuracy: accuracy)
+            }
+            else
+            {
+                XCTFail("Test failure: could not convert string value to Double value")
+            }
+            
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            
+        }
+    }
 
+    func testThatConvertDeg2RadCalculatesCorrectly()
+    {
+        let testSets: [(String, String)] = 
+            [   // deg              rad 
+                ("0.0",             "0.0"),                
+                ("45.0",            "0.785398163397448"),
+                ("90.0",            "1.5707963267949"),
+                ("135.0",           "2.35619449019234"),
+                ("180.0",           "3.14159265358979"),
+                ("225.0",           "3.92699081698724"),
+                ("270.0",           "4.71238898038469"),
+                ("315.0",           "5.49778714378214"),
+                ("360.0",           "6.28318530717959"),
+                ]
+        
+        for testSet in testSets
+        {
+            engineDUT.userInputEnter(numericalValue: testSet.0, radix: Radix.decimal.value)
+            let expectedResultForRad: Double = Double(testSet.1)!
+            
+            engineDUT.userInputOperation(symbol: Symbols.deg2rad.rawValue)
+            
+            
+            if let engineResultForRad = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
+            {
+                XCTAssertEqualWithAccuracy(engineResultForRad, expectedResultForRad, accuracy: accuracy)
+            }
+            else
+            {
+                XCTFail("Test failure: could not convert string value to Double value")
+            }
+            
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            
+        }
+    }
+
+    func testThatConvertRad2DegCalculatesCorrectly()
+    {
+        let testSets: [(String, String)] = 
+            [   // rad                      deg 
+                ("0.0",                     "0.0"),                
+                ("0.785398163397448",       "45.0"),
+                ("1.5707963267949",         "90.0"),
+                ("2.35619449019234",        "135.0"),
+                ("3.14159265358979",        "180.0"),
+                ("3.92699081698724",        "225.0"),
+                ("4.71238898038469",        "270.0"),
+                ("5.49778714378214",        "315.0"),
+                ("6.28318530717959",        "360.0"),
+                ]
+        
+        for testSet in testSets
+        {
+            engineDUT.userInputEnter(numericalValue: testSet.0, radix: Radix.decimal.value)
+            let expectedResultForDeg: Double = Double(testSet.1)!
+            
+            engineDUT.userInputOperation(symbol: Symbols.rad2deg.rawValue)
+            
+            
+            if let engineResultForDeg = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
+            {
+                XCTAssertEqualWithAccuracy(engineResultForDeg, expectedResultForDeg, accuracy: accuracy)
+            }
+            else
+            {
+                XCTFail("Test failure: could not convert string value to Double value")
+            }
+            
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            
+        }
+    }
+    
+
+    func testThatCalculatesCorrectly()
+    {
+        let testSets: [(String, String, String)] = 
+            [   // value1                   value2                  20*log(value1 / value 2)
+                ("1.0",                     "1.0",                  "0.0"),            
+                ("1.0",                     "2.0",                  "-6.02059991327962"),                
+                ("2.0",                     "1.0",                  "6.02059991327962"),                ]
+        
+        for testSet in testSets
+        {
+            engineDUT.userInputEnter(numericalValue: testSet.0, radix: Radix.decimal.value)
+            engineDUT.userInputEnter(numericalValue: testSet.1, radix: Radix.decimal.value)
+            let expectedResult: Double = Double(testSet.2)!
+
+            
+            engineDUT.userInputOperation(symbol: Symbols.conv22dB.rawValue)
+            
+            
+            if let engineResult = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
+            {
+                XCTAssertEqualWithAccuracy(engineResult, expectedResult, accuracy: accuracy)
+            }
+            else
+            {
+                XCTFail("Test failure: could not convert string value to Double value")
+            }
+            
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            
+        }
+    }
+
+    
     
     
 }

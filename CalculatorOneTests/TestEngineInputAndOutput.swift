@@ -33,7 +33,8 @@ class TestEngineInputAndOutput: XCTestCase
     func testThatTheMethodUserWillEnterInputCorrectlyAcceptsLargeHexaDecimalIntegerArguments()
     {
         // values are regular hexadecimal numbers
-        let testArguments = [ "FFFF", "FFFFFFFF", 
+        let testArguments: [String] = 
+                            [ "FFFF", "FFFFFFFF", 
                               "+7FFFFFFFFFFFFFFF", /* largest acceptable positive hexadecimal number */
                               "-8000000000000000", /* largest acceptable negative hexadecimal number */]
         
@@ -46,8 +47,9 @@ class TestEngineInputAndOutput: XCTestCase
     func testThatTheMethodUserWillEnterInputCorrectlyRejectsHexaDecimalIntegerArgumentsThatAreTooLarge()
     {
         // values are regular hexadecimal numbers, but too long for the calculator to accept (these are longer than 64 bit)
-        let testArguments = [ "FFFFFFFFFFFFFFFF", /* too large positive hexadecimal number, >64 bit */
-                              "-FFFFFFFFFFFFFFFF", /* too large negative hexadecimal number, >64 bit */]
+        let testArguments: [String] = 
+            [ "FFFFFFFFFFFFFFFF", /* too large positive hexadecimal number, >64 bit */
+              "-FFFFFFFFFFFFFFFF", /* too large negative hexadecimal number, >64 bit */]
         
         for testArgument in testArguments
         {
@@ -57,7 +59,7 @@ class TestEngineInputAndOutput: XCTestCase
 
     func testThatALargeHexaDecimalNumberIsInternallyRepresentedAsIntegerAndAsFloatingPoint()
     {
-        let testArguments = 
+        let testArguments: [(String, Bool, Bool)] = 
         [   
              // argument           isInteger    isFloatingPoint
 //             ("7FFFFFFFFFFFFFFF",  true,        false),  /* largest integer, has no exact representation as floating point */
@@ -97,7 +99,7 @@ class TestEngineInputAndOutput: XCTestCase
     {
         // some numbers, for instanceINT.max, does not have an integer representation, which is tested here
         // other numbers, for instance 3.45 have fractional therefore are no 
-        let testArguments = 
+        let testArguments: [(String, Bool, Bool)] = 
             [   
                 // argument           isInteger    isFloatingPoint
                 ("0.1",               false,        true),  
@@ -129,7 +131,7 @@ class TestEngineInputAndOutput: XCTestCase
     {
         
         // test that string values describing integers can be correctly converted to integer values
-        var testValues = 
+        var testValues: [String] = 
         [   "0", "-1", "1", "2",
             "-22", "333", "444", "-12345678"
         ]
@@ -164,7 +166,7 @@ class TestEngineInputAndOutput: XCTestCase
     {
         
         // test that string values describing integers can be correctly converted to integer values
-        var testValues = 
+        var testValues: [String] = 
             [   "0", "-1", "1", "2",
                 "-22", "333", "444", "-12345678",
                 "-2A", "3EE33", "4B4", "-A12345678",                
@@ -197,7 +199,7 @@ class TestEngineInputAndOutput: XCTestCase
     {
         
         // test that string values describing integers can be correctly converted to integer values
-        var testValues = 
+        var testValues: [String] = 
             [   "0", "-1", "1", "-0", "+0", "000000", "11111111111",
             ]
         
@@ -232,7 +234,7 @@ class TestEngineInputAndOutput: XCTestCase
     {
         
         // test that string values describing floats can be correctly converted to float values
-        var testValues = 
+        var testValues: [String] = 
             [   "0", "-1", "1", "2",
                 "-22", "333", "444", "-12345678", 
                 "22.", "-22.1", "2.2", "-2.2", "-.22", 

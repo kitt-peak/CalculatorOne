@@ -32,27 +32,27 @@ class testEngineClassVariables: XCTestCase
 
     func testThatConstant_π_isCorrect()
     {
-        XCTAssertEqualWithAccuracy(Engine.const_π, Double.pi, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(Double.π, Double.pi, accuracy: accuracy)
     }
 
     func testThatConstant_e_isCorrect()
     {
-        XCTAssertEqualWithAccuracy(Engine.const_e, 2.718281828459045235360287471352662497757247, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(Double.e, 2.718281828459045235360287471352662497757247, accuracy: accuracy)
     }
     
     func testThatConstant_c0_isCorrect()
     {
-        XCTAssertEqualWithAccuracy(Engine.const_c0, 2.99792458E8, accuracy: exact)
+        XCTAssertEqualWithAccuracy(Double.c0, 2.99792458E8, accuracy: exact)
     }
 
     func testThatConstant_U0_isCorrect()
     {
-        XCTAssertEqualWithAccuracy(Engine.const_µ0, 1.256637061E-6, accuracy: exact)
+        XCTAssertEqualWithAccuracy(Double.µ0, 1.256637061E-6, accuracy: exact)
     }
 
     func testThatConstant_E0_isCorrect()
     {
-        XCTAssertEqualWithAccuracy(Engine.const_epsilon0, 8.854187817E-12, accuracy: exact)
+        XCTAssertEqualWithAccuracy(Double.epsilon0, 8.854187817E-12, accuracy: exact)
     }
 
 

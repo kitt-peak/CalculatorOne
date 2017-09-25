@@ -221,7 +221,7 @@ enum Symbols: String
     case sinus  = "sin",        cosinus   = "cos",          tangens   = "tan",      cotangens = "cot"
     case asinus = "asin",       acosinus  = "acos",         atangens  = "atan",     acotangens = "acot"
     
-    case conv22bB = "2→dB"
+    case conv22dB = "2→dB"
     case sigma     = "σ",       nSigma    = "n σ"
     case variance  = "var",     nVariance = "n var"
     

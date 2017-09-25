@@ -531,7 +531,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationATangentButton.title        = Symbols.atangens.rawValue
         operationCotangentButton.title       = Symbols.cotangens.rawValue
         operationACotangentButton.title      = Symbols.acotangens.rawValue
-        operationConvert2Value2dBButton.title = Symbols.conv22bB.rawValue
+        operationConvert2Value2dBButton.title = Symbols.conv22dB.rawValue
         
         
         operation7M68Button.title           = Symbols.const7M68.rawValue

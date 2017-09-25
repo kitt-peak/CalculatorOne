@@ -8,20 +8,23 @@
 
 import Foundation
 
-extension Engine
+extension Double
 {
     // MARK: - Mathematical class variables
-    class var const_e: Double  { return 2.71828182845904523536028747135266249775724709369995 }
-    class var const_π: Double { return 3.14159265358979323846264338327950288419716939937510 }
-    
-    class var const_c0:   Double { return 299792458.0}      /* speed of light in m/s, exact */
-    class var const_µ0:   Double { return 1.256637061E-6 }  /* magnetic constant */
-    class var const_epsilon0: Double { return 8.854187817E-12 } /* electrical constant */
-    class var const_h:    Double { return 6.62607004081E-34 }    /* Planck's constant in J*s */
-    class var const_k:    Double { return 1.3806485279E-23 }    /* Boltzmann constant */
-    class var const_g:    Double { return 9.80665 }           /* earth acceleration */
-    class var const_G:    Double { return 6.6740831E-11 }     /* gravitational constant */
+    static var c0:   Double { return 299792458.0}      /* speed of light in m/s, exact */
+    static var µ0:   Double { return 1.256637061E-6 }  /* magnetic constant */
+    static var epsilon0: Double { return 8.854187817E-12 } /* electrical constant */
+    static var h:    Double { return 6.62607004081E-34 }    /* Planck's constant in J*s */
+    static var k:    Double { return 1.3806485279E-23 }    /* Boltzmann constant */
+    static var g:    Double { return 9.80665 }           /* earth acceleration */
+    static var G:    Double { return 6.6740831E-11 }     /* gravitational constant */    
+    static var e:    Double  { return 2.71828182845904523536028747135266249775724709369995 }
+    static var π:    Double { return 3.14159265358979323846264338327950288419716939937510 }
 
+}
+
+extension Engine
+{
     //case epsilon0 = "ε₀", µ0 = "μ₀", c0 = "c₀", k0 = "k₀", e0 = "e₀", G = "G", g = "g"
 
     class var const_7M68:    Double { return const_30M72 / 4.0 }
@@ -46,21 +49,13 @@ extension Engine
     
     // MARK: - Integer class functions
     @nonobjc class func sum(of a: [Int]) -> Int { return a.reduce(0) { (x, y) -> Int in return x + y } }
-    //@nonobjc class func avg(of a: [Int]) -> Int { return a.reduce(0) { (x, y) -> Int in return x + y } / a.count}
     @nonobjc class func factorial(of a: Int) -> Int 
     { 
         if a < 0 { return 0 }
         if a < 1 { return 1 }
         return a * Engine.factorial(of: a-1)
     }
-    @nonobjc class func twoExpN(of n: Int) -> Int 
-    { 
-        return n < 0 
-            ? 0 
-            : n == 0
-                ? 1 
-                : (2 << (n-1))
-    } 
+    
     
     /* EUCLID algorithm for GCD */
     @nonobjc class func gcd(of a: Int, _ b: Int) -> Int 
@@ -169,10 +164,8 @@ extension Engine
         {
             return Double.pi + atan(1.0/a)
         } 
-        else
-        {
-            return Double.pi / 2.0 - atan(a)
-        }
+        
+        return Double.pi / 2.0 - atan(a)
     }
 
 
@@ -204,7 +197,7 @@ extension Engine
     
     @nonobjc class func nRoot(of a: Double, _ b: Double) -> Double 
     { 
-        return pow(const_e, log(a)/b)
+        return pow(Double.e, log(a)/b)
     }
     
     @nonobjc class func geometricalMean(of a: [Double]) -> Double 
@@ -236,7 +229,7 @@ extension Engine
 
     @nonobjc class func eExpX(of x: Double) -> Double
     {
-        return pow(const_e, x)
+        return pow(Double.e, x)
     }
 
     @nonobjc class func logBaseE(of x: Double) -> Double
@@ -325,7 +318,7 @@ extension Engine
     
     @nonobjc class func convertRatioToDB(x: Double, y: Double) -> Double
     {
-        return multiply(20.0, logBase10(of : divide(x, y)))
+        return multiply(20.0, logBase10(of : divide(y, x)))
     }
     
     @nonobjc class func integerModulo(x: Int, y: Int) -> Int

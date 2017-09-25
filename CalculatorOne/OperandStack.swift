@@ -10,12 +10,24 @@ import Foundation
 
 class OperandStack: CustomStringConvertible
 {
+    enum StackError: Error 
+    {
+        case indexOutOfRange
+    }
+
     private var stack: [Operand]   = [Operand]()
+    
+    
 
     init(operands: [Operand])
     {
         stack.removeAll()
         stack.append(contentsOf: operands)
+    }
+    
+    convenience init() 
+    {
+        self.init(operands: [])
     }
     
 
@@ -26,17 +38,50 @@ class OperandStack: CustomStringConvertible
         {
             return last
         }
-        else
+        
+        throw Engine.EngineError.popOperandFromEmptyStack            
+    }
+    
+    // makeing subscript private until Swift allows to throw in subscript functions
+    private subscript(index: Int) -> Operand 
+    {
+        get 
         {
-            throw Engine.EngineError.popOperandFromEmptyStack            
+            return stack[index]                
+        }
+        
+        set(newValue) 
+        { 
+            stack[index] = newValue
         }
     }
     
-    // TODO: make this function throw and use subscript syntax of Swift
-    func operandAtIndex(_ index: Int) -> Operand
+    // emulates a subscript function that can throw
+    func operandAtIndex(_ index: Int) throws -> Operand
     {
-        return stack[index]
+        if index >= 0 && index < stack.count
+        {
+            return stack[index]
+        }
+    
+        throw StackError.indexOutOfRange
+        
     }
+    
+    // emulates a subscript function that can throw
+    func setOperand(_ operand: Operand, atIndex: Int) throws
+    {
+        if atIndex >= 0 && atIndex < stack.count
+        {
+            stack[atIndex] = operand
+            
+            return
+        }
+        
+        throw StackError.indexOutOfRange
+        
+    }
+
     
     func push(operand: Operand)
     {
@@ -48,7 +93,7 @@ class OperandStack: CustomStringConvertible
         stack.append(contentsOf: operands)
     }
     
-    func clear()
+    func removeAll()
     {
         stack.removeAll()
     }
@@ -58,33 +103,6 @@ class OperandStack: CustomStringConvertible
         return stack
     }
 
-    func updateAtIndex(_ index: Int, withValue: Operand)
-    {
-        if index >= 0 && index <= stack.endIndex
-        {
-            stack[index] = withValue
-        }
-        else
-        {
-            assertionFailure("! Error stack update index <\(index)> out of range (allowed stack index range: \(stack.startIndex)..<\(stack.endIndex))")
-        }
-    }
-    
-    func operandAtIndexFromTop(_ index: Int) -> Operand
-    {
-        if index >= 0 && index <= stack.endIndex
-        {
-            return stack.reversed()[index]
-        }
-        else
-        {
-            assertionFailure("! Error stack update index <\(index)> out of range (allowed stack index range: \(stack.startIndex)..<\(stack.endIndex))")
-        }
-        
-        abort()
-    }
-    
-    
     var count: Int { return stack.count }
 
     var isFloatingPointPresentable: Bool 
@@ -106,5 +124,15 @@ class OperandStack: CustomStringConvertible
     }
 
     
-    var description: String { return "???" }
+    var description: String
+    { 
+        var operandsDescriptions: [String] = [String]()
+        
+        for op in stack
+        {
+            operandsDescriptions.append("{" + op.description + "}")
+        }
+        
+        return "[" + operandsDescriptions.joined(separator: ", ") + "]"
+    }
 }

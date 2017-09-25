@@ -10,7 +10,7 @@ import Foundation
 
 
 
-struct Operand : CustomStringConvertible
+struct Operand : Equatable, CustomStringConvertible
 {
     // by default, an operand is stored as floating point number and as integer number. Because some numbers
     // do not allow storage as integer and floating point, both variables are optional tpyes
@@ -63,6 +63,21 @@ struct Operand : CustomStringConvertible
         return nil
     }        
     
+    // Equatable protocol
+    static func == (lhs: Operand, rhs: Operand) -> Bool
+    {
+        if lhs.isIntegerPresentable && rhs.isIntegerPresentable
+        {
+            return lhs.iValue == rhs.iValue
+        }
+        else if lhs.isFloatingPointPresentable && rhs.isFloatingPointPresentable
+        {
+            return lhs.fValue == rhs.fValue
+        }
+        
+        return false
+    }
+    
     
     var stringValue: String 
     {
@@ -75,9 +90,15 @@ struct Operand : CustomStringConvertible
         }
         else
         {
-            if _fValue == nil { abort() }
-            var sValue = String(describing: _fValue!)
+            guard _fValue != nil else
+            {
+                return "Nil"
+            }
             
+            var sValue: String = ""
+            
+            sValue = String(describing: _fValue!)
+                        
             // The String(describing: fValue) initializer returns a String ending ".0" for _fValues without fraction
             // trim the trailing ".0" suffix, if it exists
             if sValue.hasSuffix(".0")
@@ -87,7 +108,6 @@ struct Operand : CustomStringConvertible
             }
             
             return sValue
-            
         }
     }
     
@@ -99,10 +119,9 @@ struct Operand : CustomStringConvertible
     
     var description: String 
     { 
-        let iResult: String = isIntegerPresentable       ? "iValue=" + stringValue + " ": ""
+        let iResult: String = isIntegerPresentable       ? "iValue=" + stringValue + "; ": ""
         let fResult: String = isFloatingPointPresentable ? "fValue=" + stringValue : ""
         
         return iResult + fResult
-        
     }
 }

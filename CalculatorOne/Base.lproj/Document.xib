@@ -967,6 +967,9 @@ DQ
                                                         <buttonCell key="cell" type="push" title="DROP" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3Zh-jq-c0D">
                                                             <behavior key="behavior" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
+                                                            <string key="keyEquivalent" base64-UTF8="YES">
+CA
+</string>
                                                         </buttonCell>
                                                         <connections>
                                                             <action selector="userPressedOperationKeyWithSender:" target="jjE-6B-5wI" id="IhN-vV-GEM"/>

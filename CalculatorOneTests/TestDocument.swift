@@ -70,7 +70,6 @@ class TestDocument: XCTestCase
         XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.stackValues.rawValue])
         XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.memoryAValues.rawValue])
         XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.memoryBValues.rawValue])
-        //        XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.operandType.rawValue])
         XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.radix.rawValue])
         XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.extraOperationsViewYPosition.rawValue])        
     }

@@ -33,7 +33,7 @@ class TestEngineIntegerOperations: XCTestCase {
     {
         let largeNumber : String = String(Int.max / 10000)
         
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             ("1", "2", "3"),
             ("10", "20", "30"),        
             ("100", "200", "300"),
@@ -58,7 +58,7 @@ class TestEngineIntegerOperations: XCTestCase {
    
     func testThatIntegerOperationSubtractWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             ("0", "0", "0"),
             ("1", "2", "-1"),
             ("10", "20", "-10"),        
@@ -83,7 +83,7 @@ class TestEngineIntegerOperations: XCTestCase {
     
     func testThatIntegerOperationMultiplicationWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             ("0", "0", "0"),
             ("0", "2", "0"),
             ("1", "-1", "-1"),
@@ -123,7 +123,7 @@ class TestEngineIntegerOperations: XCTestCase {
 
     func testThatIntegerOperationDivisionWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             ("0", "1", "0"),
             ("0", "2", "0"),
             ("1", "-1", "-1"),
@@ -148,7 +148,7 @@ class TestEngineIntegerOperations: XCTestCase {
 
     func testThatIntegerOperationModuloDivisionWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             ("0", "1", "0"),
             ("0", "2", "0"),
             ("10", "-1", "0"),
@@ -186,7 +186,7 @@ class TestEngineIntegerOperations: XCTestCase {
     
     func testThatIntegerBINARY_LOGICAL_OperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String, String, String)] = [
             // value 0    value 1     AND         OR          XOR         
             ("0",        "0",         "0",        "0",        "0"),
             ("0",        "1",         "0",        "1",        "1"),
@@ -223,7 +223,7 @@ class TestEngineIntegerOperations: XCTestCase {
 
     func testThatIntegerUNARY_LOGICAL_OperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value     ~value        -value
             ("0",        "-1",         "0"),
             ("1",        "-10",        "-1"),
@@ -253,7 +253,7 @@ class TestEngineIntegerOperations: XCTestCase {
 
     func testThatIntegerFactorialOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String)] = [
             // value      value!
             ("-1",        "0"),     
             ("0",         "1"),
@@ -295,7 +295,7 @@ class TestEngineIntegerOperations: XCTestCase {
 
     func testThatIntegerSumOfStackOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [([String], String)] = [
             // values     // sum of values
             ([""],          ""),
             (["0"],         "0"),
@@ -338,7 +338,7 @@ class TestEngineIntegerOperations: XCTestCase {
     
     func testThatIntegerIncrementAndDecrementOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value      value++       value--
             ("0",         "1",          "-1"),
             ("1",         "2",          "0"),
@@ -372,7 +372,7 @@ class TestEngineIntegerOperations: XCTestCase {
     
     func testThatIntegerUNARY_SHIFT_OperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value     // <<         // >>
             ("0",        "0",          "0"),
             ("1",        "2",          "0"),
@@ -414,7 +414,7 @@ class TestEngineIntegerOperations: XCTestCase {
 
     func testThatIntegerBINARY_SHIFT_OperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String, String)] = [
             // value     // N       // N <<     // N >>
             ("0",        "0",       "0",        "0"),
             ("1",        "1",       "2",        "0"),
@@ -451,7 +451,7 @@ class TestEngineIntegerOperations: XCTestCase {
     
     func testThatIntegerGCDOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value0       value1       GCD
             ("1",           "1",         "1"),
             ("2",           "4",         "2"),
@@ -479,7 +479,7 @@ class TestEngineIntegerOperations: XCTestCase {
 
     func testThatIntegerLCMOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, String, String)] = [
             // value0       value1       LCM
             ("1",           "1",          "1"),
             ("2",           "4",          "4"),
@@ -515,7 +515,7 @@ class TestEngineIntegerOperations: XCTestCase {
     //--------< prime factors >-----------------------------------------
     func testThatIntegerPrimeFactorDivisionOperationsWorksMathematicallyCorrect()
     {
-        let testSet = [
+        let testSet: [(String, [String])] = [
             // values                       // prime factors
             ("0",                           ["0"]),
             ("1",                           ["1"]),

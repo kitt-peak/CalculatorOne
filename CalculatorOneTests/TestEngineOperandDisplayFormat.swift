@@ -32,9 +32,9 @@ class TestEngineOperandDisplayFormat: XCTestCase {
 
     func testThatADecimalNumberIsConvertedCorrectlyToBinOctHexDisplayFormat()
     {
-        let testSets = [
+        let testSets: [(String, String, String, String)] = [
             
-            // Decimal,     Binary,         Octal,      Hexadecimal
+            // Decimal,             Binary,         Octal,      Hexadecimal
             ("0",                   "0",            "0",        "0"),
             ("1",                   "1",            "1",        "1"),
             ("-1",                  "-1",           "-1",       "-1"),

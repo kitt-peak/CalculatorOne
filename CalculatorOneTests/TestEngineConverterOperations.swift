@@ -35,7 +35,7 @@ class TestEngineConverterOperations: XCTestCase
 
     func testThatFECRateConversionM33D32WorksCorrectly()
     {
-        let testValues = 
+        let testValues : [(String, String)] = 
         [
             // value       value*33/32
             ("125",         "128.90625"),
@@ -68,7 +68,7 @@ class TestEngineConverterOperations: XCTestCase
     
     func testThatFECRateConversionM32D33WorksCorrectly()
     {
-        let testValues = 
+        let testValues : [(String, String)] = 
             [
                 // value       value*32/33
                 ("128.90625",           "125"),

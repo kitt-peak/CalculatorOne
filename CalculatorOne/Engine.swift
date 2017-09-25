@@ -77,7 +77,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     
     //MARK: - Private properties
     
-    private var stack: OperandStack = OperandStack(operands: [])
+    private var stack: OperandStack = OperandStack()
     private var memoryA: [Operand] = [Operand]() 
     private var memoryB: [Operand] = [Operand]()
     
@@ -207,15 +207,15 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
 
         
         // former float operations
-        Symbols.π.rawValue :        .none2array( { () -> ([Double]) in return [const_π]  }), 
-        Symbols.e.rawValue :        .none2array( { () -> ([Double]) in return [const_e]  }),
-        Symbols.µ0.rawValue:        .none2array( { () -> ([Double]) in return [const_µ0] }),
-        Symbols.epsilon0.rawValue:  .none2array( { () -> ([Double]) in return [const_epsilon0] }),
-        Symbols.c0.rawValue:        .none2array( { () -> ([Double]) in return [const_c0]  }),
-        Symbols.h.rawValue:         .none2array( { () -> ([Double]) in return [const_h]  }),
-        Symbols.k.rawValue:         .none2array( { () -> ([Double]) in return [ const_k]  }),
-        Symbols.g.rawValue:         .none2array( { () -> ([Double]) in return [ const_g]  }),
-        Symbols.G.rawValue:         .none2array( { () -> ([Double]) in return [ const_G]  }),
+        Symbols.π.rawValue :        .none2array( { () -> ([Double]) in return [Double.π]  }), 
+        Symbols.e.rawValue :        .none2array( { () -> ([Double]) in return [Double.e]  }),
+        Symbols.µ0.rawValue:        .none2array( { () -> ([Double]) in return [Double.µ0] }),
+        Symbols.epsilon0.rawValue:  .none2array( { () -> ([Double]) in return [Double.epsilon0] }),
+        Symbols.c0.rawValue:        .none2array( { () -> ([Double]) in return [Double.c0]  }),
+        Symbols.h.rawValue:         .none2array( { () -> ([Double]) in return [Double.h]  }),
+        Symbols.k.rawValue:         .none2array( { () -> ([Double]) in return [Double.k]  }),
+        Symbols.g.rawValue:         .none2array( { () -> ([Double]) in return [Double.g]  }),
+        Symbols.G.rawValue:         .none2array( { () -> ([Double]) in return [Double.G]  }),
         
         Symbols.const7M68.rawValue :    .none2array( { () -> ([Double]) in return [ const_7M68] }), 
         Symbols.const30M72.rawValue :   .none2array( { () -> ([Double]) in return [ const_30M72] }), 
@@ -362,17 +362,17 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         Symbols.multiply64divide66.rawValue : .unary2array( { (a: Double)         -> [Double] in return  
             [Engine.m32d33(of: a)] }),
     
-        Symbols.conv22bB.rawValue : .binary2array({ (a: Double, b: Double) -> [Double] in return 
+        Symbols.conv22dB.rawValue : .binary2array({ (a: Double, b: Double) -> [Double] in return 
             [Engine.convertRatioToDB(x: a, y: b) ]}),
 
         Symbols.random.rawValue : .none2array( { () -> ([Double]) in return 
             [Engine.randomNumber()] }),
     
         Symbols.rect2polar.rawValue : .binary2array({ (a: Double, b: Double) -> [Double] in return 
-            [Engine.absoluteValueOfVector2(x: a, y: b), Engine.angleOfVector2(x: a, y: b)] }),
+            [Engine.absoluteValueOfVector2(x: b, y: a), Engine.angleOfVector2(x: b, y: a)] }),
         
         Symbols.polar2rect.rawValue : .binary2array({ (a: Double, b: Double) -> [Double] in return 
-            [b * Engine.sinus(a), b * Engine.cosinus(a)]  }),
+            [b * Engine.cosinus(a), b * Engine.sinus(a) ] }),
         
         Symbols.rad2deg.rawValue : .unary2array({ (a: Double) -> [Double] in return 
             [Engine.convertRad2Deg(rad: a)] }),
@@ -442,7 +442,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             {
                 
             case .dropAll:
-                stack.clear()
+                stack.removeAll()
                 
                 
             case .nPick:                            /* copy the n-th element of the stack to the stack */
@@ -451,11 +451,19 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 {
                     //TODO: Error handling for index not in stack
                     /* picking the 0th element? return the top of stack, which is value N itself */
-                    let result: Operand = n > 0 
-                        ? stack.operandAtIndex(stack.count - n)   //       stack[stack.count - n] 
-                        : Operand(integerValue: n)
-                    
-                    stack.push(operands: [result])
+                    do
+                    {
+                        let result: Operand = n > 0 
+                            ? try stack.operandAtIndex(stack.count - n)   //       stack[stack.count - n] 
+                            : Operand(integerValue: n)
+                        
+                        stack.push(operands: [result])
+                        
+                    }
+                    catch
+                    {
+                        undo()
+                    }
                 }
 
             case .nDrop:
@@ -551,11 +559,11 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 }
                 
             case .copyAToStack:
-                stack.clear()
+                stack.removeAll()
                 stack.push(operands: memoryA)
                 
             case .copyBToStack: 
-                stack.clear()
+                stack.removeAll()
                 stack.push(operands: memoryB)
                 
             case .copyStackToA:
@@ -581,7 +589,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                     // copy the entire stack into the array stackCopy
                     
                     let stackCopy: [Double] = doubleArray(fromOperandArray: stack.allOperands())! 
-                    stack.clear()
+                    stack.removeAll()
                     
                     // TODO: replace if clause by error handling
                     if stackCopy.count > 0
@@ -805,15 +813,23 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             // is registerNumber valid? 
             if hasValueForRegister(registerNumber: inRegisterNumber) == true
             {
-                let value: Operand = stack.operandAtIndexFromTop(inRegisterNumber) //stack.reversed()[inRegisterNumber]
-
-                if let r = value.stringValueWithRadix(radix: radix)
+                do
                 {
-                    result = r
+                    let value: Operand = try stack.operandAtIndex(stack.count - inRegisterNumber - 1)
+                    //let value: Operand = stack[stack.count - inRegisterNumber - 1] 
+                    
+                    if let r = value.stringValueWithRadix(radix: radix)
+                    {
+                        result = r
+                    }
+                    else
+                    {
+                        result = value.stringValue
+                    }                    
                 }
-                else
+                catch
                 {
-                    result = value.stringValue
+                    undo()
                 }
             }
         }
@@ -855,8 +871,16 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 // convert valueStr to a numerical value and enter into the specified register
                 if let v: Operand = Operand(stringRepresentation: newValue, radix: radix)
                 {
-                    let index = stack.count - forRegisterNumber - 1
-                    stack.updateAtIndex(index, withValue: v)
+                    do
+                    {
+                        let index = stack.count - forRegisterNumber - 1
+                        try stack.setOperand(v, atIndex: index)                        
+                    }
+                    catch
+                    {
+                        // nothing.
+                    }
+                    
                 
                     // store the current stack for potential undo-operation
                     addToRedoBuffer(item: .stack(stack.allOperands()))
