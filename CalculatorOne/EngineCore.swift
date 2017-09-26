@@ -340,13 +340,28 @@ extension Engine
         return x ^ y
     }
     
-    @nonobjc class func integerBinaryShiftLeft(x: Int, numberOfBits: Int) -> Int
+    @nonobjc class func integerBinaryShiftLeft(x: Int, numberOfBits: Int) throws -> Int
     {
-        return x << numberOfBits
+        let numberOfAllowedBitsToShift: Int = MemoryLayout<Int>.size * 8 - 1 /* max number of shifts = number of bytes times number of bits minus one (the signature bit) */
+           
+        guard numberOfBits >= 0 && numberOfBits <= numberOfAllowedBitsToShift else 
+        {
+            throw EngineError.invalidNumberOfBitsForShitIntegerValueOperation(invalidShiftCount: numberOfBits) 
+        }
+        
+        return x << numberOfBits            
+
     }
 
-    @nonobjc class func integerBinaryShiftRight(x: Int, numberOfBits: Int) -> Int
+    @nonobjc class func integerBinaryShiftRight(x: Int, numberOfBits: Int) throws -> Int
     {
+        let numberOfAllowedBitsToShift: Int = MemoryLayout<Int>.size * 8 - 1 /* max number of shifts = number of bytes times number of bits minus one (the signature bit) */
+        
+        guard numberOfBits >= 0 && numberOfBits <= numberOfAllowedBitsToShift else 
+        {
+            throw EngineError.invalidNumberOfBitsForShitIntegerValueOperation(invalidShiftCount: numberOfBits) 
+        }
+        
         return x >> numberOfBits
     }
 

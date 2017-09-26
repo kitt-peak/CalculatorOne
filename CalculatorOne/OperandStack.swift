@@ -93,6 +93,13 @@ class OperandStack: CustomStringConvertible
         stack.append(contentsOf: operands)
     }
     
+    func removeOperandsFromTop(count: Int) throws
+    {
+        guard count <= stack.count else { throw Engine.EngineError.popOperandFromEmptyStack }
+        
+        stack.removeLast(count)
+    }
+    
     func removeAll()
     {
         stack.removeAll()

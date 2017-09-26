@@ -141,6 +141,38 @@ class TestEngineTypeLessOperation: XCTestCase
         engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)
         
     }
+    
+    func testThatOperationNDROPCorrectlyRemovesTopOfStackValues()
+    {
+        
+        // put 10 values on the stack 
+        engineDUT.userInputEnter(numericalValue: "1", radix: 10)
+        engineDUT.userInputEnter(numericalValue: "2", radix: 10)
+        engineDUT.userInputEnter(numericalValue: "3", radix: 10)
+        engineDUT.userInputEnter(numericalValue: "4", radix: 10)
+        engineDUT.userInputEnter(numericalValue: "5", radix: 10)
+        engineDUT.userInputEnter(numericalValue: "6", radix: 10)
+        engineDUT.userInputEnter(numericalValue: "7", radix: 10)
+        engineDUT.userInputEnter(numericalValue: "8", radix: 10)
+        engineDUT.userInputEnter(numericalValue: "9", radix: 10)
+        engineDUT.userInputEnter(numericalValue: "10", radix: 10)
+
+        // remove 3 values
+        engineDUT.userInputEnter(numericalValue: "3", radix: 10)
+        engineDUT.userInputOperation(symbol: Symbols.nDrop.rawValue)
+        
+        // top of stack must now be "7"
+        XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: 10), "7")
+        
+        // remove 7 values
+        engineDUT.userInputEnter(numericalValue: "7", radix: 10)
+        engineDUT.userInputOperation(symbol: Symbols.nDrop.rawValue)
+        
+        // stack must now be empty
+        engineDUT.userInputOperation(symbol: Symbols.depth.rawValue)
+        XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: 10), "0")
+    }
+
 
     
     func testThatOperationROTATEDOWNCorrectlyExchangesTopOfStackValues()

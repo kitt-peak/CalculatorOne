@@ -118,6 +118,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var operationSquareRootButton: NSButton!
     @IBOutlet weak var operationThirdRootButton: NSButton!
     @IBOutlet weak var operationNthRootButton: NSButton!
+    @IBOutlet weak var operationRandomFloatNumberButton: NSButton!
     
     @IBOutlet weak var operationAverageButton: NSButton!
     @IBOutlet weak var operationProductButton: NSButton!
@@ -720,6 +721,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationc0Button.isEnabled         = isFloatingPointDisplayEnabled
         operationgButton.isEnabled          = isFloatingPointDisplayEnabled
         operationGButton.isEnabled          = isFloatingPointDisplayEnabled
+        operationRandomFloatNumberButton.isEnabled = isFloatingPointDisplayEnabled
         
         operation7M68Button.isEnabled       = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled
         operation30M72Button.isEnabled      = isFloatingPointDisplayEnabled || isIntegerDisplayEnabled 

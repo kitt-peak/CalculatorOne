@@ -72,6 +72,8 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     enum EngineError: Error 
     {
         case popOperandFromEmptyStack
+        case invalidNumberOfBitsForShitIntegerValueOperation(invalidShiftCount: Int)
+        case invalidIntegerArgumentExpectedGreaterThanZero
     }
 
     
@@ -178,7 +180,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         case array2array(  ([Double])                   -> [Double])
         case nArray2array( ([Double])                   -> [Double])      
 
-        case integerBinary2array( (Int, Int)            -> [Int])
+        case integerBinary2array( (Int, Int) throws     -> [Int])
         case integerUnary2array(  (Int)                 -> [Int])
     }
     
@@ -394,10 +396,10 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             [Engine.integerBinaryXor(x: a, y: b)] }),
        
         Symbols.nShiftLeft.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
-            [Engine.integerBinaryShiftLeft(x: b, numberOfBits: a)] }),
+            [try Engine.integerBinaryShiftLeft(x: b, numberOfBits: a)] }),
         
         Symbols.nShiftRight.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
-            [Engine.integerBinaryShiftRight(x: b, numberOfBits: a)] }),
+            [try Engine.integerBinaryShiftRight(x: b, numberOfBits: a)] }),
         
         Symbols.gcd.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
             [Engine.gcd(of: a, b) ] }),
@@ -411,10 +413,10 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         Symbols.factorial.rawValue : .integerUnary2array( { (a: Int)   -> [Int] in return 
             [Engine.factorial(of: a) ] }),
 
-        Symbols.shiftLeft.rawValue : .integerUnary2array( { (a: Int)  -> [Int] in return
+        Symbols.shiftLeft.rawValue : .integerUnary2array( { (a: Int) -> [Int] in return
             [a << 1] }),
         
-        Symbols.shiftRight.rawValue : .integerUnary2array( { (a: Int)  -> [Int] in return  
+        Symbols.shiftRight.rawValue : .integerUnary2array( { (a: Int) -> [Int] in return  
             [a >> 1] }),
 
         Symbols.increment.rawValue: .integerUnary2array( { (a: Int)  -> [Int] in return  
@@ -445,37 +447,29 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 stack.removeAll()
                 
                 
-            case .nPick:                            /* copy the n-th element of the stack to the stack */
-                /* the 0th element is the top of stack value */
-                if let n: Int = try stack.pop().iValue
-                {
-                    //TODO: Error handling for index not in stack
-                    /* picking the 0th element? return the top of stack, which is value N itself */
-                    do
-                    {
-                        let result: Operand = n > 0 
-                            ? try stack.operandAtIndex(stack.count - n)   //       stack[stack.count - n] 
-                            : Operand(integerValue: n)
-                        
-                        stack.push(operands: [result])
-                        
-                    }
-                    catch
-                    {
-                        undo()
-                    }
-                }
-
-            case .nDrop:
-                
+            case .nPick:                            
+                /* copy the n-th element of the stack to the stack */
                 /* the 0th element is the top of stack value */
                 if let n: Int = try stack.pop().iValue, n>0
                 {
-                    for _ in 0 ..< n
-                    {
-                        _ = try stack.pop()
-                    }
-                }                
+                    let result: Operand = try stack.operandAtIndex(stack.count - n)
+                    stack.push(operands: [result])
+                }
+                else
+                {
+                    throw EngineError.invalidIntegerArgumentExpectedGreaterThanZero   
+                }
+
+            case .nDrop:
+                /* the 0th element is the top of stack value */
+                if let n: Int = try stack.pop().iValue, n>0
+                {
+                    try stack.removeOperandsFromTop(count: n)
+                }
+                else
+                {
+                    throw EngineError.invalidIntegerArgumentExpectedGreaterThanZero
+                }
                 
             case .depth:
                 let n: Operand = Operand(integerValue: stack.count)
@@ -504,9 +498,8 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 }
                 else
                 {
-                    undo()
+                    throw EngineError.popOperandFromEmptyStack
                 }
-                
                 
             case .binary2array(let b2aFunction):
                 
@@ -523,18 +516,19 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 
             case .integerBinary2array(let intBinaryToArrayFunction):
                 
+                
                 // get integer arguments from the stack
                 if let intArgumentA: Int = try stack.pop().iValue,
                    let intArgumentB: Int = try stack.pop().iValue
-                {
-                    let intResult: [Int] =  intBinaryToArrayFunction(intArgumentA, intArgumentB)
-                    
+                {   
+                    let intResult: [Int] =  try intBinaryToArrayFunction(intArgumentA, intArgumentB)
+
                     // convert the integer array to a Operand array and store on the stack
-                    stack.push(operands: operandArray(fromIntegerArray: intResult))                    
+                        stack.push(operands: operandArray(fromIntegerArray: intResult))
                 }
                 else
                 {
-                    undo()
+                    throw EngineError.popOperandFromEmptyStack
                 }
                 
                 
@@ -555,7 +549,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 }
                 else
                 {
-                    undo()
+                    throw EngineError.popOperandFromEmptyStack
                 }
                 
             case .copyAToStack:
@@ -682,7 +676,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             
             //print("\(self)\n| \(#function): adding '\(value)' to top of stack")
             stack.push(operand: value)
-            print(stackDescription)
+            //print(stackDescription)
             
             DispatchQueue.main.async
             {
@@ -709,9 +703,28 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 try processOperation(symbol: symbol)
                                 
             }
-            catch
+            catch EngineError.invalidNumberOfBitsForShitIntegerValueOperation(let invalidShiftCount)
             {
+                let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: 
+                    ["errorState"   : true,
+                     "errorMessage" : "\(invalidShiftCount) is an invalid number of bits specified for integer shift operation"
+                    ])
+                NotificationCenter.default.post(updateUINote)
                 
+                undo()                
+            }
+            catch EngineError.invalidIntegerArgumentExpectedGreaterThanZero
+            {
+                let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: 
+                    ["errorState"   : true,
+                     "errorMessage" : "Invalid argument, expected positive integer greater than zero"
+                    ])
+                NotificationCenter.default.post(updateUINote)
+                
+                undo()                                
+            }
+            catch //EngineError.popOperandFromEmptyStack
+            {
                 let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: 
                     ["errorState"   : true,
                      "errorMessage" : "Stack error"

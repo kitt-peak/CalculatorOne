@@ -412,19 +412,22 @@ class TestEngineIntegerOperations: XCTestCase {
     }
 
 
-    func testThatIntegerBINARY_SHIFT_OperationsWorksMathematicallyCorrect()
+    func testThatIntegerBINARY_SHIFT_LEFTOperationsWorksMathematicallyCorrect()
     {
-        let testSet: [(String, String, String, String)] = [
-            // value     // N       // N <<     // N >>
-            ("0",        "0",       "0",        "0"),
-            ("1",        "1",       "2",        "0"),
-            ("34",       "1",       "68",       "17"),
-            ("34",       "2",       "136",      "8"),
-            ("34",       "3",       "272",      "4"),
-            ("-1",       "1",       "-2",       "-1"),
-            ("-34",      "1",       "-68",      "-17"),
-            ("-34",      "2",       "-136",     "-9"),
-            ("-34",      "3",       "-272",     "-5"),
+        let testSet: [(String, String, String)] = [
+            // value     // N       // N <<
+            ("0",        "0",       "0"),
+            ("1",        "1",       "2"),
+            ("34",       "1",       "68"),
+            ("34",       "2",       "136"),
+            ("34",       "3",       "272"),
+            ("-1",       "1",       "-2"),
+            ("-34",      "1",       "-68"),
+            ("-34",      "2",       "-136"),
+            ("-34",      "3",       "-272"),
+            ("1",        "64",      "64"),      // invalid operation: 1 << 64 throws an exception and leaves 1 and 64 on the stack
+            ("1",        "-1",      "-1"),      // invalid operation: 1 << -1 throws an exception and leaves 1 and 64 on the stack
+            ("1",        "65",      "65"),      // invalid operation: 1 << 65 throws an exception and leaves 1 and 65 on the stack
             ]
         
         for test in testSet
@@ -433,20 +436,48 @@ class TestEngineIntegerOperations: XCTestCase {
             
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
-            engineDUT.userInputOperation(symbol: Symbols.dup2.rawValue)
             
             engineDUT.userInputOperation(symbol: Symbols.nShiftLeft.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.2 /* N << */)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)
+        }
+    }
+    
+    func testThatIntegerBINARY_SHIFT_RIGHTOperationsWorksMathematicallyCorrect()
+    {
+        let testSet: [(String, String, String)] = [
+            // value     // N       // N >>
+            ("0",        "0",       "0"),
+            ("1",        "1",       "0"),
+            ("34",       "1",       "17"),
+            ("34",       "2",       "8"),
+            ("34",       "3",       "4"),
+            ("-1",       "1",       "-1"),
+            ("-34",      "1",       "-17"),
+            ("-34",      "2",       "-9"),
+            ("-34",      "3",       "-5"),
+            ("1",        "64",      "64"),      // invalid operation: 1 >> 64 throws an exception and leaves 1 and 64 on the stack
+            ("1",        "-1",      "-1"),      // invalid operation: 1 >> -1 throws an exception and leaves 1 and 64 on the stack
+            ("1",        "65",      "65"),      // invalid operation: 1 >> 65 throws an exception and leaves 1 and 65 on the stack
+            
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
             
             engineDUT.userInputOperation(symbol: Symbols.nShiftRight.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
-            XCTAssertEqual(result, test.3 /* N >> */)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            XCTAssertEqual(result, test.2 /* N >> */)
             
+            engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)            
         }
     }
+
 
     
     func testThatIntegerGCDOperationsWorksMathematicallyCorrect()
