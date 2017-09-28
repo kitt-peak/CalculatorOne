@@ -47,7 +47,7 @@ class TestEngineFloatOperations: XCTestCase
         if let engineResult = engineResult, 
            let expectedResult = expectedResult
         {
-            XCTAssertEqualWithAccuracy(engineResult, expectedResult, accuracy: accuracy)           
+            XCTAssertEqual(engineResult, expectedResult, accuracy: accuracy)           
         }
         else
         {
@@ -65,7 +65,7 @@ class TestEngineFloatOperations: XCTestCase
         if let engineResult = engineResult, 
             let expectedResult = expectedResult
         {
-            XCTAssertEqualWithAccuracy(engineResult, expectedResult, accuracy: accuracy)           
+            XCTAssertEqual(engineResult, expectedResult, accuracy: accuracy)           
         }
         else
         {
@@ -83,7 +83,7 @@ class TestEngineFloatOperations: XCTestCase
         if let engineResult = engineResult, 
             let expectedResult = expectedResult
         {
-            XCTAssertEqualWithAccuracy(engineResult, expectedResult, accuracy: accuracy)           
+            XCTAssertEqual(engineResult, expectedResult, accuracy: accuracy)           
         }
         else
         {
@@ -101,7 +101,7 @@ class TestEngineFloatOperations: XCTestCase
         if let engineResult = engineResult, 
             let expectedResult = expectedResult
         {
-            XCTAssertEqualWithAccuracy(engineResult, expectedResult, accuracy: exact)           
+            XCTAssertEqual(engineResult, expectedResult, accuracy: exact)           
         }
         else
         {
@@ -119,7 +119,7 @@ class TestEngineFloatOperations: XCTestCase
         if let engineResult = engineResult, 
             let expectedResult = expectedResult
         {
-            XCTAssertEqualWithAccuracy(engineResult, expectedResult, accuracy: exact)           
+            XCTAssertEqual(engineResult, expectedResult, accuracy: exact)           
         }
         else
         {
@@ -137,7 +137,7 @@ class TestEngineFloatOperations: XCTestCase
         if let engineResult = engineResult, 
             let expectedResult = expectedResult
         {
-            XCTAssertEqualWithAccuracy(engineResult, expectedResult, accuracy: exact)           
+            XCTAssertEqual(engineResult, expectedResult, accuracy: exact)           
         }
         else
         {
@@ -155,7 +155,7 @@ class TestEngineFloatOperations: XCTestCase
         if let engineResult = engineResult, 
             let expectedResult = expectedResult
         {
-            XCTAssertEqualWithAccuracy(engineResult, expectedResult, accuracy: exact)           
+            XCTAssertEqual(engineResult, expectedResult, accuracy: exact)           
         }
         else
         {
@@ -173,7 +173,7 @@ class TestEngineFloatOperations: XCTestCase
         if let engineResult = engineResult, 
             let expectedResult = expectedResult
         {
-            XCTAssertEqualWithAccuracy(engineResult, expectedResult, accuracy: exact)           
+            XCTAssertEqual(engineResult, expectedResult, accuracy: exact)           
         }
         else
         {
@@ -408,7 +408,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -449,7 +449,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -488,7 +488,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -526,7 +526,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult  = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -545,7 +545,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult  = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -564,7 +564,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult  = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -604,7 +604,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult  = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -623,7 +623,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult  = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -662,7 +662,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult  = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -681,7 +681,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult  = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -717,7 +717,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -760,7 +760,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -803,7 +803,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -844,7 +844,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -859,7 +859,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -896,7 +896,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -911,7 +911,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -950,7 +950,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -965,7 +965,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -1004,7 +1004,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -1019,7 +1019,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -1154,7 +1154,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -1193,7 +1193,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -1233,7 +1233,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -1270,7 +1270,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult  = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -1307,7 +1307,7 @@ class TestEngineFloatOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult  = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -1355,7 +1355,7 @@ class TestEngineFloatOperations: XCTestCase
             
             if let engineResult = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
             {
-                XCTAssertEqualWithAccuracy(engineResult, 0.5, accuracy: 0.1)
+                XCTAssertEqual(engineResult, 0.5, accuracy: 0.1)
             }
             else
             {
@@ -1392,8 +1392,8 @@ class TestEngineFloatOperations: XCTestCase
             if let engineResultForAbsValue = Double(engineDUT.registerValue(inRegisterNumber: 1, radix: 10)),
                let engineResultForAngle =    Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
             {
-                XCTAssertEqualWithAccuracy(engineResultForAngle, expectedResultForAngle, accuracy: accuracy)
-                XCTAssertEqualWithAccuracy(engineResultForAbsValue, expectedResultForAbsValue, accuracy: accuracy)
+                XCTAssertEqual(engineResultForAngle, expectedResultForAngle, accuracy: accuracy)
+                XCTAssertEqual(engineResultForAbsValue, expectedResultForAbsValue, accuracy: accuracy)
             }
             else
             {
@@ -1432,8 +1432,8 @@ class TestEngineFloatOperations: XCTestCase
                let engineResultForY = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
                 
             {
-                XCTAssertEqualWithAccuracy(engineResultForX, expectedResultForX, accuracy: accuracy)
-                XCTAssertEqualWithAccuracy(engineResultForY, expectedResultForY, accuracy: accuracy)
+                XCTAssertEqual(engineResultForX, expectedResultForX, accuracy: accuracy)
+                XCTAssertEqual(engineResultForY, expectedResultForY, accuracy: accuracy)
             }
             else
             {
@@ -1471,7 +1471,7 @@ class TestEngineFloatOperations: XCTestCase
             
             if let engineResultForRad = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
             {
-                XCTAssertEqualWithAccuracy(engineResultForRad, expectedResultForRad, accuracy: accuracy)
+                XCTAssertEqual(engineResultForRad, expectedResultForRad, accuracy: accuracy)
             }
             else
             {
@@ -1508,7 +1508,7 @@ class TestEngineFloatOperations: XCTestCase
             
             if let engineResultForDeg = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
             {
-                XCTAssertEqualWithAccuracy(engineResultForDeg, expectedResultForDeg, accuracy: accuracy)
+                XCTAssertEqual(engineResultForDeg, expectedResultForDeg, accuracy: accuracy)
             }
             else
             {
@@ -1541,7 +1541,7 @@ class TestEngineFloatOperations: XCTestCase
             
             if let engineResult = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
             {
-                XCTAssertEqualWithAccuracy(engineResult, expectedResult, accuracy: accuracy)
+                XCTAssertEqual(engineResult, expectedResult, accuracy: accuracy)
             }
             else
             {

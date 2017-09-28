@@ -154,7 +154,7 @@ class DigitView: BaseView
         // embedded image view. The embbeded image view is a strip image filled with numbers. When scrolling, the user scrolls thru
         // the numbers. This is reported to this DigitView classe because it is registering itself as the the observer of 
         // "Notification.Name.NSViewBoundsDidChange". DigitView will translate the scrolling into changes of the value that DigitView displays.
-        NotificationCenter.default.addObserver(forName: Notification.Name.NSViewBoundsDidChange, object: view.contentView, queue: nil) 
+        NotificationCenter.default.addObserver(forName: NSView.boundsDidChangeNotification, object: view.contentView, queue: nil) 
         { (notification) in
             
             // suppress the notification being effective by setting isBusyScrolling to "true". This flag is set to true if digits are set programmatically
@@ -191,7 +191,7 @@ class DigitView: BaseView
     
     deinit 
     {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.NSViewBoundsDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSView.boundsDidChangeNotification, object: nil)
     }
     
     /// Sets itself to a new digit as a function of the user scrolling the embedded digit image strip view to a new y coordinate
@@ -350,9 +350,9 @@ class DigitView: BaseView
             ////17.6.isBusyScrollingToADigit = true
             
             NSAnimationContext.beginGrouping()
-            NSAnimationContext.current().duration = pointsToScroll / scrollVelocity
-            NSAnimationContext.current().timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-            NSAnimationContext.current().completionHandler = 
+            NSAnimationContext.current.duration = pointsToScroll / scrollVelocity
+            NSAnimationContext.current.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+            NSAnimationContext.current.completionHandler = 
             { 
                 () -> () in 
                     ////17.6.self.isBusyScrollingToADigit = false 
@@ -378,7 +378,7 @@ class DigitView: BaseView
     }
     
     
-    override func wantsScrollEventsForSwipeTracking(on axis: NSEventGestureAxis) -> Bool 
+    override func wantsScrollEventsForSwipeTracking(on axis: NSEvent.GestureAxis) -> Bool 
     {
         return axis == .vertical
     }

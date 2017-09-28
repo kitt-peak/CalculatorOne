@@ -41,18 +41,17 @@ class Document: NSDocument, DocumentLifeCycle
         // Add your subclass-specific initialization here.
     }
 
-    override class func autosavesInPlace() -> Bool
+    override class var autosavesInPlace: Bool
     {
         return true
     }
 
-    override var windowNibName: String? 
+    override var windowNibName: NSNib.Name?
     {
         // Returns the nib file name of the document
-        // If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this property and override -makeWindowControllers instead.
-        return "Document"
+        // If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this property and override -makeWindowControllers instead.        
+        return NSNib.Name("Document")
     }
-    
     
     override func windowControllerDidLoadNib(_ windowController: NSWindowController) 
     {
@@ -187,7 +186,7 @@ class Document: NSDocument, DocumentLifeCycle
             if menuItem.title == "Copy Top Stack"
             {
                 let valueToCopy = engine.registerValue(inRegisterNumber: 0, radix: 10)
-                let pasteBoard = NSPasteboard.general()
+                let pasteBoard = NSPasteboard.general
                 pasteBoard.clearContents()
                 pasteBoard.writeObjects([valueToCopy as NSPasteboardWriting])
             }
@@ -203,7 +202,7 @@ class Document: NSDocument, DocumentLifeCycle
 
                 let flatValues: String = valuesToCopy.joined(separator: "\n")
                 
-                let pasteBoard = NSPasteboard.general()
+                let pasteBoard = NSPasteboard.general
                 pasteBoard.clearContents()
                 
                 pasteBoard.writeObjects([flatValues as NSPasteboardWriting])
@@ -260,14 +259,14 @@ class Document: NSDocument, DocumentLifeCycle
     
     private func currentPasteBoardItems() -> [String]
     {
-        let pasteBoard = NSPasteboard.general()
+        let pasteBoard = NSPasteboard.general
         var stringItems: [String] = [String]()
         
         if let items = pasteBoard.pasteboardItems
         {
             for item in items
             {
-                if let stringItem = item.string(forType: "public.utf8-plain-text")
+                if let stringItem = item.string(forType: NSPasteboard.PasteboardType(rawValue: "public.utf8-plain-text"))
                 {
                     stringItems.append(contentsOf: stringItem.components(separatedBy: CharacterSet.whitespacesAndNewlines))                    
                 }

@@ -255,7 +255,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     { return Radix(rawValue: radixSelector.selectedSegment)! } 
     
     var operationModifier: OperationModifier = .takeStackAsArgument
-        { didSet { stackButton.state = (operationModifier == .topOfStackContainsArgumentCount ? NSOnState : NSOffState)
+        { didSet { stackButton.state = (operationModifier == .topOfStackContainsArgumentCount ? NSControl.StateValue.on : NSControl.StateValue.off)
                    assignButtonTitlesForOperationModifier(operationModifier) } }
     
     // an label to indicate an error condition. It is initially not visible
@@ -336,7 +336,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         // Make sure the watched view is sending bounds changed
         // notifications (which is probably does anyway, but calling this again won't hurt).                
         // register for those notifications on the synchronized content view        
-        NotificationCenter.default.addObserver(forName: Notification.Name.NSViewBoundsDidChange, object: extraOperationsView.contentView, queue: nil) 
+        NotificationCenter.default.addObserver(forName: NSView.boundsDidChangeNotification, object: extraOperationsView.contentView, queue: nil) 
         { (notification) in
             
             // supress new digit setting. This flag is set true if digits are set programmatically
@@ -356,12 +356,12 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
         /// add a event monitor. Gives a notification if the ALT key was pressed and released
         /// the filter does not remove any events, it does not work as filter 
-        altkeyEventMonitor = NSEvent.addLocalMonitorForEvents(matching: NSEventMask.flagsChanged) 
+        altkeyEventMonitor = NSEvent.addLocalMonitorForEvents(matching: NSEvent.EventTypeMask.flagsChanged) 
         { (changedFlagsEvent) -> NSEvent? in
            
             if changedFlagsEvent.keyCode == UInt16(kVK_Option) || changedFlagsEvent.keyCode == UInt16(kVK_RightOption)
             {
-                if changedFlagsEvent.modifierFlags.contains(.option)
+                if changedFlagsEvent.modifierFlags.contains(NSEvent.ModifierFlags.option)
                 {
                     //print("pressed ALT")
                     self.operationModifier = .topOfStackContainsArgumentCount
@@ -846,7 +846,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     {
         guard sender == stackButton else { return }
         
-        operationModifier = stackButton.state == NSOnState ? .topOfStackContainsArgumentCount : .takeStackAsArgument
+        operationModifier = stackButton.state == NSControl.StateValue.on ? .topOfStackContainsArgumentCount : .takeStackAsArgument
     }
     
     @IBAction func userPressedUndoOrRedoButton(sender: NSButton)

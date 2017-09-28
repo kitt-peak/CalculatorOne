@@ -48,8 +48,12 @@ extension Engine
     class var const_156M25: Double { return const_25M0 * 25.0 / 4.0 }
     
     // MARK: - Integer class functions
-    @nonobjc class func sum(of a: [Int]) -> Int { return a.reduce(0) { (x, y) -> Int in return x + y } }
-    @nonobjc class func factorial(of a: Int) -> Int 
+    class func sum(of a: [Int]) -> Int 
+    { 
+        return a.reduce(0) { (x, y) -> Int in return x + y } 
+    }
+    
+    class func factorial(of a: Int) -> Int 
     { 
         if a < 0 { return 0 }
         if a < 1 { return 1 }
@@ -58,18 +62,18 @@ extension Engine
     
     
     /* EUCLID algorithm for GCD */
-    @nonobjc class func gcd(of a: Int, _ b: Int) -> Int 
+    class func gcd(of a: Int, _ b: Int) -> Int 
     { 
         if b == 0   { return a } 
         else        { return gcd(of: b, a % b) } 
     }  
     
-    @nonobjc class func lcm(of a: Int, _ b: Int) -> Int 
+    class func lcm(of a: Int, _ b: Int) -> Int
     { 
         return abs(abs(a * b) / gcd(of: a, b)) 
     }  
     
-    @nonobjc class func primeFactors(of n: Int) -> [Int]
+    class func primeFactors(of n: Int) -> [Int]
     {
         guard n>1 else { return [n] }
         
@@ -99,62 +103,62 @@ extension Engine
     }
 
     // MARK: - Double class functions
-    @nonobjc class func add(_ a: Double, _ b: Double) -> Double
+    class func add(_ a: Double, _ b: Double) -> Double
     {
         return a + b
     }
     
-    @nonobjc class func multiply(_ a: Double, _ b: Double) -> Double
+    class func multiply(_ a: Double, _ b: Double) -> Double
     {
         return a * b
     }
     
-    @nonobjc class func subtract(_ a: Double, _ b: Double) -> Double
+    class func subtract(_ a: Double, _ b: Double) -> Double
     {
         return a - b
     }
     
-    @nonobjc class func divide(_ a: Double, _ b: Double) -> Double
+    class func divide(_ a: Double, _ b: Double) -> Double
     {
         return a / b
     }
     
-    @nonobjc class func sinus(_ a: Double) -> Double
+    class func sinus(_ a: Double) -> Double
     {
         return sin(a)
     }
     
-    @nonobjc class func arcSinus(_ a: Double) -> Double
+    class func arcSinus(_ a: Double) -> Double
     {
         return asin(a)
     }
     
-    @nonobjc class func cosinus(_ a: Double) -> Double
+    class func cosinus(_ a: Double) -> Double
     {
         return cos(a)
     }
     
-    @nonobjc class func arcCosine(_ a: Double) -> Double
+    class func arcCosine(_ a: Double) -> Double
     {
         return acos(a)
     }
 
-    @nonobjc class func tangens(_ a: Double) -> Double
+    class func tangens(_ a: Double) -> Double
     {
         return tan(a)
     }
     
-    @nonobjc class func arcTangens(_ a: Double) -> Double
+    class func arcTangens(_ a: Double) -> Double
     {
         return atan(a)
     }
     
-    @nonobjc class func cotangens(_ a: Double) -> Double
+    class func cotangens(_ a: Double) -> Double
     {
         return 1.0 / tan(a)
     }
     
-    @nonobjc class func arcCotangens(_ a: Double) -> Double
+    class func arcCotangens(_ a: Double) -> Double
     {
         if a > 1.0 
         {
@@ -169,131 +173,131 @@ extension Engine
     }
 
 
-    @nonobjc class func absoluteValueOfVector2(x: Double, y: Double) -> Double
+    class func absoluteValueOfVector2(x: Double, y: Double) -> Double
     {
         return squareRoot(of: square(of: x) + square(of: y))
     }
     
-    @nonobjc class func angleOfVector2(x: Double, y: Double) -> Double
+    class func angleOfVector2(x: Double, y: Double) -> Double
     {
         return atan2(y, x)
     }
 
     
-    @nonobjc class func sum(of a: [Double]) -> Double 
+    class func sum(of a: [Double]) -> Double 
     { 
         return a.reduce(0.0) { (x, y) -> Double in return x + y } 
     }
     
-    @nonobjc class func avg(of a: [Double]) -> Double 
+    class func avg(of a: [Double]) -> Double 
     { 
         return a.reduce(0.0) { (x, y) -> Double in return x + y } / Double(a.count)
     
     }
-    @nonobjc class func product(of a: [Double]) -> Double 
+    class func product(of a: [Double]) -> Double 
     { 
         return a.reduce(1.0) { (x, y) -> Double in return x * y } 
     }
     
-    @nonobjc class func nRoot(of a: Double, _ b: Double) -> Double 
+    class func nRoot(of a: Double, _ b: Double) -> Double 
     { 
         return pow(Double.e, log(a)/b)
     }
     
-    @nonobjc class func geometricalMean(of a: [Double]) -> Double 
+    class func geometricalMean(of a: [Double]) -> Double 
     { 
         return Engine.nRoot(of: a.reduce(1.0) { (x, y) -> Double in return x * y },  Double(a.count) ) 
     }
         
-    @nonobjc class func variance(of a: [Double]) -> Double 
+    class func variance(of a: [Double]) -> Double 
     { 
         let average: Double = Engine.avg(of: a)
         let squaredDifference = a.reduce(0.0) { (x, y) -> Double in x + ((y - average) * (y - average))}
         return squaredDifference / (Double(a.count) - 1)
     }
     
-    @nonobjc class func standardDeviation(of a: [Double]) -> Double 
+    class func standardDeviation(of a: [Double]) -> Double 
     { 
         return sqrt(Engine.variance(of: a))
     }
     
-    @nonobjc class func xExpY(of x: Double, exp y: Double) -> Double
+    class func xExpY(of x: Double, exp y: Double) -> Double
     {
         return pow(x, y)
     }
 
-    @nonobjc class func logXBaseY(_ x: Double, base: Double) -> Double
+    class func logXBaseY(_ x: Double, base: Double) -> Double
     {
         return log(x) / log(base)
     }
 
-    @nonobjc class func eExpX(of x: Double) -> Double
+    class func eExpX(of x: Double) -> Double
     {
         return pow(Double.e, x)
     }
 
-    @nonobjc class func logBaseE(of x: Double) -> Double
+    class func logBaseE(of x: Double) -> Double
     {
         return log(x)
     }
 
-    @nonobjc class func logBase10(of x: Double) -> Double
+    class func logBase10(of x: Double) -> Double
     {
         return log10(x)
     }
 
-    @nonobjc class func logBase2(of x: Double) -> Double
+    class func logBase2(of x: Double) -> Double
     {
         return log2(x)
     }
     
-    @nonobjc class func square(of x: Double) -> Double
+    class func square(of x: Double) -> Double
     {
         return x * x
     }
 
-    @nonobjc class func squareRoot(of x: Double) -> Double
+    class func squareRoot(of x: Double) -> Double
     {
         return sqrt(x)
     }
 
-    @nonobjc class func cubic(of x: Double) -> Double
+    class func cubic(of x: Double) -> Double
     {
         return square(of: x) * x
     }
     
-    @nonobjc class func cubicRoot(of a: Double) -> Double 
+    class func cubicRoot(of a: Double) -> Double
     { 
         return a<0.0 ? -Engine.nRoot(of: abs(a), 3.0) : Engine.nRoot(of: a, 3.0) 
     }
 
 
-    @nonobjc class func reciprocal(of x: Double) -> Double
+    class func reciprocal(of x: Double) -> Double
     {
         return 1.0 / x
     }
 
-    @nonobjc class func reciprocalSquare(of x: Double) -> Double
+    class func reciprocalSquare(of x: Double) -> Double
     {
         return 1.0 / square(of: x)
     }
 
-    @nonobjc class func convertRad2Deg(rad x: Double) -> Double
+    class func convertRad2Deg(rad x: Double) -> Double
     {
         return x / Double.pi * 180.0
     }
     
-    @nonobjc class func convertDeg2Rad(deg x: Double) -> Double
+    class func convertDeg2Rad(deg x: Double) -> Double
     {
         return x / 180.0 * Double.pi
     }
 
-    @nonobjc class func invertSign(of x: Double) -> Double
+    class func invertSign(of x: Double) -> Double
     {
         return -x
     }
     
-    @nonobjc class func randomNumber() -> Double
+    class func randomNumber() -> Double
     {
         let n1: UInt64 = UInt64(arc4random())
         let n2: UInt64 = UInt64(arc4random())
@@ -306,41 +310,42 @@ extension Engine
         return r
     }
     
-    @nonobjc class func m33d32(of x: Double) -> Double
+    class func m33d32(of x: Double) -> Double
     {
         return divide(multiply(x, 33.0), 32.0)   
     }
     
-    @nonobjc class func m32d33(of x: Double) -> Double
+    class func m32d33(of x: Double) -> Double
     {
         return divide(multiply(x, 32.0), 33.0)   
     }
     
-    @nonobjc class func convertRatioToDB(x: Double, y: Double) -> Double
+    class func convertRatioToDB(x: Double, y: Double) -> Double
     {
         return multiply(20.0, logBase10(of : divide(y, x)))
     }
     
-    @nonobjc class func integerModulo(x: Int, y: Int) -> Int
+    class func integerModulo(x: Int, y: Int) -> Int
     {
         return x % y
     }
 
-    @nonobjc class func integerBinaryAnd(x: Int, y: Int) -> Int
+    class func integerBinaryAnd(x: Int, y: Int) -> Int
     {
         return x & y
     }
 
-    @nonobjc class func integerBinaryOr(x: Int, y: Int) -> Int
+    class func integerBinaryOr(x: Int, y: Int) -> Int
     {
         return x | y
     }
-    @nonobjc class func integerBinaryXor(x: Int, y: Int) -> Int
+    
+    class func integerBinaryXor(x: Int, y: Int) -> Int
     {
         return x ^ y
     }
     
-    @nonobjc class func integerBinaryShiftLeft(x: Int, numberOfBits: Int) throws -> Int
+    class func integerBinaryShiftLeft(x: Int, numberOfBits: Int) throws -> Int
     {
         let numberOfAllowedBitsToShift: Int = MemoryLayout<Int>.size * 8 - 1 /* max number of shifts = number of bytes times number of bits minus one (the signature bit) */
            
@@ -353,7 +358,7 @@ extension Engine
 
     }
 
-    @nonobjc class func integerBinaryShiftRight(x: Int, numberOfBits: Int) throws -> Int
+    class func integerBinaryShiftRight(x: Int, numberOfBits: Int) throws -> Int
     {
         let numberOfAllowedBitsToShift: Int = MemoryLayout<Int>.size * 8 - 1 /* max number of shifts = number of bytes times number of bits minus one (the signature bit) */
         

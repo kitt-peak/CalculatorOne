@@ -76,9 +76,9 @@ class GlobalConstants
     /// View Appearance
     struct ViewAppearanceParameter 
     {
-        let appearance   = NSAppearance(named: NSAppearanceNameAqua)
-        let blendingMode = NSVisualEffectBlendingMode.behindWindow
-        let material     = NSVisualEffectMaterial.dark
+        let appearance   = NSAppearance(named: NSAppearance.Name.aqua)
+        let blendingMode = NSVisualEffectView.BlendingMode.behindWindow
+        let material     = NSVisualEffectView.Material.dark
     }
     
     var viewAppearanceParameter: ViewAppearanceParameter { return ViewAppearanceParameter() }
@@ -114,8 +114,8 @@ class GlobalConstants
         {
             switch kind 
             {
-            case .courierStyleMetallic: image = NSImage(named: "Courier19DigitStrip")
-            case .undefined:            image = NSImage(named: "Courier19DigitStrip")
+            case .courierStyleMetallic: image = NSImage(named: NSImage.Name(rawValue: "Courier19DigitStrip"))
+            case .undefined:            image = NSImage(named: NSImage.Name(rawValue: "Courier19DigitStrip"))
             case .courierStyleWithColor(let color): 
                 if image == nil
                 {
@@ -139,7 +139,7 @@ class GlobalConstants
             
             // make a transparent background
             NSColor.clear.setFill()
-            NSRectFill(NSRect(origin: NSPoint.zero, size: size))
+            NSRect(origin: NSPoint.zero, size: size).fill()
             
             // the digits drawn shape and body in this color. 
             // NSColor.green.setStroke()

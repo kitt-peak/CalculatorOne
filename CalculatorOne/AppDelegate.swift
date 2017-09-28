@@ -13,7 +13,7 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate 
 {
 
-    var documents: [Document] { return NSDocumentController.shared().documents as! [Document] }
+    var documents: [Document] { return NSDocumentController.shared.documents as! [Document] }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) 
     {
@@ -31,12 +31,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
         {
             document.applicationWillTerminate()
         }
-    }
-    
-    @IBAction func copy(sender: AnyObject)
-    {
-        NSLog("%@ %s", self, #function)
-        
-    }
+    }    
 }
 

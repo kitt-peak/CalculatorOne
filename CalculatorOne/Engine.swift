@@ -8,7 +8,7 @@
 
 import Foundation
 
-func sign<T: Integer>(_ x: T) -> Int
+func sign<T: BinaryInteger>(_ x: T) -> Int
 {
     return x == 0 ? 1 : (x > 0 ? 1 : -1)
 }
@@ -251,7 +251,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             [ Engine.divide(b, a)] }),
         
         Symbols.yExpX.rawValue : .binary2array( { (a: Double, b: Double) -> [Double] in return 
-            [Engine.xExpY(of: b, exp: a)] }),
+            [ Engine.xExpY(of: b, exp: a)] }),
         
         Symbols.logYX.rawValue : .binary2array( { (a: Double, b: Double) -> [Double] in return 
             [Engine.logXBaseY(b, base: a)] }),

@@ -55,7 +55,7 @@ class TestEngineConverterOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
@@ -88,7 +88,7 @@ class TestEngineConverterOperations: XCTestCase
             if let expectedResult = expectedResult,
                 let engineResult   = engineResult
             {
-                XCTAssertEqualWithAccuracy(expectedResult, engineResult, accuracy: accuracy)                
+                XCTAssertEqual(expectedResult, engineResult, accuracy: accuracy)                
             }
             else
             {
