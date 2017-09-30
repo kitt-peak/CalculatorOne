@@ -670,14 +670,11 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
 
             if let value: Operand = Operand(stringRepresentation: numericalValue, radix: radix)
             {
-                
-                //print("\(self)\n| \(#function): adding '\(value)' to top of stack")
                 stack.push(operand: value)
-                //print(stackDescription)
                 
                 DispatchQueue.main.async
                 {
-                        self.updateUI()
+                    self.updateUI()
                 }                
             }
             else
@@ -835,35 +832,32 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     {
         var result: String = ""
         
+        // is registerNumber valid? 
+        guard hasValueForRegister(registerNumber: inRegisterNumber) == true else { return result }
+
         engineProcessQueue.sync
-        {            
-            // is registerNumber valid? 
-            if hasValueForRegister(registerNumber: inRegisterNumber) == true
+        {  
+            do
             {
-                do
+                let value: Operand = try stack.operandAtIndex(stack.count - inRegisterNumber - 1)
+                
+                if let r = value.stringValueWithRadix(radix: radix)
                 {
-                    let value: Operand = try stack.operandAtIndex(stack.count - inRegisterNumber - 1)
-                    //let value: Operand = stack[stack.count - inRegisterNumber - 1] 
-                    
-                    if let r = value.stringValueWithRadix(radix: radix)
-                    {
-                        result = r
-                    }
-                    else
-                    {
-                        result = value.stringValue
-                    }                    
+                    result = r
                 }
-                catch
+                else
                 {
-                    undo()
-                }
+                    result = value.stringValue
+                }                    
             }
+            catch
+            {
+                undo()
+            }            
         }
         
         return result
-    }
-    
+    }    
     
     func registerValueWillChange(newValue: String, radix: Int, forRegisterNumber: Int) -> Bool
     {

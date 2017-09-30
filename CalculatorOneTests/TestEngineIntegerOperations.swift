@@ -560,7 +560,17 @@ class TestEngineIntegerOperations: XCTestCase {
             ("9",                           ["3", "3"]),
             ("10",                          ["5", "2"]),
             ("1234567890",                  ["3803", "3607", "5", "3", "3", "2"]),
-            ("998877665544332211",          ["9833", "9277", "883", "547", "229", "11", "3", "3"]) 
+            ("998877665544332211",          ["9833", "9277", "883", "547", "229", "11", "3", "3"]),
+            ("-1",                          ["-1"]),
+            ("-2",                          ["2", "-1"]),
+            ("-3",                          ["3", "-1"]),
+            ("-4",                          ["2", "2", "-1"]),
+            ("-5",                          ["5", "-1"]),
+            ("-6",                          ["3", "2", "-1"]),
+            ("-7",                          ["7", "-1"]),
+            ("-8",                          ["2", "2", "2", "-1"]),
+            ("-9",                          ["3", "3", "-1"]),
+            ("-10",                         ["5", "2", "-1"]),
             ]
         
         for test in testSet
@@ -584,14 +594,13 @@ class TestEngineIntegerOperations: XCTestCase {
                 for _ in 0..<countFactors
                 {
                     let factor: String = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
-                    engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
-                    
                     resultFactors.append(factor)
+                    
+                    engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
                 }
                 
                 // compare to the expected result
                 XCTAssertEqual(test.1, resultFactors)
-                
             }
             else
             {
@@ -599,7 +608,7 @@ class TestEngineIntegerOperations: XCTestCase {
                 XCTFail("Test failure: could not convert string value to Integer value")
             }
             
-            
+            engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)            
         }
     }
 

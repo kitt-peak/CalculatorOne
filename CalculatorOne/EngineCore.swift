@@ -70,26 +70,34 @@ extension Engine
     
     class func lcm(of a: Int, _ b: Int) throws -> Int
     { 
-        if (abs(a) > Int.max / abs(b))
+        guard (abs(a) < Int.max / abs(b)) else
         {
             throw EngineError.overflowDuringIntegerMultiplication
         }
-        else
-        {
-            return abs(abs(a * b) / gcd(of: a, b)) 
-        }
+       
+        return abs(abs(a * b) / gcd(of: a, b))
     }  
     
     class func primeFactors(of n: Int) -> [Int]
     {
-        guard n>1 else { return [n] }
+        guard n != 0 else { return [0] }
+        guard n != 1 else { return [1] }
+        guard n != -1 else { return [-1] }
         
         var factors: [Int] = [Int]()
         var z: Int = n
+        
+        // handle negative numbers. These can be split into prime factors by adding -1 as an additional factor
+        if z<0
+        {
+            factors.append(-1)
+            z = abs(z)
+        }
+
         var i: Int = 0
         var p: Int = 0
         var foundPrime: Bool = false
-        
+                
         while z > 1 
         {
             // bestimme den kleinsten Primfaktor p von z
