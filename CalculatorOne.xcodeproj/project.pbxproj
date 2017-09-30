@@ -49,13 +49,6 @@
 			remoteGlobalIDString = F473BC1A1E13F4D6002B78EE;
 			remoteInfo = CalculatorOne;
 		};
-		F473BC3B1E13F4D7002B78EE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F473BC131E13F4D6002B78EE /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F473BC1A1E13F4D6002B78EE;
-			remoteInfo = CalculatorOne;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -78,7 +71,6 @@
 		F473BC2F1E13F4D7002B78EE /* CalculatorOneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalculatorOneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F473BC331E13F4D7002B78EE /* CalculatorOneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorOneTests.swift; sourceTree = "<group>"; };
 		F473BC351E13F4D7002B78EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F473BC3A1E13F4D7002B78EE /* CalculatorOneUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalculatorOneUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F473BC401E13F4D7002B78EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F473BC4D1E13F56B002B78EE /* DigitView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DigitView.swift; sourceTree = "<group>"; };
 		F474A6A61E6C588E00ADA42C /* testEngineClassVariables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = testEngineClassVariables.swift; sourceTree = "<group>"; };
@@ -108,13 +100,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F473BC2C1E13F4D7002B78EE /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F473BC371E13F4D7002B78EE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -181,7 +166,6 @@
 			children = (
 				F473BC1B1E13F4D7002B78EE /* CalculatorOne.app */,
 				F473BC2F1E13F4D7002B78EE /* CalculatorOneTests.xctest */,
-				F473BC3A1E13F4D7002B78EE /* CalculatorOneUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -278,24 +262,6 @@
 			productReference = F473BC2F1E13F4D7002B78EE /* CalculatorOneTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		F473BC391E13F4D7002B78EE /* CalculatorOneUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F473BC491E13F4D7002B78EE /* Build configuration list for PBXNativeTarget "CalculatorOneUITests" */;
-			buildPhases = (
-				F473BC361E13F4D7002B78EE /* Sources */,
-				F473BC371E13F4D7002B78EE /* Frameworks */,
-				F473BC381E13F4D7002B78EE /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				F473BC3C1E13F4D7002B78EE /* PBXTargetDependency */,
-			);
-			name = CalculatorOneUITests;
-			productName = CalculatorOneUITests;
-			productReference = F473BC3A1E13F4D7002B78EE /* CalculatorOneUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -319,12 +285,6 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = F473BC1A1E13F4D6002B78EE;
 					};
-					F473BC391E13F4D7002B78EE = {
-						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = R6AEB2ZHRE;
-						ProvisioningStyle = Automatic;
-						TestTargetID = F473BC1A1E13F4D6002B78EE;
-					};
 				};
 			};
 			buildConfigurationList = F473BC161E13F4D6002B78EE /* Build configuration list for PBXProject "CalculatorOne" */;
@@ -342,7 +302,6 @@
 			targets = (
 				F473BC1A1E13F4D6002B78EE /* CalculatorOne */,
 				F473BC2E1E13F4D7002B78EE /* CalculatorOneTests */,
-				F473BC391E13F4D7002B78EE /* CalculatorOneUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -359,13 +318,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F473BC2D1E13F4D7002B78EE /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F473BC381E13F4D7002B78EE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -418,13 +370,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F473BC361E13F4D7002B78EE /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -432,11 +377,6 @@
 			isa = PBXTargetDependency;
 			target = F473BC1A1E13F4D6002B78EE /* CalculatorOne */;
 			targetProxy = F473BC301E13F4D7002B78EE /* PBXContainerItemProxy */;
-		};
-		F473BC3C1E13F4D7002B78EE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F473BC1A1E13F4D6002B78EE /* CalculatorOne */;
-			targetProxy = F473BC3B1E13F4D7002B78EE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -626,36 +566,6 @@
 			};
 			name = Release;
 		};
-		F473BC4A1E13F4D7002B78EE /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = R6AEB2ZHRE;
-				INFOPLIST_FILE = CalculatorOneUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = kitt.peak.CalculatorOneUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_TARGET_NAME = CalculatorOne;
-			};
-			name = Debug;
-		};
-		F473BC4B1E13F4D7002B78EE /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = R6AEB2ZHRE;
-				INFOPLIST_FILE = CalculatorOneUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = kitt.peak.CalculatorOneUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_TARGET_NAME = CalculatorOne;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -682,15 +592,6 @@
 			buildConfigurations = (
 				F473BC471E13F4D7002B78EE /* Debug */,
 				F473BC481E13F4D7002B78EE /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F473BC491E13F4D7002B78EE /* Build configuration list for PBXNativeTarget "CalculatorOneUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F473BC4A1E13F4D7002B78EE /* Debug */,
-				F473BC4B1E13F4D7002B78EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
