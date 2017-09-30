@@ -21,7 +21,6 @@
 		F473BC241E13F4D7002B78EE /* Document.xib in Resources */ = {isa = PBXBuildFile; fileRef = F473BC221E13F4D7002B78EE /* Document.xib */; };
 		F473BC261E13F4D7002B78EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F473BC251E13F4D7002B78EE /* Assets.xcassets */; };
 		F473BC291E13F4D7002B78EE /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F473BC271E13F4D7002B78EE /* MainMenu.xib */; };
-		F473BC341E13F4D7002B78EE /* CalculatorOneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F473BC331E13F4D7002B78EE /* CalculatorOneTests.swift */; };
 		F473BC4E1E13F56B002B78EE /* DigitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F473BC4D1E13F56B002B78EE /* DigitView.swift */; };
 		F474A6A71E6C588E00ADA42C /* testEngineClassVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = F474A6A61E6C588E00ADA42C /* testEngineClassVariables.swift */; };
 		F47F924F1E16CD47005C38C7 /* MultiDigitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47F924E1E16CD47005C38C7 /* MultiDigitsView.swift */; };
@@ -69,7 +68,6 @@
 		F473BC281E13F4D7002B78EE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		F473BC2A1E13F4D7002B78EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F473BC2F1E13F4D7002B78EE /* CalculatorOneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalculatorOneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F473BC331E13F4D7002B78EE /* CalculatorOneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorOneTests.swift; sourceTree = "<group>"; };
 		F473BC351E13F4D7002B78EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F473BC401E13F4D7002B78EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F473BC4D1E13F56B002B78EE /* DigitView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DigitView.swift; sourceTree = "<group>"; };
@@ -198,7 +196,6 @@
 				F4F4192C1E62096B00E5A840 /* TestEngineTypeLessOperation.swift */,
 				F4BC49041E5A25C600ED245C /* TestEngineIntegerOperations.swift */,
 				F4CA3CA61E2BD5E000A24032 /* TestEngineStackOperations.swift */,
-				F473BC331E13F4D7002B78EE /* CalculatorOneTests.swift */,
 				F473BC351E13F4D7002B78EE /* Info.plist */,
 			);
 			path = CalculatorOneTests;
@@ -360,7 +357,6 @@
 				F4E6AC6C1E6C16CB00EAE97E /* TestEngineOperandChange.swift in Sources */,
 				F4E6AC6E1E6C16E700EAE97E /* TestEngineOperandDisplayFormat.swift in Sources */,
 				F448B87A1F4335DB00496D5C /* TestEngineConverterOperations.swift in Sources */,
-				F473BC341E13F4D7002B78EE /* CalculatorOneTests.swift in Sources */,
 				F4C927471F5B13DE00B317C0 /* TestOperand.swift in Sources */,
 				F43899471E742C56003B13B4 /* TestEngineFloatOperations.swift in Sources */,
 				F4F4192D1E62096B00E5A840 /* TestEngineTypeLessOperation.swift in Sources */,
@@ -506,12 +502,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = R6AEB2ZHRE;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = CalculatorOne/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = kitt.peak.CalculatorOne;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 			};
@@ -521,12 +520,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = R6AEB2ZHRE;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = CalculatorOne/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = kitt.peak.CalculatorOne;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 			};

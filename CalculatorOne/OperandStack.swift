@@ -10,15 +10,8 @@ import Foundation
 
 class OperandStack: CustomStringConvertible
 {
-    enum StackError: Error 
-    {
-        case indexOutOfRange
-    }
-
     private var stack: [Operand]   = [Operand]()
     
-    
-
     init(operands: [Operand])
     {
         stack.removeAll()
@@ -77,8 +70,7 @@ class OperandStack: CustomStringConvertible
             return stack[index]
         }
     
-        throw StackError.indexOutOfRange
-        
+        throw Engine.EngineError.invalidStackIndex(index: index)
     }
     
     // emulates a subscript function that can throw
@@ -87,12 +79,10 @@ class OperandStack: CustomStringConvertible
         if atIndex >= 0 && atIndex < stack.count
         {
             stack[atIndex] = operand
-            
             return
         }
         
-        throw StackError.indexOutOfRange
-        
+        throw Engine.EngineError.invalidStackIndex(index: atIndex)
     }
 
     

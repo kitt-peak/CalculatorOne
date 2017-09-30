@@ -71,10 +71,12 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
 
     enum EngineError: Error 
     {
+        case invalidOperation(symbol: String)
         case popOperandFromEmptyStack
         case invalidNumberOfBitsForShitIntegerValueOperation(invalidShiftCount: Int)
         case invalidIntegerArgumentExpectedGreaterThanZero
         case overflowDuringIntegerMultiplication
+        case invalidStackIndex(index: Int)
     }
 
     
@@ -165,7 +167,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
 
     
     //MARK: - Core operations
-    private typealias OperationsTable = [String : OperationClass]!
+    private typealias OperationsTable = [String : OperationClass]
 
     // redefined for a single Operand on 23.7.2017
     private enum OperationClass
@@ -435,185 +437,182 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     
     private func processOperation(symbol: String) throws
     {
+        // store the current stack for potential undo-operation
+        addToRedoBuffer(item: .stack(stack.allOperands()))
+        
+        let currentOperation: OperationClass? = operations[symbol]
+   
+        guard currentOperation != nil else 
+        { 
+            throw EngineError.invalidOperation(symbol: symbol)
+        }
 
-        if let currentOperation = operations[symbol]
+        switch currentOperation!
         {
-            // store the current stack for potential undo-operation
-            addToRedoBuffer(item: .stack(stack.allOperands()))
+        case .dropAll:
+            stack.removeAll()
 
-            switch currentOperation 
+        case .nPick:                            
+            /* copy the n-th element of the stack to the stack */
+            /* the 0th element is the top of stack value */
+            if let n: Int = try stack.pop().iValue, n>0
             {
-                
-            case .dropAll:
-                stack.removeAll()
-                
-                
-            case .nPick:                            
-                /* copy the n-th element of the stack to the stack */
-                /* the 0th element is the top of stack value */
-                if let n: Int = try stack.pop().iValue, n>0
-                {
-                    let result: Operand = try stack.operandAtIndex(stack.count - n)
-                    stack.push(operands: [result])
-                }
-                else
-                {
-                    throw EngineError.invalidIntegerArgumentExpectedGreaterThanZero   
-                }
-
-            case .nDrop:
-                /* the 0th element is the top of stack value */
-                if let n: Int = try stack.pop().iValue, n>0
-                {
-                    try stack.removeOperandsFromTop(count: n)
-                }
-                else
-                {
-                    throw EngineError.invalidIntegerArgumentExpectedGreaterThanZero
-                }
-                
-            case .depth:
-                let n: Operand = Operand(integerValue: stack.count)
-                stack.push(operands: [n])
-                                
-            case .unary2array(let u2aFunction):
-                
-                // get the argument from the stack, as Double value
-                let argument: Double = try stack.pop().fValue!
-                
-                // apply a function to the argument and get a result back as double array 
-                let fResult: [Double] = u2aFunction(argument)
-                
-                // convert the double array to a Operand array and store on the stack
-                stack.push(operands: operandArray(fromDoubleArray: fResult))
-                
-            case .integerUnary2array(let intUnaryToArryFunction):
-                
-                // get one integer argument from the stack
-                if let intArgument: Int = try stack.pop().iValue
-                {
-                    let intResult: [Int] = intUnaryToArryFunction(intArgument)
-                    
-                    // convert the integer array to a Operand array and store on the stack
-                    stack.push(operands: operandArray(fromIntegerArray: intResult))
-                }
-                else
-                {
-                    throw EngineError.popOperandFromEmptyStack
-                }
-                
-            case .binary2array(let b2aFunction):
-                
-                // get both arguments from the stack, as Double values
-                let argumentA: Double = try stack.pop().fValue!
-                let argumentB: Double = try stack.pop().fValue!
-                
-                // apply a function to the arguments and get a result back as double array 
-                let fResult: [Double] = b2aFunction(argumentA, argumentB)
-                
-                // convert the double array to a Operand array and store on the stack
-                stack.push(operands: operandArray(fromDoubleArray: fResult))
-                
-                
-            case .integerBinary2array(let intBinaryToArrayFunction):
-                
-                
-                // get integer arguments from the stack
-                if let intArgumentA: Int = try stack.pop().iValue,
-                   let intArgumentB: Int = try stack.pop().iValue
-                {   
-                    let intResult: [Int] =  try intBinaryToArrayFunction(intArgumentA, intArgumentB)
-
-                    // convert the integer array to a Operand array and store on the stack
-                    stack.push(operands: operandArray(fromIntegerArray: intResult))
-                }
-                else
-                {
-                    throw EngineError.popOperandFromEmptyStack
-                }
-                
-                
-                
-            case .ternary2array(let t2aFunction):
-                
-                // get the three arguments from the stack, as Double values
-                if let argumentA: Double = try stack.pop().fValue,
-                   let argumentB: Double = try stack.pop().fValue,
-                   let argumentC: Double = try stack.pop().fValue
-                {
-                
-                    // apply a function to the arguments and get a result back as double array 
-                    let fResult: [Double] = t2aFunction(argumentA, argumentB, argumentC)
-                
-                    // convert the double array to a Operand array and store on the stack
-                    stack.push(operands: operandArray(fromDoubleArray: fResult))
-                }
-                else
-                {
-                    throw EngineError.popOperandFromEmptyStack
-                }
-                
-            case .copyAToStack:
-                stack.removeAll()
-                stack.push(operands: memoryA)
-                
-            case .copyBToStack: 
-                stack.removeAll()
-                stack.push(operands: memoryB)
-                
-            case .copyStackToA:
-                memoryA.removeAll()                
-                memoryA.append(contentsOf: stack.allOperands())
-                
-            case .copyStackToB:
-                memoryB.removeAll()                
-                memoryB.append(contentsOf: stack.allOperands())
-                
-
-            case .none2array(let n2aFunction):
-                    
-                    // apply the function and get a result back as double array 
-                    let fResult: [Double] = n2aFunction()
-                    
-                    // convert the double array to a Operand array and store on the stack
-                    stack.push(operands: operandArray(fromDoubleArray: fResult))
-                    
-
-            case .array2array(let arrayFunction):
-                    
-                    // copy the entire stack into the array stackCopy
-                    
-                    let stackCopy: [Double] = doubleArray(fromOperandArray: stack.allOperands())! 
-                    stack.removeAll()
-                    
-                    // TODO: replace if clause by error handling
-                    if stackCopy.count > 0
-                    {   
-                        //let r: [Operand] = arrayFunction(stackCopy)
-                        let result: [Double] = arrayFunction(stackCopy)
-                        
-                        stack.push(operands: operandArray(fromDoubleArray: result)) 
-                    }
-                    
-                    /*take N arguments from the stack */
-            case .nArray2array(let arrayFunction):
-
-                    // take the first argument from the stack. This argument specifies the number of further argument to take from the stack
-                    let countArguments: Int   = try stack.pop().iValue!    // specifies the number of arguments to pop from the stack
-                                
-                    // the array of elements to pop from the stack, convert them to an array of double values
-                    let functionArgumentsAsOperands = try stack.pop(count: countArguments)
-                    let functionArguments: [Double] = doubleArray(fromOperandArray: functionArgumentsAsOperands)!
-                    
-                    let results: [Double] = arrayFunction(functionArguments)
-                    stack.push(operands: operandArray(fromDoubleArray: results))                    
-                }
+                let result: Operand = try stack.operandAtIndex(stack.count - n)
+                stack.push(operands: [result])
             }
             else
             {
-                print("| engine \(#function): did not recognize operation '\(symbol)', stack not changed")                        
-            }            
-    }    
+                throw EngineError.invalidIntegerArgumentExpectedGreaterThanZero   
+            }
+            
+        case .nDrop:
+            /* the 0th element is the top of stack value */
+            if let n: Int = try stack.pop().iValue, n>0
+            {
+                try stack.removeOperandsFromTop(count: n)
+            }
+            else
+            {
+                throw EngineError.invalidIntegerArgumentExpectedGreaterThanZero
+            }
+            
+        case .depth:
+            let n: Operand = Operand(integerValue: stack.count)
+            stack.push(operands: [n])
+            
+        case .unary2array(let u2aFunction):
+            
+            // get the argument from the stack, as Double value
+            let argument: Double = try stack.pop().fValue!
+            
+            // apply a function to the argument and get a result back as double array 
+            let fResult: [Double] = u2aFunction(argument)
+            
+            // convert the double array to a Operand array and store on the stack
+            stack.push(operands: operandArray(fromDoubleArray: fResult))
+            
+        case .integerUnary2array(let intUnaryToArryFunction):
+            
+            // get one integer argument from the stack
+            if let intArgument: Int = try stack.pop().iValue
+            {
+                let intResult: [Int] = intUnaryToArryFunction(intArgument)
+                
+                // convert the integer array to a Operand array and store on the stack
+                stack.push(operands: operandArray(fromIntegerArray: intResult))
+            }
+            else
+            {
+                throw EngineError.popOperandFromEmptyStack
+            }
+            
+        case .binary2array(let b2aFunction):
+            
+            // get both arguments from the stack, as Double values
+            let argumentA: Double = try stack.pop().fValue!
+            let argumentB: Double = try stack.pop().fValue!
+            
+            // apply a function to the arguments and get a result back as double array 
+            let fResult: [Double] = b2aFunction(argumentA, argumentB)
+            
+            // convert the double array to a Operand array and store on the stack
+            stack.push(operands: operandArray(fromDoubleArray: fResult))
+            
+            
+        case .integerBinary2array(let intBinaryToArrayFunction):
+            
+            
+            // get integer arguments from the stack
+            if let intArgumentA: Int = try stack.pop().iValue,
+                let intArgumentB: Int = try stack.pop().iValue
+            {   
+                let intResult: [Int] =  try intBinaryToArrayFunction(intArgumentA, intArgumentB)
+                
+                // convert the integer array to a Operand array and store on the stack
+                stack.push(operands: operandArray(fromIntegerArray: intResult))
+            }
+            else
+            {
+                throw EngineError.popOperandFromEmptyStack
+            }
+            
+            
+            
+        case .ternary2array(let t2aFunction):
+            
+            // get the three arguments from the stack, as Double values
+            if let argumentA: Double = try stack.pop().fValue,
+                let argumentB: Double = try stack.pop().fValue,
+                let argumentC: Double = try stack.pop().fValue
+            {
+                
+                // apply a function to the arguments and get a result back as double array 
+                let fResult: [Double] = t2aFunction(argumentA, argumentB, argumentC)
+                
+                // convert the double array to a Operand array and store on the stack
+                stack.push(operands: operandArray(fromDoubleArray: fResult))
+            }
+            else
+            {
+                throw EngineError.popOperandFromEmptyStack
+            }
+            
+        case .copyAToStack:
+            stack.removeAll()
+            stack.push(operands: memoryA)
+            
+        case .copyBToStack: 
+            stack.removeAll()
+            stack.push(operands: memoryB)
+            
+        case .copyStackToA:
+            memoryA.removeAll()                
+            memoryA.append(contentsOf: stack.allOperands())
+            
+        case .copyStackToB:
+            memoryB.removeAll()                
+            memoryB.append(contentsOf: stack.allOperands())
+            
+            
+        case .none2array(let n2aFunction):
+            
+            // apply the function and get a result back as double array 
+            let fResult: [Double] = n2aFunction()
+            
+            // convert the double array to a Operand array and store on the stack
+            stack.push(operands: operandArray(fromDoubleArray: fResult))
+            
+            
+        case .array2array(let arrayFunction):
+            
+            // copy the entire stack into the array stackCopy
+            
+            let stackCopy: [Double] = doubleArray(fromOperandArray: stack.allOperands())! 
+            stack.removeAll()
+            
+            // TODO: replace if clause by error handling
+            if stackCopy.count > 0
+            {   
+                //let r: [Operand] = arrayFunction(stackCopy)
+                let result: [Double] = arrayFunction(stackCopy)
+                
+                stack.push(operands: operandArray(fromDoubleArray: result)) 
+            }
+            
+            /*take N arguments from the stack */
+        case .nArray2array(let arrayFunction):
+            
+            // take the first argument from the stack. This argument specifies the number of further argument to take from the stack
+            let countArguments: Int   = try stack.pop().iValue!    // specifies the number of arguments to pop from the stack
+            
+            // the array of elements to pop from the stack, convert them to an array of double values
+            let functionArgumentsAsOperands = try stack.pop(count: countArguments)
+            let functionArguments: [Double] = doubleArray(fromOperandArray: functionArgumentsAsOperands)!
+            
+            let results: [Double] = arrayFunction(functionArguments)
+            stack.push(operands: operandArray(fromDoubleArray: results))                    
+        }
+    }           
     
     // MARK: - Undo/Redo 
     private func addToRedoBuffer(item: UndoItem)
@@ -685,7 +684,6 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             {
                 handleError(message: "illegal input value: \(numericalValue)")
             }
-                                    
         }
     }
     
@@ -700,29 +698,36 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                 }
                 catch EngineError.invalidNumberOfBitsForShitIntegerValueOperation(let invalidShiftCount)
                 {
-                    let message: String = "\(invalidShiftCount) is an invalid number of bits specified for integer shift operation"                
-                    handleError(message: message)                
+                    handleError(message: "\(invalidShiftCount) is an invalid number of bits specified for integer shift operation")                
                 }
                 catch EngineError.invalidIntegerArgumentExpectedGreaterThanZero
                 {
-                    let message: String = "Invalid argument, expected positive integer greater than zero"                
-                    handleError(message: message)
+                    handleError(message: "Invalid argument, expected positive integer greater than zero")             
                 }
                 catch EngineError.overflowDuringIntegerMultiplication
                 {
-                    let message: String = "Integer arguments too large, causing overflow"
-                    handleError(message: message)
+                    handleError(message: "Integer arguments too large, causing overflow")
                 }
-                catch //EngineError.popOperandFromEmptyStack
+                catch EngineError.invalidOperation(let invalidSymbol)
                 {
-                    let message: String = "Stack error"
-                    handleError(message: message)
+                    handleError(message: "Invalid operation \(invalidSymbol). Stack was not changed")
                 }
-                
+                catch EngineError.popOperandFromEmptyStack
+                {
+                    handleError(message: "Error attempting to take more argumnets from stack then avaialble during operation \(symbol)")
+                }
+                catch EngineError.invalidStackIndex(let invalidIndex)
+                {
+                    handleError(message: "Stack error: element \(stack.count - invalidIndex) from top is not valid for a stack with \(stack.count) elements")
+                }
+                catch 
+                {
+                    handleError(message: "Unspecified error occuring during operation \(symbol)")
+                }
                 
                 DispatchQueue.main.async
-                    {
-                        self.updateUI()
+                {
+                    self.updateUI()
                 }
         }
         
@@ -819,8 +824,6 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     }
 
     
-    
-    // TODO: Error handling for an empty stack
     
     /// Returns the content of the specified register as formatted, human-readable String
     ///
