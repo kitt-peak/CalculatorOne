@@ -68,9 +68,16 @@ extension Engine
         else        { return gcd(of: b, a % b) } 
     }  
     
-    class func lcm(of a: Int, _ b: Int) -> Int
+    class func lcm(of a: Int, _ b: Int) throws -> Int
     { 
-        return abs(abs(a * b) / gcd(of: a, b)) 
+        if (abs(a) > Int.max / abs(b))
+        {
+            throw EngineError.overflowDuringIntegerMultiplication
+        }
+        else
+        {
+            return abs(abs(a * b) / gcd(of: a, b)) 
+        }
     }  
     
     class func primeFactors(of n: Int) -> [Int]
@@ -206,7 +213,7 @@ extension Engine
     
     class func geometricalMean(of a: [Double]) -> Double 
     { 
-        return Engine.nRoot(of: a.reduce(1.0) { (x, y) -> Double in return x * y },  Double(a.count) ) 
+        return Engine.nRoot(of: product(of: a),  Double(a.count) ) 
     }
         
     class func variance(of a: [Double]) -> Double 
@@ -270,7 +277,6 @@ extension Engine
     { 
         return a<0.0 ? -Engine.nRoot(of: abs(a), 3.0) : Engine.nRoot(of: a, 3.0) 
     }
-
 
     class func reciprocal(of x: Double) -> Double
     {

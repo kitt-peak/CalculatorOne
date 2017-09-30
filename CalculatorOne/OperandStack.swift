@@ -41,7 +41,20 @@ class OperandStack: CustomStringConvertible
         
         throw Engine.EngineError.popOperandFromEmptyStack            
     }
-    
+
+    func pop(count: Int) throws -> [Operand]
+    {
+        if count <= stack.count
+        {
+            let result = stack[stack.count - count ..< stack.endIndex]            
+            stack.removeSubrange(stack.count - count ..< stack.endIndex)
+            
+            return Array<Operand>(result)
+        }
+        
+        throw Engine.EngineError.popOperandFromEmptyStack            
+    }
+
     // makeing subscript private until Swift allows to throw in subscript functions
     private subscript(index: Int) -> Operand 
     {

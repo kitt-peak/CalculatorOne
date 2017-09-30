@@ -207,7 +207,7 @@ enum Symbols: String
     case drop = "drop",         dropAll   = "䷀ drop",     nDrop      = "n drop"
     case dup  = "dup",          dup2      = "dup2",       depth      = "depth"
     case avg  = "∅",            product   = "∏",          geoMean    = "∏ ᴺ√"
-    case nAvg = "n ∅",          nProduct  = "N ∏",        nGeoMean   = "n ∏ ᴺ√"
+    case nAvg = "n ∅",          nProduct  = "n ∏",        nGeoMean   = "n ∏ ᴺ√"
     case nPick = "n pick",      over      = "over"
     
     case factorial = "n!",      primes    = "PF"

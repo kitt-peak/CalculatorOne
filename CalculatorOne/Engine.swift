@@ -74,6 +74,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         case popOperandFromEmptyStack
         case invalidNumberOfBitsForShitIntegerValueOperation(invalidShiftCount: Int)
         case invalidIntegerArgumentExpectedGreaterThanZero
+        case overflowDuringIntegerMultiplication
     }
 
     
@@ -405,7 +406,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             [Engine.gcd(of: a, b) ] }),
         
         Symbols.lcm.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
-            [Engine.lcm(of: a, b) ] }),
+            [try Engine.lcm(of: a, b) ] }),
         
         Symbols.invertBits.rawValue : .integerUnary2array( { (a: Int)  -> [Int] in return 
             [~a]  }),
@@ -524,7 +525,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                     let intResult: [Int] =  try intBinaryToArrayFunction(intArgumentA, intArgumentB)
 
                     // convert the integer array to a Operand array and store on the stack
-                        stack.push(operands: operandArray(fromIntegerArray: intResult))
+                    stack.push(operands: operandArray(fromIntegerArray: intResult))
                 }
                 else
                 {
@@ -595,19 +596,16 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
                     }
                     
                     /*take N arguments from the stack */
-                case .nArray2array(let arrayFunction):
+            case .nArray2array(let arrayFunction):
 
                     // take the first argument from the stack. This argument specifies the number of further argument to take from the stack
-                    let countArguments: Double   = try stack.pop().fValue!    // specifies the number of arguments to pop from the stack
-                    var arguments: [Double]      = [Double]()    // the array of elements to pop from the stack
+                    let countArguments: Int   = try stack.pop().iValue!    // specifies the number of arguments to pop from the stack
+                                
+                    // the array of elements to pop from the stack, convert them to an array of double values
+                    let functionArgumentsAsOperands = try stack.pop(count: countArguments)
+                    let functionArguments: [Double] = doubleArray(fromOperandArray: functionArgumentsAsOperands)!
                     
-                    // TODO: error handling for non-valid countArgument values
-                    for _ : Int in 0 ..< Int(countArguments)          // pop the specified number of arguments from the stack and put into array
-                    {
-                        arguments.append(try stack.pop().fValue!)
-                    }
-                    
-                    let results: [Double] = arrayFunction(arguments)
+                    let results: [Double] = arrayFunction(functionArguments)
                     stack.push(operands: operandArray(fromDoubleArray: results))                    
                 }
             }
@@ -668,81 +666,94 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         
         engineProcessQueue.sync
         {
-            //TODO: replace forced unwrap by error handling
-            let value: Operand = Operand(stringRepresentation: numericalValue, radix: radix)!
-                                    
             // store the current stack for potential undo-operation
             addToRedoBuffer(item: .stack(stack.allOperands()))
-            
-            //print("\(self)\n| \(#function): adding '\(value)' to top of stack")
-            stack.push(operand: value)
-            //print(stackDescription)
-            
-            DispatchQueue.main.async
+
+            if let value: Operand = Operand(stringRepresentation: numericalValue, radix: radix)
             {
-                self.updateUI()
+                
+                //print("\(self)\n| \(#function): adding '\(value)' to top of stack")
+                stack.push(operand: value)
+                //print(stackDescription)
+                
+                DispatchQueue.main.async
+                {
+                        self.updateUI()
+                }                
             }
-            
+            else
+            {
+                handleError(message: "illegal input value: \(numericalValue)")
+            }
+                                    
         }
-        
     }
     
     func userInputOperation(symbol: String)
     {
         engineProcessQueue.sync
-        {
-            do
             {
-                // clear an error indication, if exist
-                let clearErrorNote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: 
-                    ["errorState"   : false,
-                     "errorMessage" : ""
-                    ])
-                NotificationCenter.default.post(clearErrorNote)
+                do
+                {
+                    clearErrorIndicator()
+                    try processOperation(symbol: symbol)
+                }
+                catch EngineError.invalidNumberOfBitsForShitIntegerValueOperation(let invalidShiftCount)
+                {
+                    let message: String = "\(invalidShiftCount) is an invalid number of bits specified for integer shift operation"                
+                    handleError(message: message)                
+                }
+                catch EngineError.invalidIntegerArgumentExpectedGreaterThanZero
+                {
+                    let message: String = "Invalid argument, expected positive integer greater than zero"                
+                    handleError(message: message)
+                }
+                catch EngineError.overflowDuringIntegerMultiplication
+                {
+                    let message: String = "Integer arguments too large, causing overflow"
+                    handleError(message: message)
+                }
+                catch //EngineError.popOperandFromEmptyStack
+                {
+                    let message: String = "Stack error"
+                    handleError(message: message)
+                }
                 
-                try processOperation(symbol: symbol)
-                                
-            }
-            catch EngineError.invalidNumberOfBitsForShitIntegerValueOperation(let invalidShiftCount)
-            {
-                let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: 
-                    ["errorState"   : true,
-                     "errorMessage" : "\(invalidShiftCount) is an invalid number of bits specified for integer shift operation"
-                    ])
-                NotificationCenter.default.post(updateUINote)
                 
-                undo()                
-            }
-            catch EngineError.invalidIntegerArgumentExpectedGreaterThanZero
-            {
-                let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: 
-                    ["errorState"   : true,
-                     "errorMessage" : "Invalid argument, expected positive integer greater than zero"
-                    ])
-                NotificationCenter.default.post(updateUINote)
-                
-                undo()                                
-            }
-            catch //EngineError.popOperandFromEmptyStack
-            {
-                let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: 
-                    ["errorState"   : true,
-                     "errorMessage" : "Stack error"
-                    ])
-                NotificationCenter.default.post(updateUINote)
-                
-                undoLastItem()
-            }
-            
-            DispatchQueue.main.async
-            {
-                    self.updateUI()
-            }
-
-            
+                DispatchQueue.main.async
+                    {
+                        self.updateUI()
+                }
         }
-
+        
     }
+
+    
+    // MARK: Error handling
+    private func clearErrorIndicator() 
+    {
+        // clear an error indication, if exist
+        let clearErrorNote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: 
+            ["errorState"   : false,
+             "errorMessage" : ""
+            ])
+        NotificationCenter.default.post(clearErrorNote)
+    }
+    
+    
+    
+    private func handleError(message: String) 
+    {
+        let errorDescriptor: [String : Any] = 
+            ["errorState"   : true,
+             "errorMessage" : message]
+        
+        let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: errorDescriptor)        
+        NotificationCenter.default.post(updateUINote)
+        
+        undo()
+    }
+    
     
     func undo() 
     {

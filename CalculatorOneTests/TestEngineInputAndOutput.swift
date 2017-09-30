@@ -133,7 +133,8 @@ class TestEngineInputAndOutput: XCTestCase
         // test that string values describing integers can be correctly converted to integer values
         var testValues: [String] = 
         [   "0", "-1", "1", "2",
-            "-22", "333", "444", "-12345678"
+            "-22", "333", "444", "-12345678",
+            "1E0", "-1E0", "1E1", "-1E1", "-1E-1", "1E-1"
         ]
         
         for testValue in testValues
@@ -218,9 +219,7 @@ class TestEngineInputAndOutput: XCTestCase
                 ".1",           // is a float
                 "-22", "333", "444", "-12345678",       // not binary
                 "-2A", "3EE33", "4B4", "-A12345678",                
-                "F", "EE", "DDD", "CCC", "BBBB", "AAAAA", "000009AC"                
-
-                
+                "F", "EE", "DDD", "CCC", "BBBB", "AAAAA", "000009AC"
         ]
         
         for testValue in testValues
@@ -234,7 +233,7 @@ class TestEngineInputAndOutput: XCTestCase
     {
         
         // test that string values describing floats can be correctly converted to float values
-        var testValues: [String] = 
+        let testValues: [String] = 
             [   "0", "-1", "1", "2",
                 "-22", "333", "444", "-12345678", 
                 "22.", "-22.1", "2.2", "-2.2", "-.22", 
@@ -251,8 +250,12 @@ class TestEngineInputAndOutput: XCTestCase
             XCTAssertEqual(engineDUT.userWillInputEnter(numericalValue: testValue, radix: Radix.decimal.value), true)
         }
         
+    }
+    
+    func testThatTheMethodUserWillInputEnterCorrectlyRejectsInvalidDecimalIntegerArguments()
+    {
         // test that string values are not accepted as valid decimal integer values
-        testValues = 
+        let testValues = 
             [   "-",            // not a number
                 ".",            // not a number
                 "-.",           // not a number
@@ -264,11 +267,30 @@ class TestEngineInputAndOutput: XCTestCase
         {
             XCTAssertEqual(engineDUT.userWillInputEnter(numericalValue: testValue, radix: Radix.decimal.value), false)
         }
-        
-        
     }
 
 
+    func testThatTheMethodUserInputEnterDoesNotAcceptIllegalArguments()
+    {
+        // list of illegal input arguments for the engine
+        let illegalArguments: [String] =
+        [
+            "", " ", "?",
+            "3E", "E3", "1E-23333",
+            "-", "+",
+            "EXP", "-EXP", "E", "+E", "-E",
+            ".", ","
+        ]
+        
+        for illegalArgument in illegalArguments
+        {
+            engineDUT.userInputEnter(numericalValue: illegalArgument, radix: Radix.decimal.value)
+            XCTAssertEqual(engineDUT.hasValueForRegister(registerNumber: 0), false)
+        }
+        
+        
+    }
+    
 }
 
 

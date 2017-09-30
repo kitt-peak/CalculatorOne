@@ -1072,6 +1072,61 @@ class TestEngineFloatOperations: XCTestCase
         
     }
     
+    //--------< sum n arguments from stack >-----------------------------------------
+    func testThatFloatSumOfNArgumentsFromStackOperationsWorksMathematicallyCorrect()
+    {
+        let testSet: [([String], String, String)] = [
+            // values               // N            // results: sum of N values
+            (["0"],                 "1",             "0"),
+            (["1", "1"],            "2",             "2"),
+            (["10", "1"],           "1",             "1"),
+            (["1",  "2", "3"],      "0",             "0"),
+            (["1",  "2", "3"],      "1",             "3"),
+            (["1",  "2", "3"],      "2",             "5"),
+            (["1",  "2", "3"],      "3",             "6"),
+
+//            (["-4", "-3", "-2", "-1", "0", "1", "2", "3", "4"],    "0"),
+//            (["90", "91", "92", "93", "94", "95", "96", "97", "98", "99"],    "945"),
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            // enter arguments
+            for value in test.0
+            {
+                engineDUT.userInputEnter(numericalValue: value, radix: 10)
+            }
+            
+            // enter the numbers of arguments for the sum function to take from the stack
+            engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
+            
+            // enter the operation
+            engineDUT.userInputOperation(symbol: Symbols.nSum.rawValue)
+
+            result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.2)
+            engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)            
+        }
+        
+        
+        // test the sum of all integers from 1 to 100: expected result = 5050
+        for value: Int in 1...100
+        {
+            engineDUT.userInputEnter(numericalValue: String(value), radix: 10)
+        }
+        
+        engineDUT.userInputOperation(symbol: Symbols.sum.rawValue)
+        
+        XCTAssertEqual(engineDUT.numberOfRegistersWithContent(), 1)
+        XCTAssertEqual(String(engineDUT.registerValue(inRegisterNumber: 0, radix: 10)), "5050")
+        
+        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        
+    }
+
+    
     //--------< sum stack >-----------------------------------------
     func testThatFloatAverageOfStackOperationsWorksMathematicallyCorrect()
     {
