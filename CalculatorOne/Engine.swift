@@ -8,14 +8,6 @@
 
 import Foundation
 
-func sign<T: BinaryInteger>(_ x: T) -> Int
-{
-    return x == 0 ? 1 : (x > 0 ? 1 : -1)
-}
-
-
-
-
 enum Radix: Int
 {
     case binary = 0, octal = 1, decimal = 2, hex = 3
@@ -31,8 +23,6 @@ enum Radix: Int
         }
     }
 }
-
-
 
 class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  DisplayDataSource, KeypadDataSource
 {
@@ -169,7 +159,6 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     //MARK: - Core operations
     private typealias OperationsTable = [String : OperationClass]
 
-    // redefined for a single Operand on 23.7.2017
     private enum OperationClass
     {
         case dropAll, nDrop, depth
