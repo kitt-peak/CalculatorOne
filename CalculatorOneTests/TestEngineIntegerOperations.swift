@@ -418,6 +418,7 @@ class TestEngineIntegerOperations: XCTestCase {
             // value     // N       // N <<
             ("0",        "0",       "0"),
             ("1",        "1",       "2"),
+            ("1",        "62",      "4611686018427387904"),
             ("34",       "1",       "68"),
             ("34",       "2",       "136"),
             ("34",       "3",       "272"),
@@ -425,8 +426,9 @@ class TestEngineIntegerOperations: XCTestCase {
             ("-34",      "1",       "-68"),
             ("-34",      "2",       "-136"),
             ("-34",      "3",       "-272"),
+            ("1",        "63",      "63"),      // invalid operation: 1 << 63 throws an exception and leaves 1 and 63 on the stack
             ("1",        "64",      "64"),      // invalid operation: 1 << 64 throws an exception and leaves 1 and 64 on the stack
-            ("1",        "-1",      "-1"),      // invalid operation: 1 << -1 throws an exception and leaves 1 and 64 on the stack
+            ("1",        "-1",      "-1"),      // invalid operation: 1 << -1 throws an exception and leaves -1 and -1 on the stack
             ("1",        "65",      "65"),      // invalid operation: 1 << 65 throws an exception and leaves 1 and 65 on the stack
             ]
         
@@ -450,6 +452,7 @@ class TestEngineIntegerOperations: XCTestCase {
             // value     // N       // N >>
             ("0",        "0",       "0"),
             ("1",        "1",       "0"),
+            ("4611686018427387904",        "62",      "1"),
             ("34",       "1",       "17"),
             ("34",       "2",       "8"),
             ("34",       "3",       "4"),

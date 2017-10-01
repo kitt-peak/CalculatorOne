@@ -23,6 +23,15 @@ extension Double
 
 }
 
+extension Int
+{
+    /* max number of shifts = number of bytes times number of bits minus one (the signature bit)
+       and another -1 to avoid that 1 << 63 results in a negative number*/
+    static var numberOfAllowedBitsToShift: Int { return MemoryLayout<Int>.size * 8 - 2 }
+    static var allowedBitShiftRange: ClosedRange<Int> = 0...Int.numberOfAllowedBitsToShift
+
+}
+
 extension Engine
 {
     //case epsilon0 = "ε₀", µ0 = "μ₀", c0 = "c₀", k0 = "k₀", e0 = "e₀", G = "G", g = "g"
@@ -360,26 +369,17 @@ extension Engine
     }
     
     class func integerBinaryShiftLeft(x: Int, numberOfBits: Int) throws -> Int
-    {
-        let numberOfAllowedBitsToShift: Int = MemoryLayout<Int>.size * 8 - 1 /* max number of shifts = number of bytes times number of bits minus one (the signature bit) */
-           
-        guard numberOfBits >= 0 && numberOfBits <= numberOfAllowedBitsToShift else 
-        {
-            throw EngineError.invalidNumberOfBitsForShitIntegerValueOperation(invalidShiftCount: numberOfBits) 
-        }
+    { 
+        guard Int.allowedBitShiftRange.contains(numberOfBits) else 
+        {  throw EngineError.invalidNumberOfBitsForShitIntegerValueOperation(invalidShiftCount: numberOfBits) }
         
         return x << numberOfBits            
-
     }
 
     class func integerBinaryShiftRight(x: Int, numberOfBits: Int) throws -> Int
     {
-        let numberOfAllowedBitsToShift: Int = MemoryLayout<Int>.size * 8 - 1 /* max number of shifts = number of bytes times number of bits minus one (the signature bit) */
-        
-        guard numberOfBits >= 0 && numberOfBits <= numberOfAllowedBitsToShift else 
-        {
-            throw EngineError.invalidNumberOfBitsForShitIntegerValueOperation(invalidShiftCount: numberOfBits) 
-        }
+        guard Int.allowedBitShiftRange.contains(numberOfBits) else 
+        {  throw EngineError.invalidNumberOfBitsForShitIntegerValueOperation(invalidShiftCount: numberOfBits) }
         
         return x >> numberOfBits
     }

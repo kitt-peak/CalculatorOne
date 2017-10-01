@@ -571,7 +571,7 @@ DQ
                                                     </button>
                                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="03v-if-F8E">
                                                         <rect key="frame" x="58" y="-7" width="68" height="31"/>
-                                                        <buttonCell key="cell" type="push" title="−" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="t7M-sc-WDx">
+                                                        <buttonCell key="cell" type="push" title="-" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="t7M-sc-WDx">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                             <string key="keyEquivalent">-</string>
@@ -653,7 +653,7 @@ DQ
                                         <rect key="frame" x="8" y="8" width="310" height="48"/>
                                         <subviews>
                                             <stackView distribution="fillEqually" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cjF-6E-lTv">
-                                                <rect key="frame" x="0.0" y="0.0" width="324" height="48"/>
+                                                <rect key="frame" x="-14" y="0.0" width="324" height="48"/>
                                                 <subviews>
                                                     <stackView distribution="fillEqually" orientation="vertical" alignment="centerX" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xtG-Kh-dy5">
                                                         <rect key="frame" x="0.0" y="0.0" width="56" height="48"/>
@@ -2642,5 +2642,11 @@ CA
             </constraints>
             <point key="canvasLocation" x="997" y="34"/>
         </customView>
+        <levelIndicator verticalHuggingPriority="750" id="yyX-pd-lER">
+            <rect key="frame" x="0.0" y="0.0" width="185" height="16"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <levelIndicatorCell key="cell" alignment="left" doubleValue="6" maxValue="6" warningValue="2" criticalValue="2" id="xKT-ND-6EA"/>
+            <point key="canvasLocation" x="562" y="-727"/>
+        </levelIndicator>
     </objects>
 </document>
