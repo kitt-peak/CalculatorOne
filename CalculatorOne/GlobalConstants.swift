@@ -204,7 +204,7 @@ enum Symbols: String
     case sum = "∑",             nSum = "n ∑"
     
     case swap = "2↑↓",          rotateUp  = "3R↑",        rotateDown = "3R↓"
-    case drop = "drop",         dropAll   = "䷀ drop",     nDrop      = "n drop"
+    case drop = "drop",         dropAll   = "䷀drop",     nDrop      = "n drop"
     case dup  = "dup",          dup2      = "dup2",       depth      = "depth"
     case avg  = "∅",            product   = "∏",          geoMean    = "∏ ᴺ√"
     case nAvg = "n ∅",          nProduct  = "n ∏",        nGeoMean   = "n ∏ ᴺ√"
