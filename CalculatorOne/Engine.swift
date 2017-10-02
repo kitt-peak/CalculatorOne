@@ -417,10 +417,14 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         Symbols.decrement.rawValue: .integerUnary2array( { (a: Int)  -> [Int] in return  
             [a - 1] }),
                 
-        Symbols.primes.rawValue : .integerUnary2array( { (a: Int) -> [Int]  in 
-            return Engine.primeFactors(of: a)  
-            /* return r.map { (x: Int) -> Int in return x */ }
-        )
+        Symbols.primes.rawValue : .integerUnary2array( { (a: Int) -> [Int]  in return 
+            Engine.primeFactors(of: a) }),
+                                                       
+        Symbols.countOnes.rawValue : .integerUnary2array( { (a: Int) -> [Int]  in return 
+            [Engine.integerCountOneBits(x: a) ] }),
+        
+        Symbols.countZeros.rawValue : .integerUnary2array( { (a: Int) -> [Int]  in return 
+            [Engine.integerCountZeroBits(x: a) ] })
     ]
     
     

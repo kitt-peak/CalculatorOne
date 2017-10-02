@@ -200,6 +200,7 @@ enum Symbols: String
     case nShiftLeft = "N ≪",    nShiftRight = "N ≫",    shiftLeft = "≪",       shiftRight  = "≫"
     case gcd = "gcd",           lcm = "lcm"
     case increment = "1 +",     decrement = "1 -"
+    case countOnes = "cnt 1",   countZeros = "cnt 0"
     
     case sum = "∑",             nSum = "n ∑"
     

@@ -384,5 +384,16 @@ extension Engine
         return x >> numberOfBits
     }
 
+    class func integerCountOneBits(x: Int) -> Int
+    {
+        return x.nonzeroBitCount
+    }
+    
+    class func integerCountZeroBits(x: Int) -> Int
+    {
+        return x.bitWidth - x.nonzeroBitCount
+    }
+
+    
     
  }

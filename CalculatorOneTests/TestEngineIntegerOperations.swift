@@ -616,4 +616,82 @@ class TestEngineIntegerOperations: XCTestCase {
     }
 
 
+    func testThatIntegerCountOnesOperationWorksMathematicallyCorrect()
+    {
+        let testSet: [(String, String)] = [
+            // value      count ones
+            ("0",         "0"),
+            ("1",         "1"),
+            ("2",         "1"),
+            ("3",         "2"),
+            ("4",         "1"),
+            ("5",         "2"),
+            ("6",         "2"),
+            ("7",         "3"),
+            ("8",         "1"),
+            ("9",         "2"),
+            ("10",        "2"),
+            (String(Int.max),        "63"),
+            
+            ("-1",         "64"),
+            ("-2",         "63"),
+            ("-3",         "63"),
+            ("-4",         "62"),
+            ("-5",         "63"),            
+            (String(Int.min),        "1"),
+
+        ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            
+            engineDUT.userInputOperation(symbol: Symbols.countOnes.rawValue)
+            result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.1)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+        }
+    }
+    
+    func testThatIntegerCountZerosOperationWorksMathematicallyCorrect()
+    {
+        let testSet: [(String, String)] = [
+            // value      count zeros
+            ("0",         "64"),
+            ("1",         "63"),
+            ("2",         "63"),
+            ("3",         "62"),
+            ("4",         "63"),
+            ("5",         "62"),
+            ("6",         "62"),
+            ("7",         "61"),
+            ("8",         "63"),
+            ("9",         "62"),
+            ("10",        "62"),
+            (String(Int.max),        "1"),
+            
+            ("-1",         "0"),
+            ("-2",         "1"),
+            ("-3",         "1"),
+            ("-4",         "2"),
+            ("-5",         "1"),            
+            (String(Int.min),        "63"),
+            
+            ]
+        
+        for test in testSet
+        {
+            var result: String = ""
+            
+            engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
+            
+            engineDUT.userInputOperation(symbol: Symbols.countZeros.rawValue)
+            result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
+            XCTAssertEqual(result, test.1)
+            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+        }
+    }
+
 }

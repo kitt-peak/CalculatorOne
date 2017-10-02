@@ -133,7 +133,9 @@ class KeypadController: NSObject, DependendObjectLifeCycle
 
     @IBOutlet weak var operationGCDButton: NSButton!
     @IBOutlet weak var operationLCMButton: NSButton!
-
+    @IBOutlet weak var operationCountOnesButton: NSButton!
+    @IBOutlet weak var operationCountZerosButton: NSButton!
+    
     @IBOutlet weak var operationShiftLeftButton: NSButton!
     @IBOutlet weak var operationShiftRightButton: NSButton!
     @IBOutlet weak var operationNShiftLeftButton: NSButton!
@@ -486,6 +488,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
         operationGCDButton.title            = Symbols.gcd.rawValue
         operationLCMButton.title            = Symbols.lcm.rawValue
+        operationCountOnesButton.title      = Symbols.countOnes.rawValue
+        operationCountZerosButton.title      = Symbols.countZeros.rawValue
         
         swapButton.title                    = Symbols.swap.rawValue
         rotUpButton.title                   = Symbols.rotateUp.rawValue
@@ -673,6 +677,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationFactorialButton.isEnabled = enableUnaryIntegerOperations
         operationGCDButton.isEnabled       = enableBinaryIntegerOperations
         operationLCMButton.isEnabled       = enableBinaryIntegerOperations
+        operationCountZerosButton.isEnabled = enableUnaryIntegerOperations
+        operationCountOnesButton.isEnabled = enableUnaryIntegerOperations
         
         operationReciprocalButton.isEnabled = enableUnaryFloatOperations
         operationReciprocalSquareButton.isEnabled = enableUnaryFloatOperations
