@@ -53,7 +53,7 @@ class TestEngineOperandDisplayFormat: XCTestCase {
             XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), testSet.0)
             XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.hex.value), testSet.3)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -90,7 +90,7 @@ class TestEngineOperandDisplayFormat: XCTestCase {
             engineDUT.userInputEnter(numericalValue: testSet.3, radix: Radix.hex.value)
             XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), testSet.0)
 
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
  */

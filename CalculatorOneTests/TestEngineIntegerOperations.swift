@@ -46,11 +46,11 @@ class TestEngineIntegerOperations: XCTestCase {
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
-            engineDUT.userInputOperation(symbol: Symbols.plus.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.plus.rawValue)
             
             XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: 10), test.2)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
     
@@ -70,11 +70,11 @@ class TestEngineIntegerOperations: XCTestCase {
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
-            engineDUT.userInputOperation(symbol: Symbols.minus.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.minus.rawValue)
             
             XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: 10), test.2)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -113,11 +113,11 @@ class TestEngineIntegerOperations: XCTestCase {
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
-            engineDUT.userInputOperation(symbol: Symbols.multiply.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.multiply.rawValue)
             
             XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: 10), test.2)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -138,11 +138,11 @@ class TestEngineIntegerOperations: XCTestCase {
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
-            engineDUT.userInputOperation(symbol: Symbols.divide.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.divide.rawValue)
             
             XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: 10), test.2)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -175,11 +175,11 @@ class TestEngineIntegerOperations: XCTestCase {
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
-            engineDUT.userInputOperation(symbol: Symbols.moduloN.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.moduloN.rawValue)
             
             XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: 10), test.2)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -201,23 +201,23 @@ class TestEngineIntegerOperations: XCTestCase {
             
             engineDUT.userInputEnter(numericalValue: test.0, radix: 2)
             engineDUT.userInputEnter(numericalValue: test.1, radix: 2)            
-            engineDUT.userInputOperation(symbol: Symbols.dup2.rawValue)
-            engineDUT.userInputOperation(symbol: Symbols.dup2.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.dup2.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.dup2.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.and.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.and.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 2)
             XCTAssertEqual(result, test.2 /* AND */)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
 
-            engineDUT.userInputOperation(symbol: Symbols.or.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.or.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 2)
             XCTAssertEqual(result, test.3 /* OR */)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.xor.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.xor.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 2)
             XCTAssertEqual(result, test.4 /* XOR */)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -237,17 +237,17 @@ class TestEngineIntegerOperations: XCTestCase {
             var result: String = ""
             
             engineDUT.userInputEnter(numericalValue: test.0, radix: 2)
-            engineDUT.userInputOperation(symbol: Symbols.dup.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.dup.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.invertBits.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.invertBits.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 2)
             XCTAssertEqual(result, test.1 /* ! */)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.invertSign.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.invertSign.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 2)
             XCTAssertEqual(result, test.2 /* ! */)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -285,10 +285,10 @@ class TestEngineIntegerOperations: XCTestCase {
             
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             
-            engineDUT.userInputOperation(symbol: Symbols.factorial.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.factorial.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.1)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)            
         }
     }
 
@@ -313,10 +313,10 @@ class TestEngineIntegerOperations: XCTestCase {
                 engineDUT.userInputEnter(numericalValue: value, radix: 10)
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.sum.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.sum.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.1)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)            
         }
         
         
@@ -326,12 +326,12 @@ class TestEngineIntegerOperations: XCTestCase {
             engineDUT.userInputEnter(numericalValue: String(value), radix: 10)
         }
         
-        engineDUT.userInputOperation(symbol: Symbols.sum.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.sum.rawValue)
         
         XCTAssertEqual(engineDUT.numberOfRegistersWithContent(), 1)
         XCTAssertEqual(String(engineDUT.registerValue(inRegisterNumber: 0, radix: 10)), "5050")
         
-        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
 
     }
 
@@ -355,17 +355,17 @@ class TestEngineIntegerOperations: XCTestCase {
             var result: String = ""
             
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
-            engineDUT.userInputOperation(symbol: Symbols.dup.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.dup.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.increment.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.increment.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.1)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)            
 
-            engineDUT.userInputOperation(symbol: Symbols.decrement.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.decrement.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.2)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)            
         }
     }
 
@@ -396,17 +396,17 @@ class TestEngineIntegerOperations: XCTestCase {
             var result: String = ""
             
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
-            engineDUT.userInputOperation(symbol: Symbols.dup.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.dup.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.shiftLeft.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.shiftLeft.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.1 /* << */)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.shiftRight.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.shiftRight.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.2 /* >> */)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
         }
     }
@@ -439,10 +439,10 @@ class TestEngineIntegerOperations: XCTestCase {
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
             
-            engineDUT.userInputOperation(symbol: Symbols.nShiftLeft.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.nShiftLeft.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.2 /* N << */)
-            engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.dropAll.rawValue)
         }
     }
     
@@ -473,11 +473,11 @@ class TestEngineIntegerOperations: XCTestCase {
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
             
-            engineDUT.userInputOperation(symbol: Symbols.nShiftRight.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.nShiftRight.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.2 /* N >> */)
             
-            engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.dropAll.rawValue)            
         }
     }
 
@@ -504,10 +504,10 @@ class TestEngineIntegerOperations: XCTestCase {
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
             
-            engineDUT.userInputOperation(symbol: Symbols.gcd.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.gcd.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.2)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)                        
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)                        
         }
     }
 
@@ -538,10 +538,10 @@ class TestEngineIntegerOperations: XCTestCase {
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
             
-            engineDUT.userInputOperation(symbol: Symbols.lcm.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.lcm.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.2)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)            
         }
     }
     
@@ -582,15 +582,15 @@ class TestEngineIntegerOperations: XCTestCase {
             
             // the prime factor function replaces the number on top of the stack by its prime factors
             // this is at least one value and can be multiple values all on the stack
-            engineDUT.userInputOperation(symbol: Symbols.primes.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.primes.rawValue)
             
             // test for the correct number of prime factors. Determine the number of prime factors on the stack
-            engineDUT.userInputOperation(symbol: Symbols.depth.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.depth.rawValue)
             let countFactorsStr: String = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             if let countFactors: Int = Int(countFactorsStr)
             {
                 // drop the count, not needed any more
-                engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+                engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
                 
                 // read each factor, one by one, into an array
                 var resultFactors: [String] = [String]()
@@ -599,7 +599,7 @@ class TestEngineIntegerOperations: XCTestCase {
                     let factor: String = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
                     resultFactors.append(factor)
                     
-                    engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+                    engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
                 }
                 
                 // compare to the expected result
@@ -611,7 +611,7 @@ class TestEngineIntegerOperations: XCTestCase {
                 XCTFail("Test failure: could not convert string value to Integer value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.dropAll.rawValue)            
         }
     }
 
@@ -648,10 +648,10 @@ class TestEngineIntegerOperations: XCTestCase {
             
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             
-            engineDUT.userInputOperation(symbol: Symbols.countOnes.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.countOnes.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.1)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)            
         }
     }
     
@@ -687,10 +687,10 @@ class TestEngineIntegerOperations: XCTestCase {
             
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
             
-            engineDUT.userInputOperation(symbol: Symbols.countZeros.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.countZeros.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.1)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)            
         }
     }
 

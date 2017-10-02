@@ -193,7 +193,7 @@ enum GlobalKey: String
     var name: String { return self.rawValue }
 }
 
-enum Symbols: String
+enum OperationCode: String
 {
     case plus    = "+",         minus = "−",            multiply  = "×",        divide     = "÷"
     case moduloN = "%",         and   = "&",            or        = "||",       xor        = "⊕"
@@ -218,6 +218,7 @@ enum Symbols: String
     case root      = "√",       thridRoot = "∛",           nRoot      = "ᴺ√"
     case square    = "x²",      cubic     = "x³"
     case reciprocal = "⅟x",     reciprocalSquare = "⅟x²"
+    case hypot      = "2 hyp"
     
     case sinus  = "sin",        cosinus   = "cos",          tangens   = "tan",      cotangens = "cot"
     case asinus = "asin",       acosinus  = "acos",         atangens  = "atan",     acotangens = "acot"

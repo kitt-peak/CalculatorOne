@@ -90,7 +90,7 @@ class TestEngineInputAndOutput: XCTestCase
             // compare. If the engine stores the test argument as floating point, the read back value would not match the test argument
             XCTAssertEqual(testArgument.0, engineRegisterContent)
                         
-            engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.dropAll.rawValue)
         }
     }
 
@@ -121,7 +121,7 @@ class TestEngineInputAndOutput: XCTestCase
             // compare. If the engine stores the test argument as floating point, the read back value would not match the test argument
             XCTAssertEqual(testArgument.0, engineRegisterContent)
                         
-            engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.dropAll.rawValue)
         }
     }
 

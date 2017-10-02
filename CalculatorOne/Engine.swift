@@ -153,13 +153,10 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
 
     }
     
-
-
-    
     //MARK: - Core operations
-    private typealias OperationsTable = [String : OperationClass]
+    private typealias OperationsTable = [OperationCode : FunctionClass]
 
-    private enum OperationClass
+    private enum FunctionClass
     {
         case dropAll, nDrop, depth
         case copyStackToA, copyStackToB, copyAToStack, copyBToStack
@@ -179,251 +176,255 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     private var operations: OperationsTable =
     [
         // former typless operations
-        Symbols.dup.rawValue       : .unary2array( { (a: Double) -> [Double] in return ([a, a]) }),
-        Symbols.dup2.rawValue      : .binary2array({ (a: Double, b: Double) -> [Double] in return [b, a, b, a] }),
+        .dup       : .unary2array( { (a: Double) -> [Double] in return ([a, a]) }),
+        .dup2      : .binary2array({ (a: Double, b: Double) -> [Double] in return [b, a, b, a] }),
         
-        Symbols.drop.rawValue      : .unary2array(  { (a: Double) -> [Double] in return []}),
-        Symbols.dropAll.rawValue   : .dropAll,
-        Symbols.nDrop.rawValue     : .nDrop,
-        Symbols.depth.rawValue     : .depth,
-        Symbols.over.rawValue      : .binary2array({ (a: Double, b: Double) -> [Double] in return [b, a, b] }),
+        .drop      : .unary2array(  { (a: Double) -> [Double] in return []}),
+        .dropAll   : .dropAll,
+        .nDrop     : .nDrop,
+        .depth     : .depth,
+        .over      : .binary2array({ (a: Double, b: Double) -> [Double] in return [b, a, b] }),
         
-        Symbols.swap.rawValue      : .binary2array ({ (a: Double, b: Double) -> ([Double]) in return [a, b] }), /*swap*/
-        Symbols.nPick.rawValue     : .nPick,
+        .swap      : .binary2array ({ (a: Double, b: Double) -> ([Double]) in return [a, b] }), /*swap*/
+        .nPick     : .nPick,
         
-        Symbols.rotateDown.rawValue: .ternary2array ( { (a: Double, b: Double, c: Double) -> ([Double]) in return [a, c, b] }),
-        Symbols.rotateUp.rawValue  : .ternary2array ( { (a: Double, b: Double, c: Double) -> ([Double]) in return [b, a, c] }),
+        .rotateDown: .ternary2array ( { (a: Double, b: Double, c: Double) -> ([Double]) in return [a, c, b] }),
+        .rotateUp  : .ternary2array ( { (a: Double, b: Double, c: Double) -> ([Double]) in return [b, a, c] }),
         
-        Symbols.copyAToStack.rawValue : .copyAToStack,
-        Symbols.copyBToStack.rawValue : .copyBToStack,
-        Symbols.copyStackToA.rawValue : .copyStackToA,
-        Symbols.copyStackToB.rawValue : .copyStackToB,
+        .copyAToStack : .copyAToStack,
+        .copyBToStack : .copyBToStack,
+        .copyStackToA : .copyStackToA,
+        .copyStackToB : .copyStackToB,
 
         
         // former float operations
-        Symbols.π.rawValue :        .none2array( { () -> ([Double]) in return [Double.π]  }), 
-        Symbols.e.rawValue :        .none2array( { () -> ([Double]) in return [Double.e]  }),
-        Symbols.µ0.rawValue:        .none2array( { () -> ([Double]) in return [Double.µ0] }),
-        Symbols.epsilon0.rawValue:  .none2array( { () -> ([Double]) in return [Double.epsilon0] }),
-        Symbols.c0.rawValue:        .none2array( { () -> ([Double]) in return [Double.c0]  }),
-        Symbols.h.rawValue:         .none2array( { () -> ([Double]) in return [Double.h]  }),
-        Symbols.k.rawValue:         .none2array( { () -> ([Double]) in return [Double.k]  }),
-        Symbols.g.rawValue:         .none2array( { () -> ([Double]) in return [Double.g]  }),
-        Symbols.G.rawValue:         .none2array( { () -> ([Double]) in return [Double.G]  }),
+        .π :        .none2array( { () -> ([Double]) in return [Double.π]  }), 
+        .e :        .none2array( { () -> ([Double]) in return [Double.e]  }),
+        .µ0:        .none2array( { () -> ([Double]) in return [Double.µ0] }),
+        .epsilon0:  .none2array( { () -> ([Double]) in return [Double.epsilon0] }),
+        .c0:        .none2array( { () -> ([Double]) in return [Double.c0]  }),
+        .h:         .none2array( { () -> ([Double]) in return [Double.h]  }),
+        .k:         .none2array( { () -> ([Double]) in return [Double.k]  }),
+        .g:         .none2array( { () -> ([Double]) in return [Double.g]  }),
+        .G:         .none2array( { () -> ([Double]) in return [Double.G]  }),
         
-        Symbols.const7M68.rawValue :    .none2array( { () -> ([Double]) in return [ const_7M68] }), 
-        Symbols.const30M72.rawValue :   .none2array( { () -> ([Double]) in return [ const_30M72] }), 
-        Symbols.const122M88.rawValue :  .none2array( { () -> ([Double]) in return [ const_122M88] }), 
-        Symbols.const245M76.rawValue :  .none2array( { () -> ([Double]) in return [ const_245M76] }), 
-        Symbols.const153M6.rawValue :   .none2array( { () -> ([Double]) in return [ const_153M6] }), 
-        Symbols.const368M64.rawValue :  .none2array( { () -> ([Double]) in return [ const_368M64] }), 
-        Symbols.const1966M08.rawValue : .none2array( { () -> ([Double]) in return [ const_1966M08] }), 
-        Symbols.const2457M6.rawValue :  .none2array( { () -> ([Double]) in return [ const_2457M6] }), 
-        Symbols.const2949M12.rawValue : .none2array( { () -> ([Double]) in return [ const_2949M12] }), 
-        Symbols.const3072M0.rawValue :  .none2array( { () -> ([Double]) in return [ const_3072M0] }), 
-        Symbols.const3868M4.rawValue :  .none2array( { () -> ([Double]) in return [ const_3686M4] }), 
-        Symbols.const3932M16.rawValue : .none2array( { () -> ([Double]) in return [ const_3932M16] }), 
-        Symbols.const4915M2.rawValue :  .none2array( { () -> ([Double]) in return [ const_4915M2] }), 
-        Symbols.const5898M24.rawValue : .none2array( { () -> ([Double]) in return [ const_5898M24] }),
-        Symbols.const25M0.rawValue :    .none2array( { () -> ([Double]) in return [ const_25M0] }),
-        Symbols.const100M0.rawValue :   .none2array( { () -> ([Double]) in return [ const_100M0] }),
-        Symbols.const125M0.rawValue :   .none2array( { () -> ([Double]) in return [ const_125M0] }),
-        Symbols.const156M25.rawValue :  .none2array( { () -> ([Double]) in return [ const_156M25] }),
+        .const7M68 :    .none2array( { () -> ([Double]) in return [ const_7M68] }), 
+        .const30M72 :   .none2array( { () -> ([Double]) in return [ const_30M72] }), 
+        .const122M88 :  .none2array( { () -> ([Double]) in return [ const_122M88] }), 
+        .const245M76 :  .none2array( { () -> ([Double]) in return [ const_245M76] }), 
+        .const153M6 :   .none2array( { () -> ([Double]) in return [ const_153M6] }), 
+        .const368M64 :  .none2array( { () -> ([Double]) in return [ const_368M64] }), 
+        .const1966M08 : .none2array( { () -> ([Double]) in return [ const_1966M08] }), 
+        .const2457M6 :  .none2array( { () -> ([Double]) in return [ const_2457M6] }), 
+        .const2949M12 : .none2array( { () -> ([Double]) in return [ const_2949M12] }), 
+        .const3072M0 :  .none2array( { () -> ([Double]) in return [ const_3072M0] }), 
+        .const3868M4 :  .none2array( { () -> ([Double]) in return [ const_3686M4] }), 
+        .const3932M16 : .none2array( { () -> ([Double]) in return [ const_3932M16] }), 
+        .const4915M2 :  .none2array( { () -> ([Double]) in return [ const_4915M2] }), 
+        .const5898M24 : .none2array( { () -> ([Double]) in return [ const_5898M24] }),
+        .const25M0 :    .none2array( { () -> ([Double]) in return [ const_25M0] }),
+        .const100M0 :   .none2array( { () -> ([Double]) in return [ const_100M0] }),
+        .const125M0 :   .none2array( { () -> ([Double]) in return [ const_125M0] }),
+        .const156M25 :  .none2array( { () -> ([Double]) in return [ const_156M25] }),
         
-        Symbols.plus.rawValue     : .binary2array( { (a: Double, b: Double) -> [Double] in return 
+        .plus     : .binary2array( { (a: Double, b: Double) -> [Double] in return 
             [ Engine.add(b, a) ]  }),
         
-        Symbols.minus.rawValue    : .binary2array( { (a: Double, b: Double) -> [Double] in return 
+        .minus    : .binary2array( { (a: Double, b: Double) -> [Double] in return 
             [ Engine.subtract(b, a)] }),
         
-        Symbols.multiply.rawValue : .binary2array( { (a: Double, b: Double) -> [Double] in return 
+        .multiply : .binary2array( { (a: Double, b: Double) -> [Double] in return 
             [ Engine.multiply(b, a)] }),
         
-        Symbols.divide.rawValue   : .binary2array( { (a: Double, b: Double) -> [Double] in return 
+        .divide   : .binary2array( { (a: Double, b: Double) -> [Double] in return 
             [ Engine.divide(b, a)] }),
         
-        Symbols.yExpX.rawValue : .binary2array( { (a: Double, b: Double) -> [Double] in return 
+        .yExpX : .binary2array( { (a: Double, b: Double) -> [Double] in return 
             [ Engine.xExpY(of: b, exp: a)] }),
         
-        Symbols.logYX.rawValue : .binary2array( { (a: Double, b: Double) -> [Double] in return 
+        .logYX : .binary2array( { (a: Double, b: Double) -> [Double] in return 
             [Engine.logXBaseY(b, base: a)] }),
         
-        Symbols.nRoot.rawValue   : .binary2array( { (a: Double, b: Double) -> [Double] in return 
+        .nRoot   : .binary2array( { (a: Double, b: Double) -> [Double] in return 
             [Engine.nRoot(of: b, a)] }),
         
-        Symbols.eExpX.rawValue   : .unary2array(  { (a: Double) -> [Double] in return 
+        .eExpX   : .unary2array(  { (a: Double) -> [Double] in return 
             [Engine.eExpX(of: a)] }),
           
-        Symbols.tenExpX.rawValue : .unary2array( { (a: Double) -> [Double] in return 
+        .tenExpX : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.xExpY(of: 10.0, exp: a)] }),
         
-        Symbols.twoExpX.rawValue : .unary2array( { (a: Double) -> [Double] in return 
+        .twoExpX : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.xExpY(of: 2.0,  exp: a)] }),
         
-        Symbols.logE.rawValue    : .unary2array( { (a: Double) -> [Double] in return 
+        .logE    : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.logBaseE(of: a)] }),
         
-        Symbols.log10.rawValue   : .unary2array( { (a: Double) -> [Double] in return 
+        .log10   : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.logBase10(of: a)] }),
         
-        Symbols.log2.rawValue    : .unary2array( { (a: Double) -> [Double] in return 
+        .log2    : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.logBase2(of: a)] }),
         
-        Symbols.root.rawValue : .unary2array( { (a: Double)         -> [Double] in return  
+        .root : .unary2array( { (a: Double)         -> [Double] in return  
             [Engine.squareRoot(of: a)] }),
         
-        Symbols.thridRoot.rawValue :  .unary2array( { (a: Double)   -> [Double] in return  
+        .thridRoot :  .unary2array( { (a: Double)   -> [Double] in return  
             [Engine.cubicRoot(of: a)] }),
         
-        Symbols.reciprocal.rawValue: .unary2array( { (a: Double)       -> [Double] in return  
+        .reciprocal: .unary2array( { (a: Double)       -> [Double] in return  
             [Engine.reciprocal(of: a)] }),
         
-        Symbols.reciprocalSquare.rawValue: .unary2array( { (a: Double) -> [Double] in return  
+        .reciprocalSquare: .unary2array( { (a: Double) -> [Double] in return  
             [Engine.reciprocalSquare(of: a)] }), 
         
-        Symbols.square.rawValue : .unary2array( { (a: Double)         -> [Double] in return   
+        .square : .unary2array( { (a: Double)         -> [Double] in return   
             [Engine.square(of: a)] }),
         
-        Symbols.cubic.rawValue  : .unary2array( { (a: Double)         -> [Double] in return  
+        .cubic  : .unary2array( { (a: Double)         -> [Double] in return  
             [Engine.cubic(of: a)] }),
         
-        Symbols.invertSign.rawValue: .unary2array( { (a: Double) -> [Double] in return 
+        .invertSign: .unary2array( { (a: Double) -> [Double] in return 
             [Engine.invertSign(of: a)] }),
         
-        Symbols.sinus.rawValue  : .unary2array( { (a: Double) -> [Double] in return 
+        .sinus  : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.sinus(a)]  }),
         
-        Symbols.asinus.rawValue : .unary2array( { (a: Double) -> [Double] in return 
+        .asinus : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.arcSinus(a)] }),
         
-        Symbols.cosinus.rawValue  : .unary2array( { (a: Double) -> [Double] in return 
+        .cosinus  : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.cosinus(a)]  }),
         
-        Symbols.acosinus.rawValue : .unary2array( { (a: Double) -> [Double] in return 
+        .acosinus : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.arcCosine(a)] }),
         
-        Symbols.tangens.rawValue  : .unary2array( { (a: Double) -> [Double] in return 
+        .tangens  : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.tangens(a)]  }),
         
-        Symbols.atangens.rawValue : .unary2array( { (a: Double) -> [Double] in return 
+        .atangens : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.arcTangens(a)] }),
         
-        Symbols.cotangens.rawValue  : .unary2array( { (a: Double) -> [Double] in return 
+        .cotangens  : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.cotangens(a)]  }),
         
-        Symbols.acotangens.rawValue : .unary2array( { (a: Double) -> [Double] in return 
+        .acotangens : .unary2array( { (a: Double) -> [Double] in return 
             [Engine.arcCotangens(a)] }),
         
-        Symbols.sum.rawValue  : .array2array({ (s: [Double]) ->      [Double] in return 
+        .sum  : .array2array({ (s: [Double]) ->      [Double] in return 
             [Engine.sum(of: s) ]}),
         
-        Symbols.nSum.rawValue : .nArray2array({(s: [Double]) ->      [Double] in return 
+        .nSum : .nArray2array({(s: [Double]) ->      [Double] in return 
             [Engine.sum(of: s)]}),
         
-        Symbols.avg.rawValue  : .array2array({ (s: [Double]) ->      [Double] in return 
+        .avg  : .array2array({ (s: [Double]) ->      [Double] in return 
             [Engine.avg(of: s)]}),
         
-        Symbols.nAvg.rawValue : .nArray2array({ (s: [Double]) ->     [Double] in return 
+        .nAvg : .nArray2array({ (s: [Double]) ->     [Double] in return 
             [Engine.avg(of: s)]}),
         
-        Symbols.product.rawValue  : .array2array({ (s: [Double]) ->  [Double] in return 
+        .product  : .array2array({ (s: [Double]) ->  [Double] in return 
             [Engine.product(of: s)]}),
         
-        Symbols.nProduct.rawValue : .nArray2array({ (s: [Double]) -> [Double] in return 
+        .nProduct : .nArray2array({ (s: [Double]) -> [Double] in return 
             [Engine.product(of: s)]}),
         
-        Symbols.geoMean.rawValue  : .array2array({  (s: [Double]) -> [Double] in return 
+        .geoMean  : .array2array({  (s: [Double]) -> [Double] in return 
             [Engine.geometricalMean(of: s)]}),
         
-        Symbols.nGeoMean.rawValue : .nArray2array({ (s: [Double]) -> [Double] in return
+        .nGeoMean : .nArray2array({ (s: [Double]) -> [Double] in return
             [Engine.geometricalMean(of: s)]}),
         
-        Symbols.sigma.rawValue    : .array2array({  (s: [Double]) -> [Double] in return 
+        .sigma    : .array2array({  (s: [Double]) -> [Double] in return 
             [Engine.standardDeviation(of: s)]}),
         
-        Symbols.nSigma.rawValue   : .nArray2array({ (s: [Double]) -> [Double] in return 
+        .nSigma   : .nArray2array({ (s: [Double]) -> [Double] in return 
             [Engine.standardDeviation(of: s)]}),
         
-        Symbols.variance.rawValue : .array2array( { (s: [Double]) -> [Double] in return 
+        .variance : .array2array( { (s: [Double]) -> [Double] in return 
             [Engine.variance(of: s)]}),
         
-        Symbols.nVariance.rawValue: .nArray2array({ (s: [Double]) -> [Double] in return 
+        .nVariance: .nArray2array({ (s: [Double]) -> [Double] in return 
             [Engine.variance(of: s)]}),
         
-        Symbols.multiply66divide64.rawValue : .unary2array( { (a: Double)         -> [Double] in return  
+        .multiply66divide64 : .unary2array( { (a: Double)         -> [Double] in return  
             [Engine.m33d32(of: a)] }),
         
-        Symbols.multiply64divide66.rawValue : .unary2array( { (a: Double)         -> [Double] in return  
+        .multiply64divide66 : .unary2array( { (a: Double)         -> [Double] in return  
             [Engine.m32d33(of: a)] }),
     
-        Symbols.conv22dB.rawValue : .binary2array({ (a: Double, b: Double) -> [Double] in return 
+        .conv22dB : .binary2array({ (a: Double, b: Double) -> [Double] in return 
             [Engine.convertRatioToDB(x: a, y: b) ]}),
 
-        Symbols.random.rawValue : .none2array( { () -> ([Double]) in return 
+        .random : .none2array( { () -> ([Double]) in return 
             [Engine.randomNumber()] }),
     
-        Symbols.rect2polar.rawValue : .binary2array({ (a: Double, b: Double) -> [Double] in return 
+        .rect2polar : .binary2array({ (a: Double, b: Double) -> [Double] in return 
             [Engine.absoluteValueOfVector2(x: b, y: a), Engine.angleOfVector2(x: b, y: a)] }),
         
-        Symbols.polar2rect.rawValue : .binary2array({ (a: Double, b: Double) -> [Double] in return 
+        .polar2rect : .binary2array({ (a: Double, b: Double) -> [Double] in return 
             [b * Engine.cosinus(a), b * Engine.sinus(a) ] }),
         
-        Symbols.rad2deg.rawValue : .unary2array({ (a: Double) -> [Double] in return 
+        .rad2deg : .unary2array({ (a: Double) -> [Double] in return 
             [Engine.convertRad2Deg(rad: a)] }),
         
-        Symbols.deg2rad.rawValue : .unary2array({ (a: Double) -> [Double] in return 
+        .deg2rad : .unary2array({ (a: Double) -> [Double] in return 
             [Engine.convertDeg2Rad(deg: a)] }),
+        
+        .hypot : .binary2array( { (a: Double, b: Double) -> [Double] in return 
+            [Engine.hypothenusis(x: a, y: b)]
+        } ),
 
     // former integer Operations
-        Symbols.moduloN.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
+        .moduloN : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
             [Engine.integerModulo(x: b, y: a)] }),
     
-        Symbols.and.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
+        .and : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
             [Engine.integerBinaryAnd(x: a, y: b)] }),
         
-        Symbols.or.rawValue : .integerBinary2array({ (a: Int, b: Int) ->  [Int]  in return 
+        .or : .integerBinary2array({ (a: Int, b: Int) ->  [Int]  in return 
             [Engine.integerBinaryOr(x: a, y: b)] }),
         
-        Symbols.xor.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
+        .xor : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
             [Engine.integerBinaryXor(x: a, y: b)] }),
        
-        Symbols.nShiftLeft.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
+        .nShiftLeft : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
             [try Engine.integerBinaryShiftLeft(x: b, numberOfBits: a)] }),
         
-        Symbols.nShiftRight.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
+        .nShiftRight : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
             [try Engine.integerBinaryShiftRight(x: b, numberOfBits: a)] }),
         
-        Symbols.gcd.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
+        .gcd : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
             [Engine.gcd(of: a, b) ] }),
         
-        Symbols.lcm.rawValue : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
+        .lcm : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 
             [try Engine.lcm(of: a, b) ] }),
         
-        Symbols.invertBits.rawValue : .integerUnary2array( { (a: Int)  -> [Int] in return 
+        .invertBits : .integerUnary2array( { (a: Int)  -> [Int] in return 
             [~a]  }),
         
-        Symbols.factorial.rawValue : .integerUnary2array( { (a: Int)   -> [Int] in return 
+        .factorial : .integerUnary2array( { (a: Int)   -> [Int] in return 
             [Engine.factorial(of: a) ] }),
 
-        Symbols.shiftLeft.rawValue : .integerUnary2array( { (a: Int) -> [Int] in return
+        .shiftLeft : .integerUnary2array( { (a: Int) -> [Int] in return
             [a << 1] }),
         
-        Symbols.shiftRight.rawValue : .integerUnary2array( { (a: Int) -> [Int] in return  
+        .shiftRight : .integerUnary2array( { (a: Int) -> [Int] in return  
             [a >> 1] }),
 
-        Symbols.increment.rawValue: .integerUnary2array( { (a: Int)  -> [Int] in return  
+        .increment: .integerUnary2array( { (a: Int)  -> [Int] in return  
             [a + 1] }),
         
-        Symbols.decrement.rawValue: .integerUnary2array( { (a: Int)  -> [Int] in return  
+        .decrement: .integerUnary2array( { (a: Int)  -> [Int] in return  
             [a - 1] }),
                 
-        Symbols.primes.rawValue : .integerUnary2array( { (a: Int) -> [Int]  in return 
+        .primes : .integerUnary2array( { (a: Int) -> [Int]  in return 
             Engine.primeFactors(of: a) }),
                                                        
-        Symbols.countOnes.rawValue : .integerUnary2array( { (a: Int) -> [Int]  in return 
+        .countOnes : .integerUnary2array( { (a: Int) -> [Int]  in return 
             [Engine.integerCountOneBits(x: a) ] }),
         
-        Symbols.countZeros.rawValue : .integerUnary2array( { (a: Int) -> [Int]  in return 
+        .countZeros : .integerUnary2array( { (a: Int) -> [Int]  in return 
             [Engine.integerCountZeroBits(x: a) ] })
     ]
     
@@ -433,7 +434,14 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         // store the current stack for potential undo-operation
         addToRedoBuffer(item: .stack(stack.allOperands()))
         
-        let currentOperation: OperationClass? = operations[symbol]
+        let currentOperationCode: OperationCode? = OperationCode(rawValue: symbol)
+        
+        guard currentOperationCode != nil else 
+        {
+            throw EngineError.invalidOperation(symbol: symbol)            
+        }
+            
+        let currentOperation: FunctionClass? = operations[currentOperationCode!]
    
         guard currentOperation != nil else 
         { 

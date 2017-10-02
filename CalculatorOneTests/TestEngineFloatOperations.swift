@@ -33,13 +33,13 @@ class TestEngineFloatOperations: XCTestCase
     
     func testThatOperation_π_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.π.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.π.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "3.14159265358979")
     }
     
     func testThatOperation_e_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.e.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.e.rawValue)
         
         let engineResult = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
         let expectedResult = Double("2.718281828459045235360287471352662497757247093")
@@ -57,7 +57,7 @@ class TestEngineFloatOperations: XCTestCase
 
     func testThatOperation_µ0_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.µ0.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.µ0.rawValue)
         
         let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
         let expectedResult = Double("12.566370614E-7")
@@ -75,7 +75,7 @@ class TestEngineFloatOperations: XCTestCase
 
     func testThatOperation_epsilon0_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.epsilon0.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.epsilon0.rawValue)
         
         let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
         let expectedResult = Double("8.854187817E-12")
@@ -93,7 +93,7 @@ class TestEngineFloatOperations: XCTestCase
 
     func testThatOperation_c0_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.c0.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.c0.rawValue)
         
         let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
         let expectedResult = Double("2.99792458E8")
@@ -111,7 +111,7 @@ class TestEngineFloatOperations: XCTestCase
     
     func testThatOperation_h_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.h.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.h.rawValue)
         
         let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
         let expectedResult = Double("6.62607004081E-34")
@@ -129,7 +129,7 @@ class TestEngineFloatOperations: XCTestCase
 
     func testThatOperation_k_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.k.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.k.rawValue)
         
         let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
         let expectedResult = Double("1.3806485279E-23")
@@ -147,7 +147,7 @@ class TestEngineFloatOperations: XCTestCase
 
     func testThatOperation_g_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.g.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.g.rawValue)
         
         let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
         let expectedResult = Double("9.80665")
@@ -165,7 +165,7 @@ class TestEngineFloatOperations: XCTestCase
 
     func testThatOperation_G_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.G.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.G.rawValue)
         
         let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
         let expectedResult = Double("6.6740831E-11")
@@ -184,109 +184,109 @@ class TestEngineFloatOperations: XCTestCase
     
     func testThatOperation_Const7M68_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const7M68.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const7M68.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "7680000")
     }
 
     func testThatOperation_Const30M72_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const30M72.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const30M72.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "30720000")
     }
 
     func testThatOperation_Const122M88_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const122M88.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const122M88.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "122880000")
     }
 
     func testThatOperation_Const153M6_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const153M6.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const153M6.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "153600000")
     }
 
     func testThatOperation_Const245M76_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const245M76.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const245M76.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "245760000")
     }
 
     func testThatOperation_Const386M64_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const368M64.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const368M64.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "368640000")
     }
 
     func testThatOperation_Const25M0_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const25M0.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const25M0.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "25000000")
     }
 
     func testThatOperation_Const100M0_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const100M0.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const100M0.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "100000000")
     }
 
     func testThatOperation_Const156M25_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const156M25.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const156M25.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "156250000")
     }
 
     func testThatOperation_Const125M0_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const125M0.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const125M0.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "125000000")
     }
 
     func testThatOperation_Const1966M08_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const1966M08.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const1966M08.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "1966080000")
     }
     
     func testThatOperation_Const2456M7_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const2457M6.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const2457M6.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "2457600000")
     }
     
     func testThatOperation_Const2949M12_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const2949M12.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const2949M12.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "2949120000")
     }
     
     func testThatOperation_Const3072M0_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const3072M0.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const3072M0.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "3072000000")
     }
 
     func testThatOperation_Const3686M4_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const3868M4.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const3868M4.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "3686400000")
     }
 
     func testThatOperation_Const3932M16_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const3932M16.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const3932M16.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "3932160000")
     }
 
     func testThatOperation_Const4915M2_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const4915M2.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const4915M2.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "4915200000")
     }
     
     func testThatOperation_Const5898M24_WorksMathematicallyCorrect()
     {
-        engineDUT.userInputOperation(symbol: Symbols.const5898M24.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.const5898M24.rawValue)
         XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), "5898240000")
     }
 
@@ -307,11 +307,11 @@ class TestEngineFloatOperations: XCTestCase
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
             engineDUT.userInputEnter(numericalValue: test.1, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.plus.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.plus.rawValue)
             
             XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), test.2)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -331,11 +331,11 @@ class TestEngineFloatOperations: XCTestCase
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
             engineDUT.userInputEnter(numericalValue: test.1, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.multiply.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.multiply.rawValue)
             
             XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), test.2)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -355,11 +355,11 @@ class TestEngineFloatOperations: XCTestCase
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
             engineDUT.userInputEnter(numericalValue: test.1, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.minus.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.minus.rawValue)
             
             XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), test.2)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -379,11 +379,11 @@ class TestEngineFloatOperations: XCTestCase
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
             engineDUT.userInputEnter(numericalValue: test.1, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.divide.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.divide.rawValue)
             
             XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value), test.2)
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -416,7 +416,7 @@ class TestEngineFloatOperations: XCTestCase
             }
             
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -441,7 +441,7 @@ class TestEngineFloatOperations: XCTestCase
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
             engineDUT.userInputEnter(numericalValue: test.1, radix: Radix.decimal.value)
             
-            engineDUT.userInputOperation(symbol: Symbols.yExpX.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.yExpX.rawValue)
             
             let expectedResult = Double(test.2)
             let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -457,7 +457,7 @@ class TestEngineFloatOperations: XCTestCase
             }
             
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -480,7 +480,7 @@ class TestEngineFloatOperations: XCTestCase
             engineDUT.userInputEnter(numericalValue: test.1, radix: Radix.decimal.value)
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
             
-            engineDUT.userInputOperation(symbol: Symbols.logYX.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.logYX.rawValue)
             
             let expectedResult = Double(test.2)
             let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -496,7 +496,7 @@ class TestEngineFloatOperations: XCTestCase
             }
             
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -515,10 +515,10 @@ class TestEngineFloatOperations: XCTestCase
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.dup.rawValue)
-            engineDUT.userInputOperation(symbol: Symbols.dup.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.dup.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.dup.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.log2.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.log2.rawValue)
             
             var expectedResult = Double(test.1)
             var engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -533,11 +533,11 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
             // -------
             
-            engineDUT.userInputOperation(symbol: Symbols.logE.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.logE.rawValue)
             
             expectedResult = Double(test.2)
             engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -552,11 +552,11 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
             // -------
 
-            engineDUT.userInputOperation(symbol: Symbols.log10.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.log10.rawValue)
             
             expectedResult = Double(test.3)
             engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -571,7 +571,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
             // -------
 
@@ -594,9 +594,9 @@ class TestEngineFloatOperations: XCTestCase
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.dup.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.dup.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.reciprocal.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.reciprocal.rawValue)
             
             var expectedResult = Double(test.1)
             var engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -611,11 +611,11 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
             // -------
             
-            engineDUT.userInputOperation(symbol: Symbols.reciprocalSquare.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.reciprocalSquare.rawValue)
             
             expectedResult = Double(test.2)
             engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -630,7 +630,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
 
         }
     }
@@ -652,9 +652,9 @@ class TestEngineFloatOperations: XCTestCase
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.dup.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.dup.rawValue)
             
-            engineDUT.userInputOperation(symbol: Symbols.square.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.square.rawValue)
             
             var expectedResult = Double(test.1)
             var engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -669,11 +669,11 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
             // -------
             
-            engineDUT.userInputOperation(symbol: Symbols.cubic.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.cubic.rawValue)
             
             expectedResult = Double(test.2)
             engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -688,7 +688,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
         }
     }
@@ -709,7 +709,7 @@ class TestEngineFloatOperations: XCTestCase
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
             engineDUT.userInputEnter(numericalValue: test.1, radix: Radix.decimal.value)
             
-            engineDUT.userInputOperation(symbol: Symbols.nRoot.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.nRoot.rawValue)
             
             let expectedResult = Double(test.2)
             let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -725,7 +725,7 @@ class TestEngineFloatOperations: XCTestCase
             }
             
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
     
@@ -752,7 +752,7 @@ class TestEngineFloatOperations: XCTestCase
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.tenExpX.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.tenExpX.rawValue)
             
             let expectedResult = Double(test.1)
             let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -768,7 +768,7 @@ class TestEngineFloatOperations: XCTestCase
             }
             
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
@@ -795,7 +795,7 @@ class TestEngineFloatOperations: XCTestCase
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.twoExpX.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.twoExpX.rawValue)
             
             let expectedResult = Double(test.1)
             let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -811,7 +811,7 @@ class TestEngineFloatOperations: XCTestCase
             }
             
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
     
@@ -836,7 +836,7 @@ class TestEngineFloatOperations: XCTestCase
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.sinus.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.sinus.rawValue)
             
             var expectedResult = Double(test.1)
             var engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -851,7 +851,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.asinus.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.asinus.rawValue)
             
             expectedResult = Double(test.2)
             engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -888,7 +888,7 @@ class TestEngineFloatOperations: XCTestCase
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.cosinus.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.cosinus.rawValue)
             
             var expectedResult = Double(test.1)
             var engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -903,7 +903,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.acosinus.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.acosinus.rawValue)
             
             expectedResult = Double(test.2)
             engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -942,7 +942,7 @@ class TestEngineFloatOperations: XCTestCase
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.tangens.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.tangens.rawValue)
             
             var expectedResult = Double(test.1)
             var engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -957,7 +957,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.atangens.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.atangens.rawValue)
             
             expectedResult = Double(test.2)
             engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -996,7 +996,7 @@ class TestEngineFloatOperations: XCTestCase
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: Radix.decimal.value)
-            engineDUT.userInputOperation(symbol: Symbols.cotangens.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.cotangens.rawValue)
             
             var expectedResult = Double(test.1)
             var engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -1011,7 +1011,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.acotangens.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.acotangens.rawValue)
             
             expectedResult = Double(test.2)
             engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -1050,10 +1050,10 @@ class TestEngineFloatOperations: XCTestCase
                 engineDUT.userInputEnter(numericalValue: value, radix: 10)
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.sum.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.sum.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.1)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)            
         }
         
         
@@ -1063,12 +1063,12 @@ class TestEngineFloatOperations: XCTestCase
             engineDUT.userInputEnter(numericalValue: String(value), radix: 10)
         }
         
-        engineDUT.userInputOperation(symbol: Symbols.sum.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.sum.rawValue)
         
         XCTAssertEqual(engineDUT.numberOfRegistersWithContent(), 1)
         XCTAssertEqual(String(engineDUT.registerValue(inRegisterNumber: 0, radix: 10)), "5050")
         
-        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         
     }
     
@@ -1103,11 +1103,11 @@ class TestEngineFloatOperations: XCTestCase
             engineDUT.userInputEnter(numericalValue: test.1, radix: 10)
             
             // enter the operation
-            engineDUT.userInputOperation(symbol: Symbols.nSum.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.nSum.rawValue)
 
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.2)
-            engineDUT.userInputOperation(symbol: Symbols.dropAll.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.dropAll.rawValue)            
         }
         
         
@@ -1117,12 +1117,12 @@ class TestEngineFloatOperations: XCTestCase
             engineDUT.userInputEnter(numericalValue: String(value), radix: 10)
         }
         
-        engineDUT.userInputOperation(symbol: Symbols.sum.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.sum.rawValue)
         
         XCTAssertEqual(engineDUT.numberOfRegistersWithContent(), 1)
         XCTAssertEqual(String(engineDUT.registerValue(inRegisterNumber: 0, radix: 10)), "5050")
         
-        engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+        engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         
     }
 
@@ -1147,10 +1147,10 @@ class TestEngineFloatOperations: XCTestCase
                 engineDUT.userInputEnter(numericalValue: value, radix: 10)
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.avg.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.avg.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.1)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)            
         }
         
     }
@@ -1176,10 +1176,10 @@ class TestEngineFloatOperations: XCTestCase
                 engineDUT.userInputEnter(numericalValue: value, radix: 10)
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.product.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.product.rawValue)
             result = engineDUT.registerValue(inRegisterNumber: 0, radix: 10)
             XCTAssertEqual(result, test.1)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)            
         }
         
     }
@@ -1201,7 +1201,7 @@ class TestEngineFloatOperations: XCTestCase
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
-            engineDUT.userInputOperation(symbol: Symbols.root.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.root.rawValue)
             
             let expectedResult = Double(test.1)
             let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -1216,7 +1216,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
         
     }
@@ -1240,7 +1240,7 @@ class TestEngineFloatOperations: XCTestCase
         for test in testSet
         {
             engineDUT.userInputEnter(numericalValue: test.0, radix: 10)
-            engineDUT.userInputOperation(symbol: Symbols.thridRoot.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.thridRoot.rawValue)
             
             let expectedResult = Double(test.1)
             let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -1255,7 +1255,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
         
     }
@@ -1280,7 +1280,7 @@ class TestEngineFloatOperations: XCTestCase
                 engineDUT.userInputEnter(numericalValue: value, radix: 10)
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.geoMean.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.geoMean.rawValue)
             let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
             
             let expectedResult = Double(test.1)
@@ -1295,7 +1295,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
 
         }
     }
@@ -1317,7 +1317,7 @@ class TestEngineFloatOperations: XCTestCase
                 engineDUT.userInputEnter(numericalValue: value, radix: 10)
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.variance.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.variance.rawValue)
             let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
             
             let expectedResult = Double(test.1)
@@ -1332,7 +1332,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
         }
     }
@@ -1354,7 +1354,7 @@ class TestEngineFloatOperations: XCTestCase
                 engineDUT.userInputEnter(numericalValue: value, radix: 10)
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.sigma.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.sigma.rawValue)
             let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
             
             let expectedResult = Double(test.1)
@@ -1369,7 +1369,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
         }
     }
@@ -1380,7 +1380,7 @@ class TestEngineFloatOperations: XCTestCase
         // generate random numbers and test that they are in the range of 0 to 1.0
         for _ in 0..<100
         {
-            engineDUT.userInputOperation(symbol: Symbols.random.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.random.rawValue)
             
             if let engineResult = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
             {
@@ -1391,7 +1391,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
 
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
         }
     }
@@ -1403,10 +1403,10 @@ class TestEngineFloatOperations: XCTestCase
         {
             for _ in 0..<1000
             {
-                engineDUT.userInputOperation(symbol: Symbols.random.rawValue)
+                engineDUT.userInputOperation(symbol: OperationCode.random.rawValue)
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.avg.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.avg.rawValue)
             
             if let engineResult = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
             {
@@ -1417,7 +1417,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
     
@@ -1442,7 +1442,7 @@ class TestEngineFloatOperations: XCTestCase
             let expectedResultForAngle: Double = Double(testSet.3)!
             
             // will produce two results: angle and absolute value
-            engineDUT.userInputOperation(symbol: Symbols.rect2polar.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.rect2polar.rawValue)
             
             if let engineResultForAbsValue = Double(engineDUT.registerValue(inRegisterNumber: 1, radix: 10)),
                let engineResultForAngle =    Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
@@ -1455,8 +1455,8 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
         }
     }
@@ -1481,7 +1481,7 @@ class TestEngineFloatOperations: XCTestCase
             let expectedResultForY: Double = Double(testSet.3)!
             
             // will produce two results: angle and absolute value
-            engineDUT.userInputOperation(symbol: Symbols.polar2rect.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.polar2rect.rawValue)
             
             if let engineResultForX = Double(engineDUT.registerValue(inRegisterNumber: 1, radix: 10)),
                let engineResultForY = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
@@ -1495,8 +1495,8 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
         }
     }
@@ -1521,7 +1521,7 @@ class TestEngineFloatOperations: XCTestCase
             engineDUT.userInputEnter(numericalValue: testSet.0, radix: Radix.decimal.value)
             let expectedResultForRad: Double = Double(testSet.1)!
             
-            engineDUT.userInputOperation(symbol: Symbols.deg2rad.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.deg2rad.rawValue)
             
             
             if let engineResultForRad = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
@@ -1533,7 +1533,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
         }
     }
@@ -1558,7 +1558,7 @@ class TestEngineFloatOperations: XCTestCase
             engineDUT.userInputEnter(numericalValue: testSet.0, radix: Radix.decimal.value)
             let expectedResultForDeg: Double = Double(testSet.1)!
             
-            engineDUT.userInputOperation(symbol: Symbols.rad2deg.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.rad2deg.rawValue)
             
             
             if let engineResultForDeg = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
@@ -1570,7 +1570,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
         }
     }
@@ -1591,7 +1591,7 @@ class TestEngineFloatOperations: XCTestCase
             let expectedResult: Double = Double(testSet.2)!
 
             
-            engineDUT.userInputOperation(symbol: Symbols.conv22dB.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.conv22dB.rawValue)
             
             
             if let engineResult = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
@@ -1603,7 +1603,7 @@ class TestEngineFloatOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
             
         }
     }

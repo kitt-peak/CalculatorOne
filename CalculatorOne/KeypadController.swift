@@ -451,127 +451,127 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     {
         if modifier == .takeStackAsArgument
         {
-            operationSumButton.title        = Symbols.sum.rawValue
-            operationAverageButton.title    = Symbols.avg.rawValue
-            operationProductButton.title    = Symbols.product.rawValue
-            operationGeoMeanButton.title    = Symbols.geoMean.rawValue
-            operationSigmaButton.title      = Symbols.sigma.rawValue
-            operationVarianceButton.title   = Symbols.variance.rawValue
-            operationDropNButton.title      = Symbols.dropAll.rawValue
+            operationSumButton.title        = OperationCode.sum.rawValue
+            operationAverageButton.title    = OperationCode.avg.rawValue
+            operationProductButton.title    = OperationCode.product.rawValue
+            operationGeoMeanButton.title    = OperationCode.geoMean.rawValue
+            operationSigmaButton.title      = OperationCode.sigma.rawValue
+            operationVarianceButton.title   = OperationCode.variance.rawValue
+            operationDropNButton.title      = OperationCode.dropAll.rawValue
                         
         }
         else if modifier == .topOfStackContainsArgumentCount
         {
-            operationSumButton.title        = "n " + Symbols.sum.rawValue
-            operationAverageButton.title    = "n " + Symbols.avg.rawValue
-            operationProductButton.title    = "n " + Symbols.product.rawValue
-            operationGeoMeanButton.title    = "n " + Symbols.geoMean.rawValue
-            operationSigmaButton.title      = "n " + Symbols.sigma.rawValue
-            operationVarianceButton.title   = "n " + Symbols.variance.rawValue
-            operationDropNButton.title      = "n " + Symbols.drop.rawValue
+            operationSumButton.title        = "n " + OperationCode.sum.rawValue
+            operationAverageButton.title    = "n " + OperationCode.avg.rawValue
+            operationProductButton.title    = "n " + OperationCode.product.rawValue
+            operationGeoMeanButton.title    = "n " + OperationCode.geoMean.rawValue
+            operationSigmaButton.title      = "n " + OperationCode.sigma.rawValue
+            operationVarianceButton.title   = "n " + OperationCode.variance.rawValue
+            operationDropNButton.title      = "n " + OperationCode.drop.rawValue
         }
 
-        operationPlusButton.title           = Symbols.plus.rawValue
-        operationMinusButton.title          = Symbols.minus.rawValue
-        operationMultiplicationButton.title = Symbols.multiply.rawValue
-        operationDivisionButton.title       = Symbols.divide.rawValue
+        operationPlusButton.title           = OperationCode.plus.rawValue
+        operationMinusButton.title          = OperationCode.minus.rawValue
+        operationMultiplicationButton.title = OperationCode.multiply.rawValue
+        operationDivisionButton.title       = OperationCode.divide.rawValue
         
-        operationModuloNButton.title        = Symbols.moduloN.rawValue
-        operationLogicOrButton.title        = Symbols.and.rawValue
-        operationLogicOrButton.title        = Symbols.or.rawValue
-        operationLogicXorButton.title       = Symbols.xor.rawValue
+        operationModuloNButton.title        = OperationCode.moduloN.rawValue
+        operationLogicOrButton.title        = OperationCode.and.rawValue
+        operationLogicOrButton.title        = OperationCode.or.rawValue
+        operationLogicXorButton.title       = OperationCode.xor.rawValue
         
-        operationShiftLeftButton.title      = Symbols.shiftLeft.rawValue
-        operationShiftRightButton.title     = Symbols.shiftRight.rawValue
-        operationNShiftLeftButton.title     = Symbols.nShiftLeft.rawValue
-        operationNShiftRightButton.title    = Symbols.nShiftRight.rawValue
+        operationShiftLeftButton.title      = OperationCode.shiftLeft.rawValue
+        operationShiftRightButton.title     = OperationCode.shiftRight.rawValue
+        operationNShiftLeftButton.title     = OperationCode.nShiftLeft.rawValue
+        operationNShiftRightButton.title    = OperationCode.nShiftRight.rawValue
         
-        operationGCDButton.title            = Symbols.gcd.rawValue
-        operationLCMButton.title            = Symbols.lcm.rawValue
-        operationCountOnesButton.title      = Symbols.countOnes.rawValue
-        operationCountZerosButton.title      = Symbols.countZeros.rawValue
+        operationGCDButton.title            = OperationCode.gcd.rawValue
+        operationLCMButton.title            = OperationCode.lcm.rawValue
+        operationCountOnesButton.title      = OperationCode.countOnes.rawValue
+        operationCountZerosButton.title      = OperationCode.countZeros.rawValue
         
-        swapButton.title                    = Symbols.swap.rawValue
-        rotUpButton.title                   = Symbols.rotateUp.rawValue
-        rotDownButton.title                 = Symbols.rotateDown.rawValue
-        operationNPickButton.title          = Symbols.nPick.rawValue
+        swapButton.title                    = OperationCode.swap.rawValue
+        rotUpButton.title                   = OperationCode.rotateUp.rawValue
+        rotDownButton.title                 = OperationCode.rotateDown.rawValue
+        operationNPickButton.title          = OperationCode.nPick.rawValue
         
-        dupButton.title                     = Symbols.dup.rawValue
-        dup2Button.title                    = Symbols.dup2.rawValue
-        depthButton.title                   = Symbols.depth.rawValue
+        dupButton.title                     = OperationCode.dup.rawValue
+        dup2Button.title                    = OperationCode.dup2.rawValue
+        depthButton.title                   = OperationCode.depth.rawValue
         
-        operationFactorialButton.title      = Symbols.factorial.rawValue
-        operationPrimeFactorsButton.title   = Symbols.primes.rawValue
+        operationFactorialButton.title      = OperationCode.factorial.rawValue
+        operationPrimeFactorsButton.title   = OperationCode.primes.rawValue
         
-        operationπButton.title              = Symbols.π.rawValue
-        operationeButton.title              = Symbols.e.rawValue
-        operationc0Button.title             = Symbols.c0.rawValue
-        operationhButton.title              = Symbols.h.rawValue
-        operationkButton.title              = Symbols.k.rawValue
-        operationgButton.title              = Symbols.g.rawValue
-        operationGButton.title              = Symbols.G.rawValue
+        operationπButton.title              = OperationCode.π.rawValue
+        operationeButton.title              = OperationCode.e.rawValue
+        operationc0Button.title             = OperationCode.c0.rawValue
+        operationhButton.title              = OperationCode.h.rawValue
+        operationkButton.title              = OperationCode.k.rawValue
+        operationgButton.title              = OperationCode.g.rawValue
+        operationGButton.title              = OperationCode.G.rawValue
         
-        operationYPowerXButton.title        = Symbols.yExpX.rawValue
-        operationlogXYButton.title          = Symbols.logYX.rawValue
-        operation10PowerXButton.title       = Symbols.tenExpX.rawValue
-        operation2PowerXButton.title        = Symbols.twoExpX.rawValue
-        operationlog2Button.title           = Symbols.log2.rawValue
-        operationlogButton.title            = Symbols.logE.rawValue
-        operationlog10Button.title          = Symbols.log10.rawValue
+        operationYPowerXButton.title        = OperationCode.yExpX.rawValue
+        operationlogXYButton.title          = OperationCode.logYX.rawValue
+        operation10PowerXButton.title       = OperationCode.tenExpX.rawValue
+        operation2PowerXButton.title        = OperationCode.twoExpX.rawValue
+        operationlog2Button.title           = OperationCode.log2.rawValue
+        operationlogButton.title            = OperationCode.logE.rawValue
+        operationlog10Button.title          = OperationCode.log10.rawValue
         
-        operationNthRootButton.title        = Symbols.nRoot.rawValue
-        operationSquareRootButton.title     = Symbols.root.rawValue
-        operationThirdRootButton.title      = Symbols.thridRoot.rawValue
+        operationNthRootButton.title        = OperationCode.nRoot.rawValue
+        operationSquareRootButton.title     = OperationCode.root.rawValue
+        operationThirdRootButton.title      = OperationCode.thridRoot.rawValue
         
-        operationReciprocalButton.title     = Symbols.reciprocal.rawValue
-        operationReciprocalSquareButton.title = Symbols.reciprocalSquare.rawValue
-        operationSquareButton.title         = Symbols.square.rawValue
-        operationCubicButton.title          = Symbols.cubic.rawValue
+        operationReciprocalButton.title     = OperationCode.reciprocal.rawValue
+        operationReciprocalSquareButton.title = OperationCode.reciprocalSquare.rawValue
+        operationSquareButton.title         = OperationCode.square.rawValue
+        operationCubicButton.title          = OperationCode.cubic.rawValue
         
-        operationSineButton.title            = Symbols.sinus.rawValue
-        operationASineButton.title           = Symbols.asinus.rawValue
-        operationCosineButton.title          = Symbols.cosinus.rawValue
-        operationACosineButton.title         = Symbols.acosinus.rawValue
-        operationTangentButton.title         = Symbols.tangens.rawValue
-        operationATangentButton.title        = Symbols.atangens.rawValue
-        operationCotangentButton.title       = Symbols.cotangens.rawValue
-        operationACotangentButton.title      = Symbols.acotangens.rawValue
-        operationConvert2Value2dBButton.title = Symbols.conv22dB.rawValue
+        operationSineButton.title            = OperationCode.sinus.rawValue
+        operationASineButton.title           = OperationCode.asinus.rawValue
+        operationCosineButton.title          = OperationCode.cosinus.rawValue
+        operationACosineButton.title         = OperationCode.acosinus.rawValue
+        operationTangentButton.title         = OperationCode.tangens.rawValue
+        operationATangentButton.title        = OperationCode.atangens.rawValue
+        operationCotangentButton.title       = OperationCode.cotangens.rawValue
+        operationACotangentButton.title      = OperationCode.acotangens.rawValue
+        operationConvert2Value2dBButton.title = OperationCode.conv22dB.rawValue
         
         
-        operation7M68Button.title           = Symbols.const7M68.rawValue
-        operation30M72Button.title          = Symbols.const30M72.rawValue
-        operation122M88Button.title         = Symbols.const122M88.rawValue
-        operation153M6Button.title          = Symbols.const153M6.rawValue
-        operation245M76Button.title         = Symbols.const245M76.rawValue
+        operation7M68Button.title           = OperationCode.const7M68.rawValue
+        operation30M72Button.title          = OperationCode.const30M72.rawValue
+        operation122M88Button.title         = OperationCode.const122M88.rawValue
+        operation153M6Button.title          = OperationCode.const153M6.rawValue
+        operation245M76Button.title         = OperationCode.const245M76.rawValue
         //operation368M64Button.title       
-        operation1966M08Button.title        = Symbols.const1966M08.rawValue
-        operation2457M6Button.title         = Symbols.const2457M6.rawValue
-        operation2949M12Button.title        = Symbols.const2949M12.rawValue
+        operation1966M08Button.title        = OperationCode.const1966M08.rawValue
+        operation2457M6Button.title         = OperationCode.const2457M6.rawValue
+        operation2949M12Button.title        = OperationCode.const2949M12.rawValue
         //operation3939M16Button.title    
-        operation4915M2Button.title         = Symbols.const4915M2.rawValue
-        operation5898M24Button.title        = Symbols.const5898M24.rawValue
-        operation25M0Button.title           = Symbols.const25M0.rawValue
-        operation100M0Button.title          = Symbols.const100M0.rawValue
-        operation125M0Button.title          = Symbols.const125M0.rawValue
-        operation156M25Button.title         = Symbols.const156M25.rawValue
+        operation4915M2Button.title         = OperationCode.const4915M2.rawValue
+        operation5898M24Button.title        = OperationCode.const5898M24.rawValue
+        operation25M0Button.title           = OperationCode.const25M0.rawValue
+        operation100M0Button.title          = OperationCode.const100M0.rawValue
+        operation125M0Button.title          = OperationCode.const125M0.rawValue
+        operation156M25Button.title         = OperationCode.const156M25.rawValue
 
-        operationSignChangeButton.title     = Symbols.invertSign.rawValue
-        operationDropButton.title           = Symbols.drop.rawValue
-        operationOverButton.title           = Symbols.over.rawValue
+        operationSignChangeButton.title     = OperationCode.invertSign.rawValue
+        operationDropButton.title           = OperationCode.drop.rawValue
+        operationOverButton.title           = OperationCode.over.rawValue
         
-        operationCardesian2polar.title      = Symbols.rect2polar.rawValue
-        operationPolar2cardesian.title      = Symbols.polar2rect.rawValue
+        operationCardesian2polar.title      = OperationCode.rect2polar.rawValue
+        operationPolar2cardesian.title      = OperationCode.polar2rect.rawValue
         
-        operationDeg2RadButton.title        = Symbols.deg2rad.rawValue
-        operationRad2DegButton.title        = Symbols.rad2deg.rawValue
+        operationDeg2RadButton.title        = OperationCode.deg2rad.rawValue
+        operationRad2DegButton.title        = OperationCode.rad2deg.rawValue
         
-        undoButton.title                    = Symbols.undo.rawValue
-        redoButton.title                    = Symbols.redo.rawValue
+        undoButton.title                    = OperationCode.undo.rawValue
+        redoButton.title                    = OperationCode.redo.rawValue
         
-        exponentPlusButton.title            = Symbols.posExp.rawValue
-        exponentMinusButton.title           = Symbols.negExp.rawValue
-        enterButton.title                   = Symbols.enter.rawValue
+        exponentPlusButton.title            = OperationCode.posExp.rawValue
+        exponentMinusButton.title           = OperationCode.negExp.rawValue
+        enterButton.title                   = OperationCode.enter.rawValue
         
         updateOperationKeyStatus()
     }
@@ -764,8 +764,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
 
         switch newDigit 
         {
-        case Symbols.posExp.rawValue: newDigit = "e"
-        case Symbols.negExp.rawValue: newDigit = "e-"
+        case OperationCode.posExp.rawValue: newDigit = "e"
+        case OperationCode.negExp.rawValue: newDigit = "e-"
         default: break
         }
                 

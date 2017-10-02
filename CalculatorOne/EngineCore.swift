@@ -207,6 +207,10 @@ extension Engine
         return atan2(y, x)
     }
 
+    class func hypothenusis(x: Double, y: Double) -> Double
+    {
+        return hypot(x, y)
+    }
     
     class func sum(of a: [Double]) -> Double 
     { 

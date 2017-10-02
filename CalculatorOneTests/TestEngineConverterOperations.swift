@@ -47,7 +47,7 @@ class TestEngineConverterOperations: XCTestCase
         {
             engineDUT.userInputEnter(numericalValue: testValue.0, radix: Radix.decimal.value)
             
-            engineDUT.userInputOperation(symbol: Symbols.multiply66divide64.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.multiply66divide64.rawValue)
             
             let expectedResult = Double(testValue.1)
             let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -62,7 +62,7 @@ class TestEngineConverterOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
 
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
     
@@ -80,7 +80,7 @@ class TestEngineConverterOperations: XCTestCase
         {
             engineDUT.userInputEnter(numericalValue: testValue.0, radix: Radix.decimal.value)
             
-            engineDUT.userInputOperation(symbol: Symbols.multiply64divide66.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.multiply64divide66.rawValue)
             
             let expectedResult = Double(testValue.1)
             let engineResult   = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: Radix.decimal.value))
@@ -95,7 +95,7 @@ class TestEngineConverterOperations: XCTestCase
                 XCTFail("Test failure: could not convert string value to Double value")
             }
             
-            engineDUT.userInputOperation(symbol: Symbols.drop.rawValue)
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
         }
     }
 
