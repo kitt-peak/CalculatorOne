@@ -1576,7 +1576,7 @@ class TestEngineFloatOperations: XCTestCase
     }
     
 
-    func testThatCalculatesCorrectly()
+    func testThatRatioToDBCalculatesCorrectly()
     {
         let testSets: [(String, String, String)] = 
             [   // value1                   value2                  20*log(value1 / value 2)
@@ -1608,6 +1608,39 @@ class TestEngineFloatOperations: XCTestCase
         }
     }
 
+    func testThatHypothenusisalculatesCorrectly()
+    {
+        let testSets: [(String, String, String)] = 
+            [   // value1                   value2                  sqrt(value1*value1 + value2*value2)
+                ("0.0",                     "0.0",                  "0.0"),            
+                ("3.0",                     "4.0",                  "5.0"),            
+                ("-3.0",                    "-4.0",                 "5.0"),            
+                ("3.0",                     "-4.0",                 "5.0"),            
+                ("-3.0",                    "4.0",                  "5.0"),            
+            ]
+        
+        for testSet in testSets
+        {
+            engineDUT.userInputEnter(numericalValue: testSet.0, radix: Radix.decimal.value)
+            engineDUT.userInputEnter(numericalValue: testSet.1, radix: Radix.decimal.value)
+            let expectedResult: Double = Double(testSet.2)!
+            
+            
+            engineDUT.userInputOperation(symbol: OperationCode.hypot.rawValue)
+            
+            if let engineResult = Double(engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
+            {
+                XCTAssertEqual(engineResult, expectedResult, accuracy: accuracy)
+            }
+            else
+            {
+                XCTFail("Test failure: could not convert string value to Double value")
+            }
+            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
+            
+        }
+    }
     
     
     
