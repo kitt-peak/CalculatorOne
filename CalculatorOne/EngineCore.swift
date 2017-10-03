@@ -398,6 +398,28 @@ extension Engine
         return x.bitWidth - x.nonzeroBitCount
     }
 
+    class func roundLowToInteger(x: Double) -> Double
+    {
+        return x.rounded(FloatingPointRoundingRule.towardZero)
+    }
+
+    class func roundToNearestInteger(x: Double) -> Double
+    {
+        return x.rounded(FloatingPointRoundingRule.toNearestOrEven)
+    }
     
+    class func roundLowToInteger(s: [Double]) -> [Double]
+    {
+        return s.map({ (x) -> Double in 
+            return roundLowToInteger(x: x)
+        })
+    }
+    
+    class func roundToNearestInteger(s: [Double]) -> [Double]
+    {
+        return s.map({ (x) -> Double in
+            return roundToNearestInteger(x: x)
+        })
+    }
     
  }

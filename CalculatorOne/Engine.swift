@@ -372,8 +372,19 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             [Engine.convertDeg2Rad(deg: a)] }),
         
         .hypot : .binary2array( { (a: Double, b: Double) -> [Double] in return 
-            [Engine.hypothenusis(x: a, y: b)]
-        } ),
+            [Engine.hypothenusis(x: a, y: b)] }),
+        
+        .convert2Int : .unary2array( { (a: Double) -> [Double] in return 
+            [Engine.roundLowToInteger(x: a)] }),
+
+        .round2Int : .unary2array( { (a: Double) -> [Double] in return 
+            [Engine.roundToNearestInteger(x: a)] }),
+         
+        .convertStack2Int: .array2array( { (s: [Double]) -> [Double] in return 
+            Engine.roundLowToInteger(s: s) }),
+
+        .roundStack2Int: .array2array( { (s: [Double]) -> [Double] in return 
+            Engine.roundToNearestInteger(s: s) }),
 
     // former integer Operations
         .moduloN : .integerBinary2array({ (a: Int, b: Int) -> [Int] in return 

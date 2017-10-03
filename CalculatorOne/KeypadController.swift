@@ -119,6 +119,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     @IBOutlet weak var operationThirdRootButton: NSButton!
     @IBOutlet weak var operationNthRootButton: NSButton!
     @IBOutlet weak var operationRandomFloatNumberButton: NSButton!
+    @IBOutlet weak var operationHypothenusisButton: NSButton!
     
     @IBOutlet weak var operationAverageButton: NSButton!
     @IBOutlet weak var operationProductButton: NSButton!
@@ -189,6 +190,11 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     
     @IBOutlet weak var operationRad2DegButton: NSButton!
     @IBOutlet weak var operationDeg2RadButton: NSButton!
+    
+    @IBOutlet weak var operationConvert2IntButton: NSButton!
+    @IBOutlet weak var operationConvertStack2IntButton: NSButton!
+    @IBOutlet weak var operationRound2IntButton: NSButton!
+    @IBOutlet weak var operationRoundStack2IntButton: NSButton!
     
     @IBOutlet weak var rotUpButton: NSButton!
     @IBOutlet weak var rotDownButton: NSButton!
@@ -518,6 +524,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationlog2Button.title           = OperationCode.log2.rawValue
         operationlogButton.title            = OperationCode.logE.rawValue
         operationlog10Button.title          = OperationCode.log10.rawValue
+        operationHypothenusisButton.title   = OperationCode.hypot.rawValue
         
         operationNthRootButton.title        = OperationCode.nRoot.rawValue
         operationSquareRootButton.title     = OperationCode.root.rawValue
@@ -538,6 +545,10 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         operationACotangentButton.title      = OperationCode.acotangens.rawValue
         operationConvert2Value2dBButton.title = OperationCode.conv22dB.rawValue
         
+        operationConvert2IntButton.title = OperationCode.convert2Int.rawValue
+        operationConvertStack2IntButton.title = OperationCode.convertStack2Int.rawValue
+        operationRound2IntButton.title = OperationCode.round2Int.rawValue
+        operationRoundStack2IntButton.title = OperationCode.roundStack2Int.rawValue
         
         operation7M68Button.title           = OperationCode.const7M68.rawValue
         operation30M72Button.title          = OperationCode.const30M72.rawValue
@@ -707,7 +718,13 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
         operationCardesian2polar.isEnabled  = enableBinaryFloatOperations
         operationPolar2cardesian.isEnabled  = enableBinaryFloatOperations
+        operationHypothenusisButton.isEnabled = enableBinaryFloatOperations
         
+        operationConvertStack2IntButton.isEnabled = isFloatingPointDisplayEnabled && enableUnaryFloatOperations
+        operationConvert2IntButton.isEnabled = isFloatingPointDisplayEnabled && enableUnaryFloatOperations
+        operationRoundStack2IntButton.isEnabled = isFloatingPointDisplayEnabled && enableUnaryFloatOperations
+        operationRound2IntButton.isEnabled = isFloatingPointDisplayEnabled && enableUnaryFloatOperations
+
         operationRad2DegButton.isEnabled    = enableUnaryFloatOperations
         operationDeg2RadButton.isEnabled    = enableUnaryFloatOperations
                 

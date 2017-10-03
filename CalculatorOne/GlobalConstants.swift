@@ -252,6 +252,9 @@ enum OperationCode: String
     case enter  = "enter"
     
     case rect2polar = "2 c→p",      polar2rect = "2 p→c"
+    
+    case convert2Int = "→.0",  convertStack2Int = "䷀→.0"
+    case round2Int   = "→Int", roundStack2Int = "䷀→Int"
     //case Λ = "Λ", k0 = "k₀"
 }
 

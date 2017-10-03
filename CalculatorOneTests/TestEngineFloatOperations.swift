@@ -1642,8 +1642,156 @@ class TestEngineFloatOperations: XCTestCase
         }
     }
     
+    func testThatRoundToLowerIntegerWorksCorrectly()
+    {
+        let testSets: [(String, String)] = 
+            [   // value                    value rounded to lower integer 
+                ("0.0",                     "0"),                
+                ("0.785398163397448",       "0"),
+                ("1.4",                     "1"),
+                ("1.5",                     "1"),
+                ("1.6",                     "1"),
+                ("2.4",                     "2"),
+                ("2.5",                     "2"),
+                ("2.6",                     "2"),
+                ("-1.4",                    "-1"),
+                ("-1.5",                    "-1"),
+                ("-1.6",                    "-1"),
+                ("-2.4",                    "-2"),
+                ("-2.5",                    "-2"),
+                ("-2.6",                    "-2"),
+            ]
+
+        for testSet in testSets
+        {
+            engineDUT.userInputEnter(numericalValue: testSet.0, radix: Radix.decimal.value)            
+            engineDUT.userInputOperation(symbol: OperationCode.convert2Int.rawValue)
+            
+            XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: 10), testSet.1)
+            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
+        }        
+    }
     
+    
+    func testThatRoundStackToLowerIntegerWorksCorrectly()
+    {
+        let testSets: [([String], [String])] = 
+            [   // value array                value array rounded to lower integer
+                (["0.0"],                     ["0"]),                
+                (["0.785398163397448"],       ["0"]),
+                (["1.4","1.5","1.6"],         ["1", "1", "1"]),
+                (["2.4","2.5","2.6"],         ["2", "2", "2"]),
+                (["-1.4","-1.5","-1.6"],      ["-1", "-1", "-1"]),
+                (["-2.4","-2.5","-2.6"],      ["-2", "-2", "-2"]),
+                
+                ]
+        
+        for testSet in testSets
+        {
+            let expectedStackDepth: Int = testSet.0.count
+            
+            for testValue in testSet.0
+            {
+                engineDUT.userInputEnter(numericalValue: testValue, radix: Radix.decimal.value)                            
+            }
+            
+            engineDUT.userInputOperation(symbol: OperationCode.convertStack2Int.rawValue)
+
+            // test the expected number of results that the convertStack2Int operation put on the stack
+            engineDUT.userInputOperation(symbol: OperationCode.depth.rawValue)
+            XCTAssertEqual(String(expectedStackDepth), engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
+            
+            // remove the "depth" value from the stack
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
+            
+            // test the results, one by one
+            for expectedValue in testSet.1.reversed()
+            {
+                XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: 10), expectedValue)
+            }
+
+            engineDUT.userInputOperation(symbol: OperationCode.dropAll.rawValue)
+        }        
+    }
+
+    
+    
+    func testThatRoundToNearestIntegerWorksCorrectly()
+    {
+        let testSets: [(String, String)] = 
+            [   // value                    value rounded to nearest integer 
+                ("0.0",                     "0"),                
+                ("0.785398163397448",       "1"),
+                ("1.4",                     "1"),
+                ("1.5",                     "2"),
+                ("1.6",                     "2"),
+                ("2.4",                     "2"),
+                ("2.5",                     "2"),
+                ("2.6",                     "3"),
+                ("-1.4",                    "-1"),
+                ("-1.5",                    "-2"),
+                ("-1.6",                    "-2"),
+                ("-2.4",                    "-2"),
+                ("-2.5",                    "-2"),
+                ("-2.6",                    "-3"),
+                ]
+        
+        for testSet in testSets
+        {
+            engineDUT.userInputEnter(numericalValue: testSet.0, radix: Radix.decimal.value)            
+            engineDUT.userInputOperation(symbol: OperationCode.round2Int.rawValue)
+            
+            XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: 10), testSet.1)
+            
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
+        }        
+    }
+
+
+    func testThatRoundStackToNearestIntegerWorksCorrectly()
+    {
+        let testSets: [([String], [String])] = 
+            [   // value array                value array rounded to nearest integer
+                (["0.0"],                     ["0"]),                
+                (["0.785398163397448"],       ["1"]),
+                (["1.4","1.5","1.6"],         ["1", "2", "2"]),
+                (["2.4","2.5","2.6"],         ["2", "2", "3"]),
+                (["-1.4","-1.5","-1.6"],      ["-1", "-2", "-2"]),
+                (["-2.4","-2.5","-2.6"],      ["-2", "-2", "-3"]),
+                
+                ]
+        
+        for testSet in testSets
+        {
+            let expectedStackDepth: Int = testSet.0.count
+            
+            for testValue in testSet.0
+            {
+                engineDUT.userInputEnter(numericalValue: testValue, radix: Radix.decimal.value)                            
+            }
+            
+            engineDUT.userInputOperation(symbol: OperationCode.roundStack2Int.rawValue)
+            
+            // test the expected number of results that the convertStack2Int operation put on the stack
+            engineDUT.userInputOperation(symbol: OperationCode.depth.rawValue)
+            XCTAssertEqual(String(expectedStackDepth), engineDUT.registerValue(inRegisterNumber: 0, radix: 10))
+            
+            // remove the "depth" value from the stack
+            engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
+            
+            // test the results, one by one
+            
+            for expectedValue in testSet.1.reversed()
+            {
+                XCTAssertEqual(engineDUT.registerValue(inRegisterNumber: 0, radix: 10), expectedValue)
+                engineDUT.userInputOperation(symbol: OperationCode.drop.rawValue)
+            }            
+        } 
+    }
     
 }
+
+
 
 
