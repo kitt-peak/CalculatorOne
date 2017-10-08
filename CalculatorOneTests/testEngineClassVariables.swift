@@ -9,7 +9,7 @@
 import XCTest
 @testable import CalculatorOne
 
-class testEngineClassVariables: XCTestCase
+class TestEngineClassVariables: XCTestCase
 {
     var engineDUT: Engine!
     

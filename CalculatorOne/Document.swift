@@ -250,9 +250,9 @@ class Document: NSDocument, DocumentLifeCycle
                         return true
                     }
                 }
-                    
-                return false                
             }
+
+            return false
         }
         
         return super.validateUserInterfaceItem(item)

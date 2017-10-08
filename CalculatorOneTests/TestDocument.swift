@@ -269,6 +269,103 @@ class TestDocument: XCTestCase
         }
     }
 
+    func testThatCopyMenuItemIsValidatedCorrectlyFalseWhenStackIsEmpty()
+    {
+        let copyMenuItem: NSMenuItem = makeMenuItemWithTitle(GlobalConstants.PasteboardCopyCommand.topStackElement)
+
+        // engine has no stack elements, expecting copy menu to validate false
+        XCTAssertEqual(false, dut.validateUserInterfaceItem(copyMenuItem))
+    }
+
+    func testThatCopyStackMenuItemIsValidatedCorrectlyFalseWhenStackIsEmpty()
+    {
+        let copyMenuItem: NSMenuItem = makeMenuItemWithTitle(GlobalConstants.PasteboardCopyCommand.entireStack)
+
+        // engine has no stack elements, expecting copy menu to validate false
+        XCTAssertEqual(false, dut.validateUserInterfaceItem(copyMenuItem))
+    }
+
+
+    func testThatCopyMenuItemIsValidatedCorrectlyTrueWhenStackIsNotEmpty()
+    {
+        let copyMenuItem: NSMenuItem = makeMenuItemWithTitle(GlobalConstants.PasteboardCopyCommand.topStackElement)
+        let copyStackMenuItem: NSMenuItem = makeMenuItemWithTitle(GlobalConstants.PasteboardCopyCommand.entireStack)
+
+        XCTAssertNotNil(dut.engine)
+
+        dut.engine.userInputEnter(numericalValue: "42", radix: 10)
+
+        // engine has one stack element, expecting copy menu to validate true
+        XCTAssertEqual(true, dut.validateUserInterfaceItem(copyMenuItem))
+        XCTAssertEqual(true, dut.validateUserInterfaceItem(copyStackMenuItem))
+    }
+
+    func testThatPasteMenuItemValidatesCorrectlyTrueIfAValidNumericalStringIsOnThePasteboard()
+    {
+        XCTAssertNotNil(dut.engine)
+        let pasteboard: NSPasteboard = NSPasteboard.general
+
+        //                                   input values              expected result
+        let testValues: [String] = ["42",
+                                    "-32 -42",
+                                    "? 4",   // "4" is a valid numberical string, the other characters are ignored
+                                    "0.1234 -0.1234 1.0E1 -1E-1"
+        ]
+
+        for testValue in testValues
+        {
+            pasteboard.clearContents()
+
+            pasteNumericalValue(numericalValue: testValue)
+
+            // mock up a menu command
+            let pasteMenuItem: NSMenuItem = makeMenuItemWithTitle(GlobalConstants.PasteboardPasteCommand.paste)
+
+            XCTAssertEqual(true, dut.validateUserInterfaceItem(pasteMenuItem))
+        }
+    }
+
+    func testThatPasteMenuItemValidatesCorrectlyFalseIfAInvalidNumericalStringIsOnThePasteboard()
+    {
+        XCTAssertNotNil(dut.engine)
+        let pasteboard: NSPasteboard = NSPasteboard.general
+
+        //                                   input values              expected result
+        let testValues: [String] = ["-",
+                                    "One",
+                                    "A B C",
+                                    "XX0.1234-0.12341.0E1-1E-1"
+        ]
+
+        for testValue in testValues
+        {
+            pasteboard.clearContents()
+
+            pasteNumericalValue(numericalValue: testValue)
+
+            // mock up a menu command
+            let pasteMenuItem: NSMenuItem = makeMenuItemWithTitle(GlobalConstants.PasteboardPasteCommand.paste)
+
+            XCTAssertEqual(false, dut.validateUserInterfaceItem(pasteMenuItem))
+        }
+    }
+
+
+    func testThatAnInValidMenuItemCorrectlyValidatesFalse()
+    {
+        XCTAssertNotNil(dut.engine)
+        let pasteboard: NSPasteboard = NSPasteboard.general
+
+        pasteboard.clearContents()
+
+        pasteNumericalValue(numericalValue: "42")
+
+        // mock up a menu command
+        let invalidPasteMenuItem: NSMenuItem = makeMenuItemWithTitle("Invalid")
+
+        XCTAssertEqual(false, dut.validateUserInterfaceItem(invalidPasteMenuItem))
+    }
+
 
     func pasteNumericalValue(numericalValue: String)
     {
