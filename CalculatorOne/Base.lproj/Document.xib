@@ -3676,7 +3676,7 @@ CA
                 <constraint firstItem="GME-5F-UNJ" firstAttribute="leading" secondItem="POc-wc-Mgs" secondAttribute="leading" id="Wnd-V6-j5u"/>
                 <constraint firstItem="GME-5F-UNJ" firstAttribute="top" secondItem="POc-wc-Mgs" secondAttribute="top" id="k95-zz-gCF"/>
             </constraints>
-            <point key="canvasLocation" x="997" y="34"/>
+            <point key="canvasLocation" x="997" y="105"/>
         </customView>
         <levelIndicator verticalHuggingPriority="750" id="yyX-pd-lER">
             <rect key="frame" x="0.0" y="0.0" width="185" height="16"/>

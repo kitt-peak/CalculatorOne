@@ -67,6 +67,8 @@ class GlobalConstants
     // make this a singleton
     static let shared: GlobalConstants = GlobalConstants()
 
+    
+    
     private init() 
     { 
         digitStrip = DigitStrip()
@@ -175,6 +177,11 @@ class GlobalConstants
     }
 }
 
+struct CopyCommand 
+{
+    static let copyTopStackElement = "Copy Top Stack Elememt"
+    static let copyStack = "Copy Stack"
+}
 
 enum GlobalNotification: String
 {

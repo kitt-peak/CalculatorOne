@@ -12,11 +12,17 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate 
 {
+    @IBOutlet weak var copyStackMenuItem: NSMenuItem!
+    @IBOutlet weak var copyTopStackMenuItem: NSMenuItem!
 
+    
     var documents: [Document] { return NSDocumentController.shared.documents as! [Document] }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) 
     {
+        copyTopStackMenuItem.title = CopyCommand.copyTopStackElement
+        copyStackMenuItem.title = CopyCommand.copyStack
+        
         // Insert code here to initialize your application
         for document in documents
         {

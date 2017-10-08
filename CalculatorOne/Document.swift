@@ -183,14 +183,14 @@ class Document: NSDocument, DocumentLifeCycle
         {
             let menuItem = sender as! NSMenuItem
             
-            if menuItem.title == "Copy Top Stack"
+            if menuItem.title == CopyCommand.copyTopStackElement
             {
                 let valueToCopy = engine.registerValue(inRegisterNumber: 0, radix: 10)
                 let pasteBoard = NSPasteboard.general
                 pasteBoard.clearContents()
                 pasteBoard.writeObjects([valueToCopy as NSPasteboardWriting])
             }
-            else if menuItem.title == "Copy Stack"
+            else if menuItem.title == CopyCommand.copyStack
             {
                 let countStackItems: Int = Int(engine.numberOfRegistersWithContent())
                 var valuesToCopy: [String] = [String]()
