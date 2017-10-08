@@ -298,7 +298,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
     func documentDidOpen()
     {
         /// Receive a notification from the engine posting new results
-        NotificationCenter.default.addObserver(forName: GlobalNotification.newEngineResult.name, object: nil, queue: nil) 
+        NotificationCenter.default.addObserver(forName: GlobalConstants.InterObjectNotification.newEngineResult.name, object: nil, queue: nil)
         { /*[unowned self]*/ (note) in
             guard self.document != nil else { return }
             
@@ -314,7 +314,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
 
         /// Receive error notifications
-        NotificationCenter.default.addObserver(forName: GlobalNotification.newError.name, object: nil, queue: nil) 
+        NotificationCenter.default.addObserver(forName: GlobalConstants.InterObjectNotification.newError.name, object: nil, queue: nil)
         { (note) in
             guard self.document != nil else { return }
             guard note.object as? Document == self.document else { return }
@@ -350,13 +350,13 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             // supress new digit setting. This flag is set true if digits are set programmatically
             guard self.document != nil else { return }            
             
-            self.document.currentSaveDataSet[Document.ConfigurationKey.extraOperationsViewYPosition.rawValue] = self.extraOperationsView.contentView.bounds.origin.y
+            self.document.currentSaveDataSet[Document.ConfigurationKey.extraOperationsViewYPosition] = self.extraOperationsView.contentView.bounds.origin.y
             
         }
 
         userChangedRadix(sender: radixSelector)
 
-        if let yPos = document.currentSaveDataSet[Document.ConfigurationKey.extraOperationsViewYPosition.rawValue] as? CGFloat
+        if let yPos = document.currentSaveDataSet[Document.ConfigurationKey.extraOperationsViewYPosition] as? CGFloat
         {
             extraOperationsView.contentView.bounds.origin.y = yPos
             
@@ -431,7 +431,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         
         displayController.changeRadix(newRadix)            
         
-        document.currentSaveDataSet[Document.ConfigurationKey.radix.rawValue] = newRadix.rawValue
+        document.currentSaveDataSet[Document.ConfigurationKey.radix] = newRadix.rawValue
     }
     
     
@@ -792,7 +792,7 @@ class KeypadController: NSObject, DependendObjectLifeCycle
         print(self)
                 
         // display the composed user input as string
-        let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.name, object: document, userInfo: [GlobalKey.numbericString.name : digitsComposing])
+        let updateUINote: Notification = Notification(name: GlobalConstants.InterObjectNotification.newKeypadEntry.name, object: document, userInfo: [GlobalConstants.Keys.numbericString.name : digitsComposing])
         NotificationCenter.default.post(updateUINote)
     }
     
@@ -807,8 +807,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             print(self)
 
             // display the string 
-            let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.name, object: document, 
-                                                          userInfo: [GlobalKey.numbericString.name : digitsComposing])
+            let updateUINote: Notification = Notification(name: GlobalConstants.InterObjectNotification.newKeypadEntry.name, object: document,
+                                                          userInfo: [GlobalConstants.Keys.numbericString.name : digitsComposing])
             NotificationCenter.default.post(updateUINote)
         }
     }
@@ -824,8 +824,8 @@ class KeypadController: NSObject, DependendObjectLifeCycle
             print(self)
             
             // display the string 
-            let updateUINote: Notification = Notification(name: GlobalNotification.newKeypadEntry.name, object: document, 
-                                                          userInfo: [GlobalKey.numbericString.name : digitsComposing])
+            let updateUINote: Notification = Notification(name: GlobalConstants.InterObjectNotification.newKeypadEntry.name, object: document,
+                                                          userInfo: [GlobalConstants.Keys.numbericString.name : digitsComposing])
             NotificationCenter.default.post(updateUINote)
         }
     }

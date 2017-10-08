@@ -86,7 +86,7 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
         // registerViewController0.acceptsValueChangesByUI = true
         
         
-        NotificationCenter.default.addObserver(forName: GlobalNotification.newEngineResult.name, object: nil, queue: nil) 
+        NotificationCenter.default.addObserver(forName: GlobalConstants.InterObjectNotification.newEngineResult.name, object: nil, queue: nil)
         { [unowned self] (notification) in
             
             guard notification.object as? Document == self.document else { return }
@@ -96,12 +96,12 @@ class DisplayController: NSObject, DependendObjectLifeCycle, RegisterViewControl
             self.updateRegisterDisplay(fromSource: DataSource.engine, radix: radix)
         }
         
-        NotificationCenter.default.addObserver(forName: GlobalNotification.newKeypadEntry.name, object: nil, queue: nil) 
+        NotificationCenter.default.addObserver(forName: GlobalConstants.InterObjectNotification.newKeypadEntry.name, object: nil, queue: nil)
         { [ unowned self] (notification) in
             
             guard notification.object as? Document == self.document else { return }
             
-            if let stringValue: String = notification.userInfo?[GlobalKey.numbericString.name] as? String
+            if let stringValue: String = notification.userInfo?[GlobalConstants.Keys.numbericString.name] as? String
             {
                 let radix = self.keypadController.radix
 

@@ -62,11 +62,11 @@ class TestDocument: XCTestCase
     {
         XCTAssertEqual(dut.currentSaveDataSet.isEmpty, false)
         
-        XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.stackValues.rawValue])
-        XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.memoryAValues.rawValue])
-        XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.memoryBValues.rawValue])
-        XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.radix.rawValue])
-        XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.extraOperationsViewYPosition.rawValue])        
+        XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.stackValues])
+        XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.memoryAValues])
+        XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.memoryBValues])
+        XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.radix])
+        XCTAssertNotNil(dut.currentSaveDataSet[Document.ConfigurationKey.extraOperationsViewYPosition])
     }
     
 
@@ -80,7 +80,7 @@ class TestDocument: XCTestCase
         dut.engine.userInputEnter(numericalValue: valuePastedOnPasteboard, radix: 10)
         
         // mock up a menu command
-        let menuItem: NSMenuItem = makeMenuItemWithTitle(CopyCommand.copyTopStackElement)
+        let menuItem: NSMenuItem = makeMenuItemWithTitle(GlobalConstants.PasteboardCopyCommand.topStackElement)
         
         // copy the stack to to the pasteboard
         dut.copyStack(sender: menuItem)
@@ -136,9 +136,9 @@ class TestDocument: XCTestCase
         }
         
         // mock up a menu command
-        let menuItem: NSMenuItem = makeMenuItemWithTitle(CopyCommand.copyStack)
+        let menuItem: NSMenuItem = makeMenuItemWithTitle(GlobalConstants.PasteboardCopyCommand.entireStack)
         
-        // copy the stack to to the pasteboard
+        // copy the stack to the pasteboard
         dut.copyStack(sender: menuItem)
         
         let pasteboard: NSPasteboard = NSPasteboard.general
@@ -174,10 +174,123 @@ class TestDocument: XCTestCase
         { 
             XCTFail("Test failure: Engine did not copy top of stack value to pasteboard")
             return
-        } 
+        }
+
     }
 
-    
+
+    func testThatActionPasteDoesPutANumericalStringValueOnTheStack()
+    {
+        XCTAssertNotNil(dut.engine)
+        let pasteboard: NSPasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+
+        let testValues: [String] = ["42", "0", "-42", "1.23456", "-1.23456", "1.23456e+18", "-1.23456e-13", "1.23456e+18", "1.23456e-13"]
+
+        for testValue in testValues
+        {
+            pasteNumericalValue(numericalValue: testValue)
+
+            // mock up a menu command
+            let menuItem: NSMenuItem = makeMenuItemWithTitle(GlobalConstants.PasteboardPasteCommand.paste)
+
+            // paste the pasteboard content to the stack
+            dut.pasteToStack(sender: menuItem)
+
+            // retrieveValueFromStack
+            let valueOnStack: String = dut.engine.registerValue(inRegisterNumber: 0, radix: 10)
+
+            XCTAssertEqual(valueOnStack, testValue)
+
+            dut.engine.userInputOperation(symbol: OperationCode.drop.rawValue)
+        }
+    }
+
+    func testThatActionPasteDoesPutSpaceSeparetedNumericalStringValuesOnTheStack()
+    {
+        XCTAssertNotNil(dut.engine)
+        let pasteboard: NSPasteboard = NSPasteboard.general
+
+                                            // input values             // expected result
+        let testValues: [(String, String)] = [("42",                   "42"),
+                                              ("32 42",                "32 42")
+                                             ]
+
+        for testValue in testValues
+        {
+            pasteboard.clearContents()
+
+            pasteNumericalValue(numericalValue: testValue.0)
+
+            // mock up a menu command
+            let menuItem: NSMenuItem = makeMenuItemWithTitle(GlobalConstants.PasteboardPasteCommand.paste)
+
+            // paste the pasteboard content to the stack
+            dut.pasteToStack(sender: menuItem)
+
+            // retrieveValuesFromStack
+            let valuesOnStack: String = stackValuesAsSpaceSeparatedString()
+
+            XCTAssertEqual(valuesOnStack, testValue.1)
+
+            dut.engine.userInputOperation(symbol: OperationCode.drop.rawValue)
+        }
+    }
+
+    func testThatActionPasteDoesPutNewLineSeparetedNumericalStringValuesOnTheStack()
+    {
+        XCTAssertNotNil(dut.engine)
+        let pasteboard: NSPasteboard = NSPasteboard.general
+
+                                              // input values             // expected result
+        let testValues: [(String, String)] = [("42",                   "42"),
+                                              ("-32 -42",              "-32 -42"),
+                                              ("3.2 -4.2\n5.2",        "3.2 -4.2 5.2")
+        ]
+
+        for testValue in testValues
+        {
+            pasteboard.clearContents()
+
+            pasteNumericalValue(numericalValue: testValue.0)
+
+            // mock up a menu command
+            let menuItem: NSMenuItem = makeMenuItemWithTitle(GlobalConstants.PasteboardPasteCommand.paste)
+
+            // paste the pasteboard content to the stack
+            dut.pasteToStack(sender: menuItem)
+
+            // retrieveValuesFromStack
+            let valuesOnStack: String = stackValuesAsSpaceSeparatedString()
+
+            XCTAssertEqual(valuesOnStack, testValue.1)
+
+            dut.engine.userInputOperation(symbol: OperationCode.drop.rawValue)
+        }
+    }
+
+
+    func pasteNumericalValue(numericalValue: String)
+    {
+        let pasteObject: NSPasteboardWriting = numericalValue as NSPasteboardWriting
+        NSPasteboard.general.writeObjects([pasteObject])
+    }
+
+    func stackValuesAsSpaceSeparatedString() -> String
+    {
+        var stackValues: [String] = [String]()
+
+        for reg: Int in (0 ..< dut.engine.numberOfRegistersWithContent()).reversed()
+        {
+            let s: String = dut.engine.registerValue(inRegisterNumber: reg, radix: 10)
+            stackValues.append(s)
+        }
+
+        dut.engine.userInputOperation(symbol: OperationCode.dropAll.rawValue)
+
+        return stackValues.joined(separator: " ")
+    }
+
     
     func makeMenuItemWithTitle(_ title: String) -> NSMenuItem
     {

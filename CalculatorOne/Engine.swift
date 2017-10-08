@@ -92,7 +92,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     
     func documentDidOpen() 
     {
-        if let savedStack = document.currentSaveDataSet[Document.ConfigurationKey.stackValues.rawValue] as? NSArray
+        if let savedStack = document.currentSaveDataSet[Document.ConfigurationKey.stackValues] as? NSArray
         {
             // TODO: save and load any values as String to avoid loss of precision.
             for value in savedStack as! [Double]
@@ -101,7 +101,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             }
         }
 
-        if let savedMemoryA = document.currentSaveDataSet[Document.ConfigurationKey.memoryAValues.rawValue] as? NSArray
+        if let savedMemoryA = document.currentSaveDataSet[Document.ConfigurationKey.memoryAValues] as? NSArray
         {
             // TODO: save and load any values as String to avoid loss of precision.
             for value in savedMemoryA as! [Double]
@@ -110,7 +110,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             }
         }
 
-        if let savedMemoryB = document.currentSaveDataSet[Document.ConfigurationKey.memoryBValues.rawValue] as? NSArray
+        if let savedMemoryB = document.currentSaveDataSet[Document.ConfigurationKey.memoryBValues] as? NSArray
         {
             for value in savedMemoryB as! [Double]
             {
@@ -133,7 +133,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     
         savedStack.addObjects(from: doubleArray(fromOperandArray: stack.allOperands())!)
 
-        document.currentSaveDataSet[Document.ConfigurationKey.stackValues.rawValue] = savedStack        
+        document.currentSaveDataSet[Document.ConfigurationKey.stackValues] = savedStack        
         
         // save memory A and B to the configuration data in the document        
         // TODO: make memory A and B compliant to NSCoding protocol
@@ -142,14 +142,14 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
         
         savedMemoryA.addObjects(from: doubleArray(fromOperandArray: memoryA)!)
         
-        document.currentSaveDataSet[Document.ConfigurationKey.memoryAValues.rawValue] = savedMemoryA        
+        document.currentSaveDataSet[Document.ConfigurationKey.memoryAValues] = savedMemoryA
 
         // save memory B to the configuration data in the document        
         let savedMemoryB: NSMutableArray = NSMutableArray()
         
         savedMemoryB.addObjects(from: doubleArray(fromOperandArray: memoryB)!)
         
-        document.currentSaveDataSet[Document.ConfigurationKey.memoryBValues.rawValue] = savedMemoryB        
+        document.currentSaveDataSet[Document.ConfigurationKey.memoryBValues] = savedMemoryB
 
     }
     
@@ -651,7 +651,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     // MARK: - Output to user
     private func updateUI()
     {
-        let updateUINote: Notification = Notification(name: GlobalNotification.newEngineResult.name, object: document, userInfo: ["OperandTypeKey": /*operandType*/ "former OperandTypeKey. TODO: fix since OperandType does not exist" ])
+        let updateUINote: Notification = Notification(name: GlobalConstants.InterObjectNotification.newEngineResult.name, object: document, userInfo: ["OperandTypeKey": /*operandType*/ "former OperandTypeKey. TODO: fix since OperandType does not exist" ])
         NotificationCenter.default.post(updateUINote)
         
     }
@@ -747,7 +747,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
     private func clearErrorIndicator() 
     {
         // clear an error indication, if exist
-        let clearErrorNote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: 
+        let clearErrorNote: Notification = Notification(name: GlobalConstants.InterObjectNotification.newError.name, object: document, userInfo: 
             ["errorState"   : false,
              "errorMessage" : ""
             ])
@@ -762,7 +762,7 @@ class Engine: NSObject, DependendObjectLifeCycle, KeypadControllerDelegate,  Dis
             ["errorState"   : true,
              "errorMessage" : message]
         
-        let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: document, userInfo: errorDescriptor)        
+        let updateUINote: Notification = Notification(name: GlobalConstants.InterObjectNotification.newError.name, object: document, userInfo: errorDescriptor)        
         NotificationCenter.default.post(updateUINote)
         
         undo()

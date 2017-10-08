@@ -41,9 +41,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "TestEngineIntegerOperations/testThatIntegerAverageOfStackOperationsWorksMathematicallyCorrect()">
-               </Test>
-               <Test
                   Identifier = "TestMultiDigitView">
                </Test>
             </SkippedTests>

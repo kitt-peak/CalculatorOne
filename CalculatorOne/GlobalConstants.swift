@@ -68,7 +68,6 @@ class GlobalConstants
     static let shared: GlobalConstants = GlobalConstants()
 
     
-    
     private init() 
     { 
         digitStrip = DigitStrip()
@@ -173,32 +172,43 @@ class GlobalConstants
             
             return digitStripImage
         }
-    
     }
-}
-
-struct CopyCommand 
-{
-    static let copyTopStackElement = "Copy Top Stack Elememt"
-    static let copyStack = "Copy Stack"
-}
-
-enum GlobalNotification: String
-{
-    case newEngineResult     = "newEngineResult"
-    case newKeypadEntry      = "newKeypadEntry"
-    case newOperandType      = "newOperandType"
-    case newError            = "newError"
-
-    var name: Notification.Name { return Notification.Name(self.rawValue) }
-}
-
-enum GlobalKey: String
-{
-    case numbericString = "numericString"
     
-    var name: String { return self.rawValue }
+    struct PasteboardCopyCommand 
+    {
+        static let topStackElement = "Copy Top Stack Elememt"
+        static let entireStack = "Copy Stack"
+    }
+
+    static var allPasteboardCommands: [String] = [PasteboardCopyCommand.topStackElement, PasteboardCopyCommand.entireStack]
+
+    struct PasteboardPasteCommand
+    {
+        static let paste = "Paste"
+    }
+
+
+    enum InterObjectNotification: String
+    {
+        case newEngineResult     = "newEngineResult"
+        case newKeypadEntry      = "newKeypadEntry"
+        case newOperandType      = "newOperandType"
+        case newError            = "newError"
+        
+        var name: Notification.Name { return Notification.Name(self.rawValue) }
+    }
+
+    enum Keys: String
+    {
+        case numbericString = "numericString"
+        
+        var name: String { return self.rawValue }
+    }
+
 }
+
+
+
 
 enum OperationCode: String
 {

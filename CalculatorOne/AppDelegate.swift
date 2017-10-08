@@ -20,8 +20,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
     
     func applicationDidFinishLaunching(_ aNotification: Notification) 
     {
-        copyTopStackMenuItem.title = CopyCommand.copyTopStackElement
-        copyStackMenuItem.title = CopyCommand.copyStack
+        copyTopStackMenuItem.title = GlobalConstants.PasteboardCopyCommand.topStackElement
+        copyStackMenuItem.title = GlobalConstants.PasteboardCopyCommand.entireStack
         
         // Insert code here to initialize your application
         for document in documents

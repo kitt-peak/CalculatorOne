@@ -110,12 +110,13 @@ class Document: NSDocument, DocumentLifeCycle
     // MARK: - Read/Write file data
     // load/save operation uses the dictionary[String : Any] as the container for load/save data
     // ConfigurationKey holds the available keys for this dictionary
-    enum ConfigurationKey: String
+    struct ConfigurationKey
     {
-        //case operandType = "kOperandType"  // eliminated 23.7.2017
-        case radix = "kRadix"
-        case stackValues = "kStackValues", memoryAValues = "kMemoryAValues", memoryBValues = "kMemoryBValues"
-        case extraOperationsViewYPosition = "kExtraOperationsViewYPosition"
+        static let radix: String = "kRadix"
+        static let stackValues: String = "kStackValues"
+        static let memoryAValues: String = "kMemoryAValues"
+        static let memoryBValues: String = "kMemoryBValues"
+        static let extraOperationsViewYPosition: String = "kExtraOperationsViewYPosition"
     }
 
     // this configuration is used on a new file
@@ -123,11 +124,11 @@ class Document: NSDocument, DocumentLifeCycle
         [
         // Eliminated operand type on 23.7.2017
         // ConfigurationKey.operandType.rawValue : 1,              /* .float */
-        ConfigurationKey.radix.rawValue       : 2,              /* .decimal */
-        ConfigurationKey.extraOperationsViewYPosition.rawValue : 0.0,  
-        ConfigurationKey.stackValues.rawValue   : [],             /* emtpy array of [OperandType] */
-        ConfigurationKey.memoryAValues.rawValue : [],             /* emtpy array of [OperandType] */
-        ConfigurationKey.memoryBValues.rawValue : []              /* emtpy array of [OperandType] */
+        ConfigurationKey.radix       : 2,              /* .decimal */
+        ConfigurationKey.extraOperationsViewYPosition : 0.0,
+        ConfigurationKey.stackValues   : [],             /* emtpy array of [OperandType] */
+        ConfigurationKey.memoryAValues : [],             /* emtpy array of [OperandType] */
+        ConfigurationKey.memoryBValues : []              /* emtpy array of [OperandType] */
     ]
 
     // holds the entire set of configuration data as dictionary. Any change will make the document dirty
@@ -183,14 +184,14 @@ class Document: NSDocument, DocumentLifeCycle
         {
             let menuItem = sender as! NSMenuItem
             
-            if menuItem.title == CopyCommand.copyTopStackElement
+            if menuItem.title == GlobalConstants.PasteboardCopyCommand.topStackElement
             {
                 let valueToCopy = engine.registerValue(inRegisterNumber: 0, radix: 10)
                 let pasteBoard = NSPasteboard.general
                 pasteBoard.clearContents()
                 pasteBoard.writeObjects([valueToCopy as NSPasteboardWriting])
             }
-            else if menuItem.title == CopyCommand.copyStack
+            else if menuItem.title == GlobalConstants.PasteboardCopyCommand.entireStack
             {
                 let countStackItems: Int = Int(engine.numberOfRegistersWithContent())
                 var valuesToCopy: [String] = [String]()
@@ -215,7 +216,7 @@ class Document: NSDocument, DocumentLifeCycle
     {
         if sender is NSMenuItem
         {
-            for valueString in currentPasteBoardItems()
+            for valueString in stringsOnCurrentPasteboard()
             {
                 if engine.userWillInputEnter(numericalValue: valueString, radix: 10) == true
                 {
@@ -234,14 +235,14 @@ class Document: NSDocument, DocumentLifeCycle
         if item is NSMenuItem
         {
             let menuItem = item as! NSMenuItem
-            
-            if menuItem.title == "Copy Top Stack" || menuItem.title == "Copy Stack"
+
+            if GlobalConstants.allPasteboardCommands.contains(menuItem.title)
             {
-                return engine.hasValueForRegister(registerNumber: 0)
+                return true == engine.hasValueForRegister(registerNumber: 0)
             }
-            else if menuItem.title == "Paste"
+            else if menuItem.title == GlobalConstants.PasteboardPasteCommand.paste
             {
-                for valueString in currentPasteBoardItems()
+                for valueString in stringsOnCurrentPasteboard()
                 {
                     if engine.userWillInputEnter(numericalValue: valueString, radix: 10) == true
                     {
@@ -257,7 +258,7 @@ class Document: NSDocument, DocumentLifeCycle
         return super.validateUserInterfaceItem(item)
     }
     
-    private func currentPasteBoardItems() -> [String]
+    private func stringsOnCurrentPasteboard() -> [String]
     {
         let pasteBoard = NSPasteboard.general
         var stringItems: [String] = [String]()
@@ -266,7 +267,7 @@ class Document: NSDocument, DocumentLifeCycle
         {
             for item in items
             {
-                if let stringItem = item.string(forType: NSPasteboard.PasteboardType(rawValue: "public.utf8-plain-text"))
+                if let stringItem = item.string(forType: NSPasteboard.PasteboardType.string)
                 {
                     stringItems.append(contentsOf: stringItem.components(separatedBy: CharacterSet.whitespacesAndNewlines))                    
                 }

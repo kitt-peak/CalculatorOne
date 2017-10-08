@@ -146,7 +146,7 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
                     else
                     {
                         // error: the value has too many digits to fit the view controller's number of digits
-                        let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: delegate.getDocument(), userInfo: 
+                        let updateUINote: Notification = Notification(name: GlobalConstants.InterObjectNotification.newError.name, object: delegate.getDocument(), userInfo:
                             ["errorState"   : true,
                              "errorMessage" : "Result is truncated"
                             ])
@@ -168,7 +168,7 @@ class RegisterViewController: NSObject, DependendObjectLifeCycle, MultiDigitView
                 else
                 {
                     // error: the value has too many digits to fit the view controller's number of digits
-                    let updateUINote: Notification = Notification(name: GlobalNotification.newError.name, object: delegate.getDocument(), userInfo: 
+                    let updateUINote: Notification = Notification(name: GlobalConstants.InterObjectNotification.newError.name, object: delegate.getDocument(), userInfo: 
                         ["errorState"   : true,
                          "errorMessage" : "Result is truncated"
                         ])
